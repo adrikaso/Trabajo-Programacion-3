@@ -1,0 +1,68 @@
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.card {
+  border-radius: 12px;
+}
+
+.table th,
+.table td {
+  vertical-align: middle !important;
+}
+
+.card {
+  border: 1px solid #ddd;
+  padding: 2rem;
+  border-radius: 12px;
+  background-color: white;
+}
+
+.table {
+  font-size: 1rem;
+}
+
+.table th {
+  background-color: #f8f8f8;
+}
+
+h1,
+h4 {
+  font-weight: bold;
+}
+
+#totalFinal {
+  font-size: 1.3rem;
+  color: #333;
+}
+
+img {
+  display: block;
+  margin: 0 auto;
+  margin-bottom: 1rem;
+}
+
+.btn__encuesta {
+  max-width: 200px;
+}
+
+.container {
+  padding-top: 0 !important;
+  margin-top: 0 !important;
+}
+
+#ticketPDF {
+  page-break-inside: auto;
+}
+
+#ticketPDF .card {
+  page-break-inside: avoid;
+}
+
+#ticketPDF table,
+#ticketPDF tr,
+#ticketPDF td,
+#ticketPDF th {
+  page-break-inside: avoid;
+  page-break-after: auto;
+}

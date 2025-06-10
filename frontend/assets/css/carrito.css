@@ -1,0 +1,36 @@
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+table th, table td {
+  vertical-align: middle !important;
+}
+
+img {
+  border-radius: 8px;
+}
+
+button.btn-outline-secondary,
+button.btn-outline-danger {
+  padding: 4px 8px;
+}
+
+button.btn-outline-secondary:hover {
+  background-color: #e0e0e0;
+}
+
+button.btn-outline-danger:hover {
+  background-color: #ffdddd;
+}
+
+span.fs-4 {
+  font-weight: bold;
+}
+
+.table thead {
+  background-color: #f5f5f5;
+}
+
+.table tbody tr:hover {
+  background-color: #f8f9fa;
+}
