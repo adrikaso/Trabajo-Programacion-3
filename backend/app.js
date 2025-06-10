@@ -2,10 +2,11 @@ const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
 
-const conectarDB = require("./config/db"); // ← Importás la función de conexión
+const conecWithDataBase = require("./config/conection"); // ← Importás la función de conexión
 
-const productoRoutes = require("./rutas/productos");
-const ventaRoutes = require("./rutas/ventas");
+const productRoutes = require("./routes/ProductRoutes");
+const saleRoutes = require("./routes/SaleRoutes");
+const saleDetailsRoutes = require("./routes/saleDetails");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -14,11 +15,16 @@ app.use(cors());
 app.use(express.json());
 
 // Rutas
-app.use("/api/productos", productoRoutes);
-app.use("/api/ventas", ventaRoutes);
+app.use("/product", productRoutes);
+
+app.use("/sale", saleRoutes);
+
+app.use("/saleDetails", saleDetailsRoutes);
+
+
 
 // Conectás a Mongo y luego levantás el servidor
-conectarDB().then(() => {
+conecWithDataBase().then(() => {
   app.listen(PORT, () => {
     console.log(`Servidor corriendo en http://localhost:${PORT}`);
   });
