@@ -1,4 +1,4 @@
-const repo = require('../repositories/SaleRepository');
+const repo = require('../persistence/repositories/SaleRepository');
 
 async function createSale(data) {
   return await repo.create(data);
