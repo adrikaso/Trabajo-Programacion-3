@@ -1,4 +1,4 @@
-const repo = require('../repositories/ProductRepository');
+const repo = require('../persistence/repositories/ProductRepository');
 
 async function createProduct(data) {
   return await repo.create(data);
