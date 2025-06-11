@@ -17,9 +17,9 @@ async function mostrarCategoria(categoria) {
   titulo.textContent = categoria === 'suplemento' ? 'Suplementos disponibles' : 'Accesorios disponibles';
 
   try {
-    const res = await fetch("http://localhost:3000/api/productos/allProducts");
-    const productos = await res.json();
+    const res = await fetch("http://localhost:3000/product/getAll");
 
+    const productos = await res.json();
     const filtrados = productos.filter(p => p.categoria === categoria);
 
     filtrados.forEach((producto, i) => {
