@@ -6,7 +6,7 @@ const conecWithDataBase = require("./config/conection"); // ← Importás la fun
 
 const productRoutes = require("./routes/ProductRoutes");
 const saleRoutes = require("./routes/SaleRoutes");
-const saleDetailsRoutes = require("./routes/saleDetails");
+const saleDetailsRoutes = require("./routes/SaleDetailsRoutes");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -29,3 +29,14 @@ conecWithDataBase().then(() => {
     console.log(`Servidor corriendo en http://localhost:${PORT}`);
   });
 });
+
+// const productService = require("../backend/services/ProductService");
+
+// console.log("Iniciando");
+
+// const main = async () => {
+//   const productos = await productService.getAllProducts();
+//   console.log("Productos:", productos);
+// };
+
+// main();
