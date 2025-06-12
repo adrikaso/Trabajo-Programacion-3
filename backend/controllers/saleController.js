@@ -20,7 +20,8 @@ const findAll = async (req, res) => {
 
 const findSale = async (req, res) => {
   try {
-    const sale = await services.getSaleById(req.body);
+    const {id} = req.params;
+    const sale = await services.getSaleById(id);
     res.status(201).json(sale);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -29,7 +30,8 @@ const findSale = async (req, res) => {
 
 const deleteSale = async (req, res) => {
   try {
-    const sale = await services.deleteSaleById(req.body);
+    const { id } = req.params;
+    const sale = await services.deleteSaleById(id);
     res.status(201).json(sale);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -38,7 +40,8 @@ const deleteSale = async (req, res) => {
 
 const updateSale = async (req, res) => {
   try {
-    const sale = await services.updateSaleById(req.body);
+    const { id } = req.params;
+    const sale = await services.updateSaleById(id,req.body);
     res.status(201).json(sale);
   } catch (error) {
     res.status(400).json({ error: error.message });
