@@ -14,31 +14,144 @@ document.addEventListener('DOMContentLoaded', () => {
     const active = document.getElementById('active');
     const productID = document.getElementById('hijodemilputa');
 
-    const btnCreateProduct = document.getElementById('btnCreateProduct');
     const btnGetAllProducts = document.getElementById('btnGetAllProducts');
     const btnGetProduct = document.getElementById('btnGetProduct');
     const btnTestCreateProduct = document.getElementById('btnTestCreateProduct');
     const btnTestUpdateProduct = document.getElementById('btnTestUpdateProduct');
     const btnTestDeleteProduct = document.getElementById('btnTestDeleteProduct');
 
-    const nombreCliente = document.getElementById('inputClientName');
+
+
+    //Sales
+    const inputClient = document.getElementById('inputClientName');
     const inputDate = document.getElementById('inputDate');
     const inputTotal = document.getElementById('inputTotal');
     const inputSaleID = document.getElementById('inputSaleID');
+;
+    const btnGetAllSales = document.getElementById('btnGetAllSales');
+    const btnGetSale = document.getElementById('btnGetSale');
+    const btnTestCreateSale = document.getElementById('btnTestCreateSale');
+    const btnTestUpdateSale = document.getElementById('btnTestUpdateSale');
+    const btnTestDeleteSale = document.getElementById('btnTestDeleteSale');
 
-    const inputQuantity = document.getElementById('inputQuantity');
-    const inputProduct = document.getElementById('inputProdID');
-    const inputSubTotal = document.getElementById('inputSubTotal');
-    const inputSaleDetailsID = document.getElementById('inputSaleDetailsID');
+    btnTestCreateSale.addEventListener('click', testCreateSale);
+    btnGetAllSales.addEventListener('click', testGetAllSales);
+    btnGetSale.addEventListener('click', testGetSale);
+    btnTestUpdateSale.addEventListener('click', testUpdateSale);
+    btnTestDeleteSale.addEventListener('click', testDeleteSale);
+    
 
-    btnTestCreateProduct.addEventListener('click', testCreateProduct);
-    btnTestUpdateProduct.addEventListener('click', testUpdateProduct);
-    btnTestDeleteProduct.addEventListener('click', testDeleteProduct);
 
-    btnGetAllProducts.addEventListener('click', testGetAllProducts);
-    btnGetProduct.addEventListener('click', testGetProduct);
+    //SaleDetails
+
+    // const inputQuantity = document.getElementById('inputQuantity');
+    // const inputProduct = document.getElementById('inputProdID');
+    // const inputSubTotal = document.getElementById('inputSubTotal');
+    // const inputSaleDetailsID = document.getElementById('inputSaleDetailsID');
+
+    // btnTestCreateProduct.addEventListener('click', testCreateProduct);
+    // btnTestUpdateProduct.addEventListener('click', testUpdateProduct);
+    // btnTestDeleteProduct.addEventListener('click', testDeleteProduct);
+
+    // btnGetAllProducts.addEventListener('click', testGetAllProducts);
+    // btnGetProduct.addEventListener('click', testGetProduct);
 
     
+    //----------------Sales-------------------
+    
+    function loadSaleValues() {
+        const sale = {
+            clienteNombre: inputClient.value,
+            fecha: inputDate.value,
+            total: inputTotal.value
+        };
+        console.log(sale);
+        return sale;
+    }
+
+    async function testGetAllSales() {
+        try {
+            const url = 'http://localhost:3000/sale/getAll';
+            const response = await fetch(url);
+            const data = await response.json();
+            console.log('Ventas obtenidas:', data);
+        } catch (error) {
+            console.error('Error al obtener las ventas:', error);
+        }
+    }
+
+    async function testGetSale() {
+        try {
+            let id = inputSaleID.value.trim();
+            const url = `http://localhost:3000/sale/getSale/${id}`;
+            const response = await fetch(url);
+            const data = await response.json();
+            console.log('Venta obtenida:', data);
+        } catch (error) {
+            console.error('Error al obtener la venta:', error);
+        }
+    }
+
+    async function testCreateSale() {
+        try {
+            let sale = loadSaleValues();
+            const url = 'http://localhost:3000/sale/create';
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(
+                    sale
+                )
+            });
+
+            const data = await response.json();
+            console.log('Venta creada:', data);
+        } catch (error) {
+            console.error('Error al crear la venta:', error);
+        }
+    }
+
+    async function testUpdateSale() {
+        try {
+            const id = inputSaleID.value.trim();
+            let sale = loadSaleValues();
+            const url = `http://localhost:3000/sale/update/${id}`;
+            const response = await fetch(url, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(
+                    sale
+                )
+            });
+            const data = await response.json();
+            console.log('Venta actualizada:', data);
+        } catch (error) {
+            console.error('Error al actualizar la venta:', error);
+        }
+    }
+
+    async function testDeleteSale() {
+        try {
+            let id = inputSaleID.value.trim();
+            const url = `http://localhost:3000/sale/delete/${id}`;
+            const response = await fetch(url, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            const data = await response.json();
+            console.log('Venta eliminada:', data);
+        } catch (error) {
+            console.error('Error al eliminar la venta:', error);
+        }
+    }
+
+    //--------------- Products-------------------
     function loadProductValues() {
         const product = {
             nombre: productName.value,
@@ -125,7 +238,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function testGetProduct() {
         try {
-            let id = productID.value.trim(); // ✅ Asegura que no sea vacío
+            let id = productID.value.trim(); // 
             if (!id) {
                 alert("el id es " + id);
                 return;
