@@ -41,7 +41,6 @@
                     </div>
                     <input type="hidden" id="productoId">
                     <div class="mt-3 d-flex gap-2">
-                        <button type="button" id="btnCreateProduct" class="btn btn-primary">Create</button>
                         <button type="button" id="btnGetAllProducts" class="btn btn-success">Test getAll</button>
                         <button type="button" id="btnGetProduct" class="btn btn-success">Test GET</button>
                         <button type="button" id="btnTestCreateProduct" class="btn btn-warning">TestCREATE</button>
@@ -50,6 +49,7 @@
                     </div>
                 </form>
             </div>
+
             <div class="card-body">
                 <h5 id="formTitulo">Agregar Venta</h5>
                 <form id="formSale">
@@ -64,21 +64,20 @@
                             <input type="text" id="inputTotal" class="form-control" placeholder="Total" required>
                         </div>
                         <div class="col-md-4">
-                            <input type="text" id="inputSaleID" class="form-control" placeholder="Buscar por ID" required>
+                            <input type="text" id="inputSaleID" class="form-control" placeholder="Buscar por ID" >
                         </div>
                     </div>
                     <input type="hidden" id="productoId">
                     <div class="mt-3 d-flex gap-2">
-                        <button type="submit" class="btn btn-primary">Create</button>
-                        <button type="button" class="btn btn-success" onclick="resetFormulario()">Test getAll</button>
-                        <button type="button" class="btn btn-success" onclick="cargarProductos()">Test GET</button>
-                        <button type="button" class="btn btn-warning" onclick="testCreateProducto()">Test
-                            CREATE</button>
-                        <button type="button" class="btn btn-info" onclick="testUpdateProducto()">Test UPDATE</button>
-                        <button type="button" class="btn btn-danger" onclick="testDeleteProducto()">Test DELETE</button>
+                        <button type="button" id = "btnGetAllSales" class="btn btn-success">Test getAll</button>
+                        <button type="button" id = "btnGetSale" class="btn btn-success" >Test GET</button>
+                        <button type="button" id="btnTestCreateSale" class="btn btn-warning">Test CREATE</button>
+                        <button type="button" id="btnTestUpdateSale" class="btn btn-info" onclick="testUpdateProducto()">Test UPDATE</button>
+                        <button type="button" id="btnTestDeleteSale" class="btn btn-danger" onclick="testDeleteProducto()">Test DELETE</button>
                     </div>
                 </form>
             </div>
+
             <div class="card-body">
                 <h5 id="formTitulo">Agregar Detalle de la venta</h5>
                 <form id="formSaleDetails">
