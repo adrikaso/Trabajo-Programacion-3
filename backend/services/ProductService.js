@@ -9,7 +9,9 @@ async function getAllProducts() {
 }
 
 async function getProductById(id) {
-    return await repo.getById(id);
+  console.log(id);  
+  
+  return await repo.getById(id);
 }
 
 async function deleteById(id){
