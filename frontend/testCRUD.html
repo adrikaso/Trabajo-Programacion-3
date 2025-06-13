@@ -83,30 +83,28 @@
                 <form id="formSaleDetails">
                     <div class="row g-3">
                         <div class="col-md-4">
-                            <input type="number" id="inputQuantity" class="form-control" placeholder="Cantidad" required>
+                            <input type="text" id="IDinputSale" class="form-control" placeholder="Venta ID" required>
                         </div>
                         <div class="col-md-2">
-                            <input type="" id="inputProdID" class="form-control" placeholder="Producto ID" required>
+                            <input type="text" id="inputProdIDdetails" class="form-control" placeholder="Producto ID" required>
                         </div>
                         <div class="col-md-4">
-                            <input type="number" id="inputSubTotal" class="form-control" placeholder="SubTotal" required>
+                            <input type="text" id="inputQuantity" class="form-control" placeholder="Cantidad" required>
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" id="inputSubTotal" class="form-control" placeholder="SubTotal" required>
                         </div>
                         <div class="col-md-4">
                             <input type="text" id="inputSaleDetailsID" class="form-control" placeholder="Buscar por ID" required>
                         </div>
-                        <div class="col-md-4">
-                            <input type="text" id="inputSaleID" class="form-control" placeholder="Detalle Venta ID" required>
-                        </div>
                     </div>
                     <input type="hidden" id="productoId">
                     <div class="mt-3 d-flex gap-2">
-                        <button type="submit" class="btn btn-primary">Create</button>
-                        <button type="button" class="btn btn-success" onclick="resetFormulario()">Test getAll</button>
-                        <button type="button" class="btn btn-success" onclick="cargarProductos()">Test GET</button>
-                        <button type="button" class="btn btn-warning" onclick="testCreateProducto()">Test
-                            CREATE</button>
-                        <button type="button" class="btn btn-info" onclick="testUpdateProducto()">Test UPDATE</button>
-                        <button type="button" class="btn btn-danger" onclick="testDeleteProducto()">Test DELETE</button>
+                        <button type="button" id="btnGetAllSalesDetails" class="btn btn-success">Test getAll</button>
+                        <button type="button" id="btnGetSaleDetail" class="btn btn-success">Test GET</button>
+                        <button type="button" id="btnTestCreateSaleDetail" class="btn btn-warning">Test CREATE</button>
+                        <button type="button" id="btnTestUpdateSaleDetail" class="btn btn-info">Test UPDATE</button>
+                        <button type="button" id="btnTestDeleteSaleDetail" class="btn btn-danger">Test DELETE</button>
                     </div>
                 </form>
             </div>
