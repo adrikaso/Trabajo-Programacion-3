@@ -20,7 +20,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnTestUpdateProduct = document.getElementById('btnTestUpdateProduct');
     const btnTestDeleteProduct = document.getElementById('btnTestDeleteProduct');
 
-
+    btnGetAllProducts.addEventListener('click', testGetAllProducts);
+    btnGetProduct.addEventListener('click', testGetProduct);
+    btnTestCreateProduct.addEventListener('click', testCreateProduct);
+    btnTestUpdateProduct.addEventListener('click', testUpdateProduct);
+    btnTestDeleteProduct.addEventListener('click', testDeleteProduct);
 
     //Sales
     const inputClient = document.getElementById('inputClientName');
@@ -43,20 +47,115 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     //SaleDetails
+    const IDinputSale = document.getElementById('IDinputSale');
+    const inputQuantity = document.getElementById('inputQuantity');
+    const inputProdIDdetails = document.getElementById('inputProdIDdetails');
+    const inputSubTotal = document.getElementById('inputSubTotal');
+    const inputSaleDetailsID = document.getElementById('inputSaleDetailsID');
 
-    // const inputQuantity = document.getElementById('inputQuantity');
-    // const inputProduct = document.getElementById('inputProdID');
-    // const inputSubTotal = document.getElementById('inputSubTotal');
-    // const inputSaleDetailsID = document.getElementById('inputSaleDetailsID');
+    const btnGetAllSalesDetails = document.getElementById('btnGetAllSalesDetails');
+    const btnGetSaleDetail = document.getElementById('btnGetSaleDetail');
+    const btnTestCreateSaleDetail = document.getElementById('btnTestCreateSaleDetail');
+    const btnTestUpdateSaleDetail = document.getElementById('btnTestUpdateSaleDetail');
+    const btnTestDeleteSaleDetail = document.getElementById('btnTestDeleteSaleDetail');
 
-    // btnTestCreateProduct.addEventListener('click', testCreateProduct);
-    // btnTestUpdateProduct.addEventListener('click', testUpdateProduct);
-    // btnTestDeleteProduct.addEventListener('click', testDeleteProduct);
+    btnGetAllSalesDetails.addEventListener('click', testGetAllSaleDetails);
+    btnGetSaleDetail.addEventListener('click', testGetSaleDetails);
+    btnTestCreateSaleDetail.addEventListener('click', testCreateSaleDetails);
+    btnTestUpdateSaleDetail.addEventListener('click', testUpdateSaleDetails);
+    btnTestDeleteSaleDetail.addEventListener('click', testDeleteSaleDetails);
 
-    // btnGetAllProducts.addEventListener('click', testGetAllProducts);
-    // btnGetProduct.addEventListener('click', testGetProduct);
+    //----------------SaleDetails-------------------
 
-    
+    function loadSaleDetailsValues() {
+        const saleDetails = {
+            ventaId: IDinputSale.value,
+            cantidad: inputQuantity.value,
+            productoId: inputProdIDdetails.value,
+            subtotal: inputSubTotal.value
+        };
+        console.log(saleDetails);
+        return saleDetails;
+    }
+
+    async function testGetAllSaleDetails() {
+        try {
+
+            const url = 'http://localhost:3000/saleDetails/getAll';
+            const response = await fetch(url);
+            const data = await response.json();
+            console.log('Ventas obtenidas:', data);
+        } catch (error) {
+            console.error('Error al obtener las ventas:', error);
+        }
+    }
+
+    async function testGetSaleDetails() {
+        try {
+            let id = inputSaleDetailsID.value.trim();
+            const url = `http://localhost:3000/saleDetails/getSaleDetails/${id}`;
+            const response = await fetch(url);
+            const data = await response.json();
+            console.log('Venta obtenida:', data);
+        } catch (error) {
+            console.error('Error al obtener la venta:', error);
+        }
+    }
+
+    async function testCreateSaleDetails() {
+        try {
+            let saleDetails = loadSaleDetailsValues();
+            const url = 'http://localhost:3000/saleDetails/create';
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(saleDetails)
+            });
+            const data = await response.json();
+            console.log('Venta creada:', data);
+        } catch (error) {
+            console.error('Error al crear la venta:', error);
+        }
+    }
+
+    async function testUpdateSaleDetails() {
+        try {
+            const id = inputSaleDetailsID.value.trim();
+            let saleDetails = loadSaleDetailsValues();
+            const url = `http://localhost:3000/saleDetails/update/${id}`;
+            const response = await fetch(url, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(saleDetails)
+            });
+            const data = await response.json();
+            console.log('Venta actualizada:', data);
+        } catch (error) {
+            console.error('Error al actualizar la venta:', error);
+        }
+    }
+
+    async function testDeleteSaleDetails() {
+        try {
+            let id = inputSaleDetailsID.value.trim();
+            const url = `http://localhost:3000/saleDetails/delete/${id}`;
+            const response = await fetch(url, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            const data = await response.json();
+            console.log('Venta eliminada:', data);
+        } catch (error) {
+            console.error('Error al eliminar la venta:', error);
+        }
+    }
+
     //----------------Sales-------------------
     
     function loadSaleValues() {
