@@ -2,7 +2,7 @@ const services = require("../services/SaleService");
 
 const create = async (req, res) => {
   try {
-    const sale = await services.createSale(req.body);
+    const sale = await services.createSale();
     res.status(201).json(sale);
   } catch (error) {
     res.status(400).json({ error: error.message });
