@@ -5,5 +5,6 @@ const getById = id => ItemCart.findById(id);
 const create = data => ItemCart.create(data);
 const update = (id, data) => ItemCart.findByIdAndUpdate(id, data, { new: true });
 const remove = id => ItemCart.findByIdAndDelete(id);
+const removeAll = () => ItemCart.deleteMany();
 
-module.exports = { getAll, getById, create, update, remove };
+module.exports = { getAll, getById, create, update, remove, removeAll };
