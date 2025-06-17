@@ -253,11 +253,11 @@ document.addEventListener('DOMContentLoaded', () => {
     //--------------- Products-------------------
     function loadProductValues() {
         const product = {
-            nombre: productName.value,
-            precio: price.value,
-            imagen: img.value,
-            categoria: category.value,
-            activo: active.value
+            name: productName.value,
+            price: price.value,
+            pictureURL: img.value,
+            category: category.value,
+            active: active.value
         };
         return product;
     }
