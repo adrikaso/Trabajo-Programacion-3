@@ -1,40 +1,118 @@
 document.addEventListener('DOMContentLoaded', () => {
     const btnCrearCarrito = document.getElementById('btnCrearCarrito');
     const btnGetAllProducts = document.getElementById('btnGetAllProducts');
-    const btnCrearItem = document.getElementById('btnCrearItem');
 
     btnCrearCarrito.addEventListener('click', crearCarrito);
-    btnGetAllProducts.addEventListener('click', testGetAllProducts);
-    btnCrearItem.addEventListener('click', testCreateItem);
+    btnGetAllProducts.addEventListener('click', showProducts);
 
     const btnTestUpdateItem = document.getElementById('btnTestUpdateItem');
     const btnTestDeleteItem = document.getElementById('btnTestDeleteItem');
     const btnTestCreateItem = document.getElementById('btnTestCreateItem');
+    const btnGetAllItems = document.getElementById('btnGetAllItems');
+    const btnFinalizePurchase = document.getElementById('btnFinalizePurchase');
 
+    //Sections
+    const productSection = document.getElementById('productSection');
+    const productList= document.getElementById('productList');
+
+    const cartSection = document.getElementById('cartSection');
+    const cartList = document.getElementById('cartList');
+    cartSection.style.display = 'none';
+
+    const itemSection= document.getElementById('itemSection');
+    itemSection.style.display = 'none';
+
+    const ticketSection = document.getElementById('ticketSection');
+    ticketSection.style.display = 'none';
+
+    //items
     const inputItemID = document.getElementById('inputItemID');
     const inputProductID = document.getElementById('inputProductID');
     const inputProductName = document.getElementById('inputProductName');
     const inputUnitPrice = document.getElementById('inputUnitPrice');
     const inputQuantity = document.getElementById('inputQuantity');
-    const btnGetAllItems = document.getElementById('btnGetAllItems');
 
     btnGetAllItems.addEventListener('click', testGetAllItems);
     btnTestCreateItem.addEventListener('click', testCreateItem);
     btnTestDeleteItem.addEventListener('click', testDeleteItem);
     btnTestUpdateItem.addEventListener('click', testUpdateItem);
+    btnFinalizePurchase.addEventListener('click', FinalizePurchase);
 
     //cliente
+
     const inputClientName = document.getElementById('inputClientName');
-    const btnTestCreateClient = document.getElementById('btnTestCreateClient');
-    const btnGetAllClients = document.getElementById('btnGetAllClients');
 
-    btnTestCreateClient.addEventListener('click', testCreateClient);
-    btnGetAllClients.addEventListener('click', testGetAllClients);
 
-    //sale
-    const btnCreateSale = document.getElementById('btnCreateSale');
-    btnCreateSale.addEventListener('click', testCreateSale);
+    async function FinalizePurchase(){
+        testCreateClient();
+        testCreateSale();
+        ticketSection.style.display = 'block';
+        productSection.style.display = 'none';
+        cartSection.style.display = 'none';
+        itemSection.style.display = 'none';
+    }
 
+    async function testDeleteCart() {
+        try {
+            const url = 'http://localhost:3000/shopingCart/delete';
+            const response = await fetch(url, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            const data = await response.json();
+            console.log('Carrito vaciado:', data);
+        } catch (error) {
+            console.error('Error al vaciar el carrito:', error);
+        }
+    }
+
+    async function testDeleteAllItems() {
+        try {
+            const url = 'http://localhost:3000/itemCart/deleteAll';
+            const response = await fetch(url, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            const data = await response.json();
+            console.log('Items eliminados:', data);
+        } catch (error) {
+            console.error('Error al eliminar los items:', error);
+        }
+    }
+
+    async function showProducts() {
+        productSection.style.display = 'block';
+        productList.innerHTML = '';
+        try {
+            const list = await testGetAllProducts();
+
+        list.forEach(product => {
+            const li = document.createElement('li');
+            li.className = 'list-group-item d-flex justify-content-between align-items-center bg-light text-dark mb-2 rounded';
+
+            li.innerHTML = `
+                <div class="d-flex align-items-center gap-3">
+                    <img src="${product.imagen}" alt="${product.nombre}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 10px;">
+                    <div>
+                        <strong>${product.nombre}</strong><br>
+                        <small>$${product.precio}</small>
+                    </div>
+                </div>
+                <button class="btn btn-sm btn-primary" onclick="agregarAlCarrito('${product._id}', '${product.nombre}', ${product.precio})">
+                    Agregar
+                </button>
+            `;
+
+            productList.appendChild(li);
+        });
+        } catch (error) {
+            console.error('Error al obtener los productos:', error);
+        }
+    }
 
     async function testCreateSale() {
         try {
@@ -47,6 +125,8 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             const data = await response.json();
             console.log('Venta creada:', data);
+            testDeleteCart();
+            testDeleteAllItems();   
         } catch (error) {
             console.error('Error al crear la venta:', error);
         }
@@ -79,7 +159,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-
     async function crearCarrito() {
         try {
             const url = 'http://localhost:3000/shopingCart/create';
@@ -96,17 +175,20 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             const data = await response.json();
             console.log('Carrito creado:', data);
+            inputClientName.value = '';
+            itemSection.style.display = 'block';
         } catch (error) {
             console.error('Error al crear el carrito:', error);
         }
     }
 
-        async function testGetAllProducts() {
+    async function testGetAllProducts() {
         try {
             const url = 'http://localhost:3000/product/getAll';
             const response = await fetch(url);
             const data = await response.json();
             console.log('Productos obtenidos:', data);
+            return data;
         } catch (error) {
             console.error('Error al obtener los productos:', error);
         }
@@ -146,6 +228,7 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             const data = await response.json();
             console.log('Item creado:', data);
+            resetInputs();
         } catch (error) {
             console.error('Error al crear el item:', error);
         }
@@ -163,6 +246,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             const data = await response.json();
             console.log('Item eliminado:', data);
+            resetInputs();
         } catch (error) {
             console.error('Error al eliminar el item:', error);
         }
@@ -182,9 +266,28 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             const data = await response.json();
             console.log('Item actualizado:', data);
+            resetInputs();
         } catch (error) {
             console.error('Error al actualizar el item:', error);
         }
     }
 
+    function resetInputs() {
+        inputItemID.value = '';
+        inputProductID.value = '';
+        inputProductName.value = '';
+        inputUnitPrice.value = '';
+        inputQuantity.value = '';
+    }
+
 });
+
+function agregarAlCarrito(productID, productName, unitPrice) {
+    inputProductID.value = productID;
+    inputProductName.value = productName;
+    inputUnitPrice.value = unitPrice;
+    inputQuantity.value = 1;
+    itemSection.style.display = 'block';
+}
+
+
