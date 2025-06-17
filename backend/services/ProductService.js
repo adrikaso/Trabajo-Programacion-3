@@ -9,8 +9,6 @@ async function getAllProducts() {
 }
 
 async function getProductById(id) {
-  console.log(id);  
-  
   return await repo.getById(id);
 }
 

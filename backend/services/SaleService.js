@@ -1,14 +1,16 @@
 const repo = require('../persistence/repositories/SaleRepository');
 const shopingService = require('./ShopingCartService');
+const saleDetailsService = require('./SaleDetailsService');
 
 
 
 async function createSale() {
-  const total = await shopingService.getTotal();
-  const clientName = await shopingService.getName();
+  const total = (await shopingService.getTotal()).total;
+  const clientName = (await shopingService.getName()).name;
   const date = new Date();
-
-  return await repo.create({ clientName, date, total });
+  const sale = await repo.create({ clientName, date, total });
+  await saleDetailsService.createSaleDetails(sale.id);
+  return sale;
 }
 
 async function getAllSales() {

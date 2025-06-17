@@ -16,8 +16,13 @@ async function createShopingCart(name, total) {
     return await repo.create({ name, total });
 }
 
-async function resetCart() {
-    return await repo.reset();
+async function incrementTotal(id,subtotal){
+    return await repo.updateTotal(id,{$inc:{total:subtotal}});
 }
 
-module.exports = { getName, getId,createShopingCart, resetCart };
+
+async function deleteCart() {
+    return await repo.removeAll();
+}
+
+module.exports = { getName, getTotal, getId,createShopingCart, deleteCart, incrementTotal };
