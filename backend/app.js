@@ -7,6 +7,9 @@ const conecWithDataBase = require("./config/conection"); // ← Importás la fun
 const productRoutes = require("./routes/ProductRoutes");
 const saleRoutes = require("./routes/SaleRoutes");
 const saleDetailsRoutes = require("./routes/SaleDetailsRoutes");
+const itemCartRoutes = require("./routes/ItemCartRoutes");
+const shopingCartRoutes = require("./routes/ShopingCartRoutes");
+const clientRoutes = require("./routes/ClientRoutes");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -21,6 +24,9 @@ app.use("/sale", saleRoutes);
 
 app.use("/saleDetails", saleDetailsRoutes);
 
+app.use("/itemCart", itemCartRoutes);
+app.use("/shopingCart", shopingCartRoutes)
+app.use("/client", clientRoutes)
 
 
 // Conectás a Mongo y luego levantás el servidor
