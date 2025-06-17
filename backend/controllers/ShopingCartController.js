@@ -33,5 +33,14 @@ const getNameOfShoppingCart = async (req, res) => {
     }
 }
 
+const deleteShopingCart = async (req, res) => {
+    try {
+        const cart = await services.deleteCart();
+        res.status(201).json(cart);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
 
-module.exports = { createShopingCart, getAllShopingCarts, getNameOfShoppingCart };
+
+module.exports = { createShopingCart, getAllShopingCarts, getNameOfShoppingCart, deleteShopingCart };

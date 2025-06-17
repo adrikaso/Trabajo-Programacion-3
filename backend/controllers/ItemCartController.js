@@ -25,4 +25,9 @@ const deleteItemCart = async (req, res) => {
     res.json(itemCart);
 };
 
-module.exports = { getAllItemCarts, createItemCart, updateItemCart, deleteItemCart };
+const deleteAllItemCarts = async (req, res) => {
+    const itemCarts = await services.deleteAllItemCarts();
+    res.json(itemCarts);
+};
+
+module.exports = { getAllItemCarts, createItemCart, updateItemCart, deleteItemCart, deleteAllItemCarts };
