@@ -28,9 +28,7 @@ async function calculateSubtotalAndUpdateShopingCart(itemCart, negative = false)
     let subtotal = itemCart.unitPrice * itemCart.quantity;
     if (negative==true) {
         subtotal = subtotal*-1;
-        console.log("se resta el subtotal: "+subtotal);
     }
-    console.log("se suma el subtotal: "+subtotal);
     await ShopingCartService.incrementTotal(shopingCartId, subtotal);
 }
 
@@ -42,7 +40,10 @@ async function updateItemCart(id, data) {
 }
 
 async function updateQuantity(id, data) {
-    const itemCart = await repo.updateQuantity(id, data);
+    await findByIdAndUpdateShopingCart(id);
+    await repo.updateQuantity(id, data);
+    const itemCart = await repo.getById(id);
+    await calculateSubtotalAndUpdateShopingCart(itemCart);
     return itemCart;
 }
 
@@ -64,7 +65,6 @@ async function deleteItemCart(id) {
 
 async function findByIdAndUpdateShopingCart(id){    //busca el itemCart, obtiene el subtotal y lo resta al carrito
     const itemCart = await repo.getById(id);
-    console.log("ItemCart = " + itemCart);
     await calculateSubtotalAndUpdateShopingCart(itemCart, true); 
 }
 
