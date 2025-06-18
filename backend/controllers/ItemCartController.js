@@ -19,6 +19,13 @@ const updateItemCart = async (req, res) => {
     res.json(itemCart);
 };
 
+const updateQuantity = async (req, res) => {
+    const { id } = req.params;
+    console.log(id);
+    const itemCart = await services.incremetQuantity(id, req.body);
+    res.json(itemCart);
+}
+
 const deleteItemCart = async (req, res) => {
     const { id } = req.params;
     const itemCart = await services.deleteItemCart(id);
@@ -30,4 +37,4 @@ const deleteAllItemCarts = async (req, res) => {
     res.json(itemCarts);
 };
 
-module.exports = { getAllItemCarts, createItemCart, updateItemCart, deleteItemCart, deleteAllItemCarts };
+module.exports = { getAllItemCarts, createItemCart, updateItemCart, updateQuantity, deleteItemCart, deleteAllItemCarts };
