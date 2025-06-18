@@ -13,13 +13,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     //Sections
     const productSection = document.getElementById('productSection');
-    const productList= document.getElementById('productList');
+    const productList = document.getElementById('productList');
 
     const cartSection = document.getElementById('cartSection');
     const cartList = document.getElementById('cartList');
     cartSection.style.display = 'none';
 
-    const itemSection= document.getElementById('itemSection');
+    const itemSection = document.getElementById('itemSection');
     itemSection.style.display = 'none';
 
     const ticketSection = document.getElementById('ticketSection');
@@ -33,17 +33,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const inputQuantity = document.getElementById('inputQuantity');
 
     btnGetAllItems.addEventListener('click', testGetAllItems);
-    btnTestCreateItem.addEventListener('click', testCreateItem);
+    btnTestCreateItem.addEventListener('click', addToCart);
     btnTestDeleteItem.addEventListener('click', testDeleteItem);
     btnTestUpdateItem.addEventListener('click', testUpdateItem);
     btnFinalizePurchase.addEventListener('click', FinalizePurchase);
+
+    let productCart = [];
+
+
+
 
     //cliente
 
     const inputClientName = document.getElementById('inputClientName');
 
 
-    async function FinalizePurchase(){
+    async function FinalizePurchase() {
         testCreateClient();
         testCreateSale();
         ticketSection.style.display = 'block';
@@ -90,11 +95,11 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const list = await testGetAllProducts();
 
-        list.forEach(product => {
-            const li = document.createElement('li');
-            li.className = 'list-group-item d-flex justify-content-between align-items-center bg-light text-dark mb-2 rounded';
+            list.forEach(product => {
+                const li = document.createElement('li');
+                li.className = 'list-group-item d-flex justify-content-between align-items-center bg-light text-dark mb-2 rounded';
 
-            li.innerHTML = `
+                li.innerHTML = `
                 <div class="d-flex align-items-center gap-3">
                     <img src="${product.imagen}" alt="${product.nombre}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 10px;">
                     <div>
@@ -107,8 +112,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 </button>
             `;
 
-            productList.appendChild(li);
-        });
+                productList.appendChild(li);
+            });
         } catch (error) {
             console.error('Error al obtener los productos:', error);
         }
@@ -126,7 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await response.json();
             console.log('Venta creada:', data);
             testDeleteCart();
-            testDeleteAllItems();   
+            testDeleteAllItems();
         } catch (error) {
             console.error('Error al crear la venta:', error);
         }
@@ -140,7 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers: {
                     'Content-Type': 'application/json'
                 }
-            })  
+            })
             const data = await response.json();
             console.log('Cliente creado:', data);
         } catch (error) {
@@ -194,7 +199,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function loadItemValues(){
+    function loadItemValues() {
         const itemValues = {
             productId: inputProductID.value.trim(),
             productName: inputProductName.value.trim(),
@@ -215,18 +220,27 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    async function testCreateItem() {
+    async function testCreateItem(itemValue) {
         try {
-            let items = loadItemValues();
             const url = 'http://localhost:3000/itemCart/create';
+
+
             const response = await fetch(url, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(items)
+                body: JSON.stringify(itemValue)
             })
             const data = await response.json();
+
+            const item = {
+                id: data._id,
+                productId: itemValue.productId,
+                productName: itemValue.productName
+            }
+            productCart.push(item);
+
             console.log('Item creado:', data);
             resetInputs();
         } catch (error) {
@@ -234,7 +248,40 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    async function testDeleteItem(){
+    async function updateQuantity(itemValue, itemId) {
+        try {
+
+            const url = `http://localhost:3000/itemCart/updateQuantity/${itemId}`;
+            const response = await fetch(url, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({quantity : itemValue.quantity})
+            })
+            const data = await response.json();
+            console.log('Item actualizado:', data);
+        } catch (error) {
+            console.error('Error al actualizar el item:', error);
+        }
+    }
+
+    async function addToCart() {
+        let productValues = loadItemValues();
+        const itemInCart = productCart.find(
+            item => item.productId === productValues.productId
+        );
+
+        if (itemInCart) {
+            updateQuantity(productValues, itemInCart.id);
+        } else {
+            testCreateItem(productValues);
+        }
+    }
+
+
+
+    async function testDeleteItem() {
         try {
             let id = inputItemID.value.trim();
             const url = `http://localhost:3000/itemCart/delete/${id}`;
@@ -251,8 +298,8 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Error al eliminar el item:', error);
         }
     }
-    
-    async function testUpdateItem(){
+
+    async function testUpdateItem() {
         try {
             let id = inputItemID.value.trim();
             let items = loadItemValues();
