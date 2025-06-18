@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const cartSection = document.getElementById('cartSection');
     const cartList = document.getElementById('cartList');
-    cartSection.style.display = 'none';
+    cartSection.style.display = 'Block';
 
     const itemSection = document.getElementById('itemSection');
     itemSection.style.display = 'none';
@@ -96,10 +96,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const list = await testGetAllProducts();
 
             list.forEach(product => {
-                const li = document.createElement('li');
-                li.className = 'list-group-item d-flex justify-content-between align-items-center bg-light text-dark mb-2 rounded';
+            const li = document.createElement('li');
+            li.className = 'list-group-item d-flex justify-content-between align-items-center bg-light text-dark mb-2 rounded';
 
-                li.innerHTML = `
+            // Estructura HTML sin el botón
+            li.innerHTML = `
                 <div class="d-flex align-items-center gap-3">
                     <img src="${product.imagen}" alt="${product.nombre}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 10px;">
                     <div>
@@ -107,13 +108,22 @@ document.addEventListener('DOMContentLoaded', () => {
                         <small>$${product.precio}</small>
                     </div>
                 </div>
-                <button class="btn btn-sm btn-primary" onclick="agregarAlCarrito('${product._id}', '${product.nombre}', ${product.precio})">
-                    Agregar
-                </button>
             `;
 
-                productList.appendChild(li);
+            // Crear botón
+            const btn = document.createElement('button');
+            btn.className = 'btn btn-sm btn-primary';
+            btn.textContent = 'Agregar';
+
+            // Agregar event listener
+            btn.addEventListener('click', () => {
+                agregarAlCarrito(product._id, product.nombre, product.precio, product.imagen);
             });
+
+            li.appendChild(btn);
+            productList.appendChild(li);
+            });
+
         } catch (error) {
             console.error('Error al obtener los productos:', error);
         }
@@ -243,6 +253,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             console.log('Item creado:', data);
             resetInputs();
+            return data;
         } catch (error) {
             console.error('Error al crear el item:', error);
         }
@@ -257,7 +268,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({quantity : itemValue.quantity})
+                body: JSON.stringify({quantity : itemValue})
             })
             const data = await response.json();
             console.log('Item actualizado:', data);
@@ -267,24 +278,26 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function addToCart() {
+        let item;
         let productValues = loadItemValues();
         const itemInCart = productCart.find(
             item => item.productId === productValues.productId
         );
 
         if (itemInCart) {
-            updateQuantity(productValues, itemInCart.id);
+            productValues.quantity += itemInCart.quantity;
+            item=await updateQuantity(productValues.quantity, itemInCart.id);
         } else {
-            testCreateItem(productValues);
+            item=await testCreateItem(productValues);
         }
+        return item;
     }
 
 
 
-    async function testDeleteItem() {
+    async function testDeleteItem(itemId) {
         try {
-            let id = inputItemID.value.trim();
-            const url = `http://localhost:3000/itemCart/delete/${id}`;
+            const url = `http://localhost:3000/itemCart/delete/${itemId}`;
             const response = await fetch(url, {
                 method: 'DELETE',
                 headers: {
@@ -327,14 +340,80 @@ document.addEventListener('DOMContentLoaded', () => {
         inputQuantity.value = '';
     }
 
+    
+    async function agregarAlCarrito(productID, productName, unitPrice, URLimg) {
+        inputProductID.value = productID;
+        inputProductName.value = productName;
+        inputUnitPrice.value = unitPrice;
+        inputQuantity.value = 1;
+        itemSection.style.display = 'block';
+        let itemId = (await addToCart())._id;
+        addItemToCart(itemId, productID, productName, unitPrice, URLimg);
+    }
+    
+    async function addItemToCart(itemId, productID, productName, unitPrice, URLimg) {
+        const li = document.createElement('li');
+        li.className = 'list-group-item d-flex justify-content-between align-items-center bg-light text-dark mb-2 rounded';
+        li.innerHTML = `
+            <div class="d-flex align-items-center gap-3"> 
+                <img src="${URLimg}" alt="${productName}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 10px;"> 
+                <div> 
+                    <strong>${productName}</strong><br> 
+                    <small>$${unitPrice}</small> 
+                </div> 
+            </div> 
+            `;
+        
+        //boton de incrementar
+        const btnIncr= document.createElement('button');
+        btnIncr.className = 'btn btn-sm btn-primary';
+        btnIncr.textContent = '+';
+        btnIncr.addEventListener('click', () => {
+            inputQuantity.value++;
+            updateQuantity(inputQuantity.value, itemId);
+        });
+            
+        // input de cantidad
+        const inputQuantity = document.createElement('input');
+        inputQuantity.type = 'number';
+        inputQuantity.min = '1';
+        inputQuantity.value = 1;
+        inputQuantity.addEventListener('input', () => {
+            updateQuantity(inputQuantity.value, itemId);
+        });
+        
+        //boton de decrementar
+        const btnDecr = document.createElement('button');
+        btnDecr.className = 'btn btn-sm btn-primary';
+        btnDecr.textContent = '-';
+        btnDecr.addEventListener('click', () => {
+            if (inputQuantity.value > 1) {
+                inputQuantity.value--;
+                updateQuantity(inputQuantity.value, itemId);
+            }
+        });
+        
+        //boton de borrar de carrito
+        const btnDelete = document.createElement('button');
+        btnDelete.className = 'btn btn-sm btn-danger';
+        btnDelete.textContent = 'X';
+        btnDelete.addEventListener('click', () => {
+            const index=productCart.findIndex(item => item.id === itemId);
+            if (index !== -1) {
+                testDeleteItem(itemId);
+                productCart.splice(index, 1);
+                cartList.removeChild(li);
+            }
+        });
+        
+        li.appendChild(btnIncr);
+        li.appendChild(inputQuantity);
+        li.appendChild(btnDecr);
+        li.appendChild(btnDelete);
+
+        cartList.appendChild(li);
+    }
+    
 });
-
-function agregarAlCarrito(productID, productName, unitPrice) {
-    inputProductID.value = productID;
-    inputProductName.value = productName;
-    inputUnitPrice.value = unitPrice;
-    inputQuantity.value = 1;
-    itemSection.style.display = 'block';
-}
-
-
+    
+    
