@@ -41,6 +41,22 @@ async function updateItemCart(id, data) {
     return itemCart;
 }
 
+async function updateQuantity(id, data) {
+    const itemCart = await repo.updateQuantity(id, data);
+    return itemCart;
+}
+
+async function incremetQuantity(id, itemQuantity){
+    await findByIdAndUpdateShopingCart(id);
+    await repo.updateQuantity(id,{$inc:itemQuantity});
+    
+    const itemCart = await repo.getById(id);
+
+    console.log("ItemCart Actualizado: " + itemCart.shopingCartId);
+    await calculateSubtotalAndUpdateShopingCart(itemCart);
+    return itemCart;
+}
+
 async function deleteItemCart(id) {
     findByIdAndUpdateShopingCart(id);
     return await repo.remove(id);
@@ -48,11 +64,12 @@ async function deleteItemCart(id) {
 
 async function findByIdAndUpdateShopingCart(id){    //busca el itemCart, obtiene el subtotal y lo resta al carrito
     const itemCart = await repo.getById(id);
-    await calculateSubtotalAndUpdateShopingCart(itemCart, true);
+    console.log("ItemCart = " + itemCart);
+    await calculateSubtotalAndUpdateShopingCart(itemCart, true); 
 }
 
 async function deleteAllItemCarts() {
     return await repo.removeAll();
 }
 
-module.exports = { getAllItemCarts, createItemCart, updateItemCart, deleteItemCart, deleteAllItemCarts };
+module.exports = { getAllItemCarts, createItemCart, updateItemCart, updateQuantity, incremetQuantity,  deleteItemCart, deleteAllItemCarts };
