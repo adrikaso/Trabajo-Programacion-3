@@ -21,8 +21,7 @@ const updateItemCart = async (req, res) => {
 
 const updateQuantity = async (req, res) => {
     const { id } = req.params;
-    console.log(id);
-    const itemCart = await services.incremetQuantity(id, req.body);
+    const itemCart = await services.updateQuantity(id, req.body);
     res.json(itemCart);
 }
 
