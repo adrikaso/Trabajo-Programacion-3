@@ -25,6 +25,16 @@ const updateQuantity = async (req, res) => {
     res.json(itemCart);
 }
 
+const incrementQuantity = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const itemCart = await services.incremetQuantity(id);
+        res.json(itemCart);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+}
+
 const deleteItemCart = async (req, res) => {
     const { id } = req.params;
     const itemCart = await services.deleteItemCart(id);
@@ -36,4 +46,4 @@ const deleteAllItemCarts = async (req, res) => {
     res.json(itemCarts);
 };
 
-module.exports = { getAllItemCarts, createItemCart, updateItemCart, updateQuantity, deleteItemCart, deleteAllItemCarts };
+module.exports = { getAllItemCarts, incrementQuantity, createItemCart, updateItemCart, updateQuantity, deleteItemCart, deleteAllItemCarts };
