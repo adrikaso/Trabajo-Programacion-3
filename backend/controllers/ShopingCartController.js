@@ -42,5 +42,14 @@ const deleteShopingCart = async (req, res) => {
     }
 }
 
+const getTotal = async (req, res) => {
+    try {
+        const total = (await services.getTotal()).total;
+        res.status(201).json(total);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
 
-module.exports = { createShopingCart, getAllShopingCarts, getNameOfShoppingCart, deleteShopingCart };
+
+module.exports = { createShopingCart, getAllShopingCarts, getNameOfShoppingCart, deleteShopingCart, getTotal };
