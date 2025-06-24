@@ -1,57 +1,47 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const ticket = JSON.parse(localStorage.getItem("ticketVenta"));
+// document.addEventListener('DOMContentLoaded', async () => {
+//     await loadTicket();
+// });
 
-    if (!ticket) {
-        document.body.innerHTML = "<p class='text-center mt-5'>No hay información del ticket.</p>";
-        return;
-    }
+// async function loadTicket() {
+//     try {
+//         // Obtener datos del cliente
+//         const clientResponse = await fetch('http://localhost:3000/client/getLast');
+//         const clientData = await clientResponse.json();
 
-    document.getElementById("ventaId").textContent = ticket.ventaId || "Sin ID";
+//         // Obtener datos de la venta
+//         const saleResponse = await fetch('http://localhost:3000/sale/getLast');
+//         const saleData = await saleResponse.json();
 
-    document.getElementById("fecha").textContent = ticket.fecha || new Date().toLocaleString();
+//         // Obtener detalles de los ítems
+//         const itemsResponse = await fetch('http://localhost:3000/itemCart/getLastSaleItems');
+//         const items = await itemsResponse.json();
 
-    document.getElementById("clienteNombre").textContent = ticket.clienteNombre || "-";
+//         // Llenar los campos del ticket
+//         document.getElementById('clientName').textContent = clientData?.name || 'Cliente';
+//         const date = new Date(saleData?.createdAt);
+//         document.getElementById('purchaseDate').textContent = date.toLocaleDateString();
+//         document.getElementById('purchaseTime').textContent = date.toLocaleTimeString();
 
-    const detalle = document.getElementById("detalleTicket");
-    let total = 0;
+//         document.getElementById('ticketNumber').textContent = saleData?.ticketNumber || '#TKT-000001';
+//         document.getElementById('totalPaid').textContent = `$${saleData?.total?.toFixed(2) || '0.00'}`;
 
-    ticket.carrito.forEach(item => {
-        const subtotal = item.precio * item.cantidad;
-        total += subtotal;
+//         // Renderizar detalles de la compra
+//         const detailsContainer = document.getElementById('purchaseDetails');
+//         detailsContainer.innerHTML = '';
+//         items.forEach(item => {
+//             const div = document.createElement('div');
+//             div.className = 'purchase-item mb-2';
+//             div.innerHTML = `
+//                 <div class="d-flex justify-content-between">
+//                     <span>${item.productName} x${item.quantity}</span>
+//                     <strong>$${(item.unitPrice * item.quantity).toFixed(2)}</strong>
+//                 </div>
+//             `;
+//             detailsContainer.appendChild(div);
+//         });
 
-        const fila = document.createElement("tr");
-        fila.innerHTML = `
-      <td>${item.nombre}</td>
-      <td>${item.cantidad}</td>
-      <td>$${subtotal.toLocaleString("es-AR")}</td>
-    `;
-        detalle.appendChild(fila);
-    });
-
-    document.getElementById("totalFinal").textContent = `$${total.toLocaleString("es-AR")}`;
-
-
-    document.getElementById("btnVolver").addEventListener("click", () => {
-        sessionStorage.clear();
-        localStorage.removeItem("carrito");
-        localStorage.removeItem("ticketVenta");
-        window.location.href = "nombre.html";
-    });
-});
-
-function descargarPDF() {
-  const ticket = document.getElementById("ticketPDF");
-
-  const opciones = {
-    margin: 0,
-    filename: `ticket-${Date.now()}.pdf`,
-    image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: { scale: 2, useCORS: true }, // está bien dentro de opciones
-    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-    pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
-  };
-
-  html2pdf().set(opciones).from(ticket).save();
-}
-
-
+//     } catch (error) {
+//         console.error('Error al cargar el ticket:', error);
+//         alert('Error al cargar el ticket. Intenta nuevamente.');
+//     }
+// }
