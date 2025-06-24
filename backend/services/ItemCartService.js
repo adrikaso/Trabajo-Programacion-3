@@ -63,7 +63,7 @@ async function incremetQuantity(id){
 }
 
 async function deleteItemCart(id) {
-    findByIdAndUpdateShopingCart(id);
+    await findByIdAndUpdateShopingCart(id);
     return await repo.remove(id);
 }
 
