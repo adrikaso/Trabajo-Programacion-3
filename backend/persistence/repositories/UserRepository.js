@@ -1,9 +1,11 @@
-const SaleDetails = require('../models/UserModel');
 
-const getAll = () => SaleDetails.find();
-const getById = id => SaleDetails.findById(id);
-const create = data => SaleDetails.create(data);
-const update = (id, data) => SaleDetails.findByIdAndUpdate(id, data, { new: true });
-const remove = id => SaleDetails.findByIdAndDelete(id);
+const User = require('../models/UserModel');
 
-module.exports = { getAll, getById, create, update, remove };
+const getAll = () => User.find();
+const getById = id => User.findById(id);
+const getByEmail = email => User.findOne({ email }).populate("rol");;
+const create = data => User.create(data);
+const update = (id, data) => User.findByIdAndUpdate(id, data, { new: true });
+const remove = id => User.findByIdAndDelete(id);
+
+module.exports = { getAll, getById,getByEmail, create, update, remove };
