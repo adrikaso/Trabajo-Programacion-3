@@ -1,35 +1,95 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tu Suplementos</title>
-  <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/normalize.css">
-  <link rel="stylesheet" href="assets/css/introduccion.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TU SUPLEMENTO - Autoservicio</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/index.css">
+
 </head>
 
 <body>
-  <main class="main">
-    <p class="subtitulo">Te espera una nueva experiencia</p>
-    <h1>ORDER HERE</h1>
-    <div class="footer">
-      <div class="footer-left">
-        <img src="assets/img/logon.png" alt="logo">
-      </div>
-
-      <div class="footer-center">
-        <p>TOCAR PARA COMENZAR</p>
-      </div>
-
-      <div class="footer-right">
-        <!-- Podés dejarlo vacío o meter algo en el futuro -->
-      </div>
+    <div class="floating-icons">
+        <i class="fas fa-dumbbell floating-icon" style="top: 10%; left: 10%; font-size: 3rem; animation-delay: 0s;"></i>
+        <i class="fas fa-pills floating-icon" style="top: 20%; right: 15%; font-size: 2rem; animation-delay: 1s;"></i>
+        <i class="fas fa-heartbeat floating-icon"
+            style="bottom: 30%; left: 20%; font-size: 2.5rem; animation-delay: 2s;"></i>
+        <i class="fas fa-trophy floating-icon"
+            style="bottom: 15%; right: 10%; font-size: 3rem; animation-delay: 3s;"></i>
+        <i class="fas fa-fire floating-icon" style="top: 50%; left: 5%; font-size: 2rem; animation-delay: 4s;"></i>
+        <i class="fas fa-bolt floating-icon" style="top: 30%; right: 5%; font-size: 2.5rem; animation-delay: 5s;"></i>
     </div>
-  </main>
 
-  <script src="assets/js/introduccion.js"></script>
+    <div class="container-fluid d-flex align-items-center justify-content-center min-vh-100 py-5">
+        <div class="row w-100 justify-content-center">
+            <div class="col-lg-6 col-md-8">
+                <div class="welcome-card p-5">
+                    <div class="text-center mb-5">
+                        <div class="brand-logo mb-3">
+                            <i class="fas fa-dumbbell"></i>
+                        </div>
+                        <h1 class="display-4 fw-bold text-primary mb-3">TU SUPLEMENTO</h1>
+                        <p class="lead text-muted">Autoservicio de Suplementos Deportivos</p>
+                        <div class="d-flex justify-content-center mb-4">
+                            <div class="bg-primary rounded-pill px-3 py-1">
+                                <small class="text-white fw-semibold">
+                                    <i class="fas fa-clock me-2"></i>24/7 Disponible
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="inputClientName" class="form-label fs-5 fw-semibold text-dark mb-3">
+                            <i class="fas fa-user me-2 text-primary"></i>Ingresa tu nombre para comenzar
+                        </label>
+                        <input type="text" class="form-control form-control-lg" id="inputClientName"
+                            placeholder="Tu nombre completo..." required>
+                    </div>
+
+                    <div class="text-center mb-4">
+                        <button id="btnCrearCarrito" class="btn btn-primary btn-start btn-lg">
+                            <i class="fas fa-shopping-cart me-2"></i>Iniciar Compra
+                        </button>
+                    </div>
+
+                    <div class="features row text-white">
+                        <div class="col-md-4">
+                            <div class="feature-item">
+                                <div class="feature-icon">
+                                    <i class="fas fa-shipping-fast"></i>
+                                </div>
+                                <h6 class="fw-bold">Rápido</h6>
+                                <small>Compra en minutos</small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="feature-item">
+                                <div class="feature-icon">
+                                    <i class="fas fa-shield-alt"></i>
+                                </div>
+                                <h6 class="fw-bold">Seguro</h6>
+                                <small>Productos verificados</small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="feature-item">
+                                <div class="feature-icon">
+                                    <i class="fas fa-medal"></i>
+                                </div>
+                                <h6 class="fw-bold">Calidad</h6>
+                                <small>Marcas premium</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="assets/js/index.js"></script>
 </body>
 
 </html>
