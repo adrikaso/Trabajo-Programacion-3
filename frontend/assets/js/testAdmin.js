@@ -13,6 +13,8 @@ document.addEventListener('DOMContentLoaded', () => {
     btnShowRoles.addEventListener('click', showRoles);
     btnLogout.addEventListener('click', logout);
 
+    let token = localStorage.getItem('token');
+
     const userRegister={
         _id: null,
         name: null,
@@ -85,6 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
+                    "Authorization": `Bearer ${token}`,
                 },
             });
             const data = await response.json();
