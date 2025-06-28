@@ -8,6 +8,8 @@ router.get("/getAll", saleDetailsController.findAll);
 
 router.get("/getSaleDetails/:id", saleDetailsController.findSaleDetails);
 
+router.get("/getSaleDetailsBySaleId/:id", saleDetailsController.findSaleDetailsBySaleId);
+
 router.delete("/delete/:id", saleDetailsController.deleteSaleDetails);
 
 router.put("/update/:id", saleDetailsController.updateSaleDetails);

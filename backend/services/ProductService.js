@@ -20,4 +20,8 @@ async function updateById(id, productUpdated) {
     return await repo.update(id, productUpdated);
 }
 
-module.exports = { createProduct, getAllProducts, getProductById, deleteById, updateById };
+async function getProductDetails(id) {
+    return await repo.getProductDetails(id);
+}
+
+module.exports = { createProduct, getAllProducts, getProductById, deleteById, updateById, getProductDetails };

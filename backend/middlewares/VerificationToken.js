@@ -1,3 +1,4 @@
+const jwt = require("jsonwebtoken");
 function verificarToken(req, res, next) {
     const authHeader = req.headers.authorization;   //obtiene el header de la peticion de autenticacion 
     const token = authHeader?.split(" ")[1];    //obtiene el token del header de la peticion
@@ -12,3 +13,5 @@ function verificarToken(req, res, next) {
         return res.status(403).json({ mensaje: "Token inválido" });
     }
 }
+
+module.exports = verificarToken;
