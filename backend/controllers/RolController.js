@@ -25,4 +25,12 @@ async function getByName(req, res) {
     }
 }
 
-module.exports = {findAll, create, getByName};
+async function getRolByName(req, res) {
+    try {
+        res.json(await services.getRolByName(req.params.name));
+    }catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+}
+
+module.exports = {findAll, create, getByName, getRolByName};
