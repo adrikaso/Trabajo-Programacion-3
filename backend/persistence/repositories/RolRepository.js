@@ -1,9 +1,10 @@
-const SaleDetails = require('../models/RolModel');
+const rolRepository = require('../models/RolModel');
 
-const getAll = () => SaleDetails.find();
-const getById = id => SaleDetails.findById(id);
-const create = data => SaleDetails.create(data);
-const update = (id, data) => SaleDetails.findByIdAndUpdate(id, data, { new: true });
-const remove = id => SaleDetails.findByIdAndDelete(id);
+const getAll = () => rolRepository.find();
+const getById = id => rolRepository.findById(id);
+const getByName = name => rolRepository.findOne({name});
+const create = data => rolRepository.create(data);
+const update = (id, data) => rolRepository.findByIdAndUpdate(id, data, { new: true });
+const remove = id => rolRepository.findByIdAndDelete(id);
 
-module.exports = { getAll, getById, create, update, remove };
+module.exports = { getAll, getById, create, update, remove, getByName };
