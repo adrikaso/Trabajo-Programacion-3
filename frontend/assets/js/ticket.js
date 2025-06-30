@@ -72,6 +72,11 @@ async function loadTicket() {
     // Mostrar el total de la venta directamente
     document.getElementById("totalPaid").textContent = `$${sale.total.toLocaleString()}`;
 
+    // Redirigir al inicio
+    setTimeout(() => {
+		window.location.href = "/frontend/index.html";
+    }, 7000);
+
   } catch (error) {
     console.error(error);
     alert("Hubo un error al generar el ticket.");
