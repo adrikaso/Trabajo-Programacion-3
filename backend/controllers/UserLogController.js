@@ -8,4 +8,23 @@ function createUserLog(req, res) {
         res.status(400).send(error);
     });
 }
-module.exports = {createUserLog};
+
+function getAllUserLogs(req, res) {
+    try {
+        const userLogs = services.getAllUserLogs();
+        res.status(200).send(userLogs);
+    } catch (error) {
+        res.status(400).send(error);
+    }
+}
+
+async function getAllWithUser(req, res) {
+    try {
+        const userLogs = await services.getAllUserLogsWithUser();
+        res.status(200).send(userLogs);
+    } catch (error) {
+        res.status(400).send(error);
+    }
+}
+
+module.exports = {createUserLog, getAllUserLogs, getAllWithUser};
