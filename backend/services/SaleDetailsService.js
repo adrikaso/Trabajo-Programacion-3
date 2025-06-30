@@ -33,4 +33,8 @@ async function updateById(id, detailsUpdated) {
     return await repo.update(id, detailsUpdated);
 }
 
-module.exports = { createSaleDetails, getAllSaleDetails, getSaleDetailsById, deleteById, updateById };
+async function getSaleDetailsBySaleId(saleId) {
+  return await repo.getBySaleId(saleId);
+}
+
+module.exports = { createSaleDetails, getAllSaleDetails, getSaleDetailsById, deleteById, updateById, getSaleDetailsBySaleId };

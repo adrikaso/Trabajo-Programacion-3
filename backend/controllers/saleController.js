@@ -48,4 +48,5 @@ const updateSale = async (req, res) => {
   }
 }
 
+
 module.exports = { create, findAll, findSale, deleteSale, updateSale };

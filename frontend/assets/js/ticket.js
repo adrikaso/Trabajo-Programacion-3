@@ -1,47 +1,101 @@
-// document.addEventListener('DOMContentLoaded', async () => {
-//     await loadTicket();
-// });
+async function getSaleById(id) {
+  try {
+    const response = await fetch(`http://localhost:3000/sale/getSale/${id}`);
+    return await response.json();
+  } catch (error) {
+    console.error(error);
+    alert("Error al obtener la venta");
+  }
+}
 
-// async function loadTicket() {
-//     try {
-//         // Obtener datos del cliente
-//         const clientResponse = await fetch('http://localhost:3000/client/getLast');
-//         const clientData = await clientResponse.json();
+async function getSaleDetailsById(id) {
+  try {
+    const response = await fetch(`http://localhost:3000/SaleDetails/getSaleDetailsBySaleId/${id}`);
+    return await response.json();
+  } catch (error) {
+    console.error(error);
+    alert("Error al obtener detalles de venta");
+  }
+}
 
-//         // Obtener datos de la venta
-//         const saleResponse = await fetch('http://localhost:3000/sale/getLast');
-//         const saleData = await saleResponse.json();
+async function getProductDetails(id) {
+  try {
+    const response = await fetch(`http://localhost:3000/product/getProductDetails/${id}`);
+    return await response.json();
+  } catch (error) {
+    console.error(error);
+    alert("Error al obtener detalles del producto");
+  }
+}
 
-//         // Obtener detalles de los ítems
-//         const itemsResponse = await fetch('http://localhost:3000/itemCart/getLastSaleItems');
-//         const items = await itemsResponse.json();
+function setClientInfo(sale) {
+  document.getElementById("clientName").textContent = sale.clientName || "Cliente Anónimo";
 
-//         // Llenar los campos del ticket
-//         document.getElementById('clientName').textContent = clientData?.name || 'Cliente';
-//         const date = new Date(saleData?.createdAt);
-//         document.getElementById('purchaseDate').textContent = date.toLocaleDateString();
-//         document.getElementById('purchaseTime').textContent = date.toLocaleTimeString();
+  const saleDate = new Date(sale.date);
+  document.getElementById("purchaseDate").textContent = saleDate.toLocaleDateString();
+  document.getElementById("purchaseTime").textContent = saleDate.toLocaleTimeString();
+}
 
-//         document.getElementById('ticketNumber').textContent = saleData?.ticketNumber || '#TKT-000001';
-//         document.getElementById('totalPaid').textContent = `$${saleData?.total?.toFixed(2) || '0.00'}`;
+async function createTicket(list) {
+  const detailsContainer = document.getElementById("purchaseDetails");
 
-//         // Renderizar detalles de la compra
-//         const detailsContainer = document.getElementById('purchaseDetails');
-//         detailsContainer.innerHTML = '';
-//         items.forEach(item => {
-//             const div = document.createElement('div');
-//             div.className = 'purchase-item mb-2';
-//             div.innerHTML = `
-//                 <div class="d-flex justify-content-between">
-//                     <span>${item.productName} x${item.quantity}</span>
-//                     <strong>$${(item.unitPrice * item.quantity).toFixed(2)}</strong>
-//                 </div>
-//             `;
-//             detailsContainer.appendChild(div);
-//         });
+  for (const item of list) {
+    const details = await getProductDetails(item.productId);
 
-//     } catch (error) {
-//         console.error('Error al cargar el ticket:', error);
-//         alert('Error al cargar el ticket. Intenta nuevamente.');
-//     }
-// }
+    const row = document.createElement("div");
+    row.classList.add("info-row");
+    row.innerHTML = `
+      <span>${details.nombre} (x${item.quantity})</span>
+      <strong>$${item.subtotal.toLocaleString()}</strong>
+    `;
+
+    detailsContainer.appendChild(row);
+  }
+}
+
+async function loadTicket() {
+  const params = new URLSearchParams(window.location.search);
+  const saleId = params.get("saleId");
+
+  if (!saleId) {
+    alert("ID de venta no especificado");
+    return;
+  }
+
+  try {
+    const sale = await getSaleById(saleId);
+    const saleDetails = await getSaleDetailsById(saleId);
+
+    setClientInfo(sale);
+    await createTicket(saleDetails);
+
+    // Mostrar el total de la venta directamente
+    document.getElementById("totalPaid").textContent = `$${sale.total.toLocaleString()}`;
+
+  } catch (error) {
+    console.error(error);
+    alert("Hubo un error al generar el ticket.");
+  }
+}
+
+window.addEventListener("DOMContentLoaded", loadTicket);
+
+document.getElementById("downloadPdfBtn").addEventListener("click", async () => {
+  const { jsPDF } = window.jspdf;
+
+  const ticketElement = document.getElementById("ticket");
+
+  // Capturar el ticket como imagen
+  const canvas = await html2canvas(ticketElement, { scale: 2 });
+  const imgData = canvas.toDataURL("image/png");
+
+  // Crear PDF
+  const pdf = new jsPDF({
+    orientation: "portrait",
+    unit: "px",
+    format: [canvas.width, canvas.height]
+  });
+
+  pdf.addImage(imgData, "PNG", 0, 0, canvas.width, canvas.height);
+  pdf.save(`ticket_${new Date().getTime()}.pdf`);
+});

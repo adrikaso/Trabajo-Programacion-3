@@ -49,11 +49,14 @@ const updateProduct = async (req, res) => {
   }
 }
 
-module.exports = { create, deleteProduct, findAll, findProduct, deleteProduct, updateProduct };
+const getProductDetails = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const product = await services.getProductDetails(id);
+    res.status(201).json(product);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+}
 
-
-
-
-
-
-
+module.exports = { create, deleteProduct, findAll, findProduct, deleteProduct, updateProduct, getProductDetails };

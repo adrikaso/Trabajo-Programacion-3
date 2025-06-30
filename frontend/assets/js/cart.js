@@ -210,6 +210,7 @@ async function createSale() {
         })
         const data = await response.json();
         console.log('Venta creada:', data);
+        return data._id;
     } catch (error) {
         console.error('Error al crear la venta:', error);
     }
@@ -266,7 +267,7 @@ async function finalizePurchase() {
         await createClient();
 
         // Crear venta
-        await createSale();
+        const saleId = await createSale();
 
         // Limpiar carrito
         await deleteCart();
@@ -275,7 +276,7 @@ async function finalizePurchase() {
         await deleteAllItemCart();
 
         // Redirigir al ticket
-        window.location.href = 'ticket.html';
+        window.location.href = `ticket.html?saleId=${saleId}`;
 
     } catch (error) {
         console.error('Error al finalizar compra:', error);

@@ -29,4 +29,6 @@ async function updateSaleById(id, saleUpdated) {
     return await repo.update(id, saleUpdated);
 }
 
-module.exports = { createSale, getAllSales, getSaleById, deleteSaleById, updateSaleById };
+
+
+module.exports = { createSale, getAllSales, getSaleById, deleteSaleById, updateSaleById};
