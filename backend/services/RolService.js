@@ -4,6 +4,10 @@ async function createRol(data) {
     return await repo.create(data);
 }
 
+async function getRolByName(name) {
+    return await repo.getByName(name);
+}
+
 async function getAllRols() {
     return await repo.getAll();
 }  
@@ -20,4 +24,4 @@ async function updateRolById(id, rolUpdated) {
     return await repo.update(id, rolUpdated);
 }
 
-module.exports = { createRol, getAllRols, getRolById, deleteRolById, updateRolById };
+module.exports = { createRol, getAllRols, getRolById, deleteRolById, updateRolById, getRolByName };
