@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             inputClientName.value = '';
 
-            window.location.href = '/TU SUPLEMENTO 1.1/frontend/products.html';
+            window.location.href = '/frontend/products.html';
 
         } catch (error) {
             console.error('Error al crear el carrito:', error);
