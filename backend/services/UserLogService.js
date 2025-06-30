@@ -8,6 +8,11 @@ async function getAllUserLogs() {
     return await repo.getAll();
 }
 
+async function getAllUserLogsWithUser() {
+    const userLogs = await repo.getAllWithUsers();
+    return userLogs;
+}
+
 async function getUserLogById(id) {
     return await repo.getById(id);
 }
@@ -20,4 +25,4 @@ async function deleteUserLogById(id) {
     return await repo.remove(id);
 }
 
-module.exports = { createUserLog, getAllUserLogs, getUserLogById, updateUserLogById, deleteUserLogById };
+module.exports = { createUserLog, getAllUserLogs, getUserLogById, updateUserLogById, deleteUserLogById, getAllUserLogsWithUser };
