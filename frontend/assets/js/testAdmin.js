@@ -168,14 +168,12 @@ document.addEventListener('DOMContentLoaded', () => {
         let credentials = await authenticateUser(email, password);
 
         console.log(credentials);
-        localStorage.setItem('token', credentials.token);
-
+        
         if (credentials != null) {
             console.log(credentials);
-            console.log("entor la balubi")
             let user = await getByEmail(email);
-            userRegister = user;
-        
+            localStorage.setItem('userId', user._id);
+            localStorage.setItem('token', credentials.token);
             await createUserLog(user._id, "login");
             window.location.href = 'menuAdmin.html';
         }
