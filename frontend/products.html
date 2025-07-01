@@ -11,63 +11,71 @@
 </head>
 
 <body>
-    <div class="header sticky-top">
+    <!-- Header -->
+    <header class="header">
         <div class="container">
-            <div class="row align-items-center py-3">
-                <div class="col-md-6">
-                    <h2 class="mb-0 text-primary">
-                        <i class="fas fa-dumbbell me-2"></i>TU SUPLEMENTO
-                    </h2>
+            <div class="logo fade-in">
+                <i class="fas fa-dumbbell"></i>
+                TU SUPLEMENTO
+            </div>
+            <div class="nav-actions">
+                <div id="welcomeMessage" class="welcome-message slide-up"></div>
+                <button class="home-btn" onclick="goHome()">
+                    <i class=""></i>
+                    Cancelar compra
+                </button>
+                <button class="cart-btn btn-ripple" onclick="goToCart()">
+                    <i class="fas fa-shopping-cart"></i>
+                    Ver mi pedido
+                    <div id="cartCounter" class="cart-counter">
+                        <span id="cartCount">0</span>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <div class="content-card bounce-in">
+                <!-- Filters Section -->
+                <div class="filters-section">
+                    <div class="filter-title">
+                        <i class="fas fa-filter me-2"></i>Categorías
+                    </div>
+                    <div id="category-filters" class="filter-buttons">
+                        <!-- Categories will be loaded dynamically -->
+                    </div>
                 </div>
-                <div class="col-md-6">
-                    <div id="welcomeMessage" class="welcome-message">
-                        <i class="fas fa-user me-2"></i>Bienvenido
+
+                <!-- Products Section -->
+                <div class="products-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-capsules me-2"></i>Nuestros Productos
+                    </h2>
+                    
+                    <!-- Loading Spinner -->
+                    <div id="loadingSpinner" class="loading-container" style="display: none;">
+                        <div class="text-center">
+                            <div class="spinner"></div>
+                            <p class="mt-3 text-muted">
+                                <span class="loading-dots">Cargando productos</span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Products Grid -->
+                    <div id="productGrid" class="product-grid stagger-animation">
+                        <!-- Products will be loaded dynamically -->
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    </main>
 
-    <div class="container py-4">
-        <div class="category-filter">
-            <h5 class="mb-3 text-center">
-                <i class="fas fa-filter me-2"></i>Filtrar por categoría
-            </h5>
-            <div class="text-center">
-                <div id="category-filters"></div>
-            </div>
-        </div>
-
-        <div class="loading-spinner" id="loadingSpinner">
-            <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
-                <span class="visually-hidden">Cargando...</span>
-            </div>
-            <p class="mt-3 text-white">Cargando productos...</p>
-        </div>
-
-        <div class="product-grid" id="productGrid">
-            <!-- productos dinamicos -->
-        </div>
-    </div>
-
-    <div class="cart-counter" id="cartCounter" onclick="goToCart()">
-        <i class="fas fa-shopping-cart me-2"></i>
-        <span class="badge bg-primary" id="cartCount">0</span>
-    </div>
-
-    <div class="nav-buttons">
-        <button class="nav-btn btn-cart" onclick="goToCart()" title="Ver Carrito">
-            <i class="fas fa-shopping-cart"></i>
-        </button>
-        <button class="nav-btn btn-home" onclick="goHome()" title="Inicio">
-            <i class="fas fa-home"></i>
-        </button>
-    </div>
-
-
-
-
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/products.js"></script>
 </body>
-
 </html>
