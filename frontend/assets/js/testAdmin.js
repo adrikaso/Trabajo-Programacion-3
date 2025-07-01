@@ -22,6 +22,8 @@ document.addEventListener('DOMContentLoaded', () => {
     btnLogout.addEventListener('click', logout);
     btnCreateUser.addEventListener('click', newUser);
 
+    renderRols();
+
 
     let userRegister = {
         _id: null,
@@ -54,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
     async function newUser(event) {
         event.preventDefault();
         const selectedRoles = Array.from(document.querySelectorAll('input[name="roles"]:checked')).map(checkbox => checkbox.value);
-        if(selectedRoles.length === 0) {
+        if (selectedRoles.length === 0) {
             alert('Debes seleccionar al menos un rol');
             return;
         }
@@ -73,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         console.log(userData);
         await createUser(userData);
-        
+
     }
 
     async function getRolIds(rolNames) {
@@ -168,7 +170,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let credentials = await authenticateUser(email, password);
 
         console.log(credentials);
-        
+
         if (credentials != null) {
             console.log(credentials);
             let user = await getByEmail(email);
@@ -210,7 +212,7 @@ document.addEventListener('DOMContentLoaded', () => {
     async function findRolByName(rolName) {
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch(`http://localhost:3000/rol/getRol/${rolName}`, {
+            const response = await fetch(`http://localhost:3000/rol/getByName/${rolName}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -224,6 +226,31 @@ document.addEventListener('DOMContentLoaded', () => {
             throw error;
         }
     }
+
+    async function renderRols() {
+        try {
+            const roles = await showRoles();
+            const container = document.getElementById('roleCheckboxContainer');
+            container.innerHTML = ""; // Limpia contenido anterior
+
+            roles.forEach(role => {
+                const div = document.createElement('div');
+                div.classList.add('form-check');
+
+                div.innerHTML = `
+                <input class="form-check-input" type="checkbox" name="roles" value="${role.name}" id="rol-${role.name}">
+                <label class="form-check-label" for="rol-${role.name}">
+                    ${role.name.charAt(0).toUpperCase() + role.name.slice(1)}
+                </label>
+            `;
+
+                container.appendChild(div);
+            });
+        } catch (error) {
+            console.error('Error al renderizar roles:', error);
+        }
+    }
+
     function clearForm() {
         emailInput.value = '';
         passwordInput.value = '';
