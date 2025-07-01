@@ -17,6 +17,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Configurar filtros
     setupFilters();
+
+    // Cargar categorias
+    loadCategoryFilters();
 });
 
 async function loadProducts() {
@@ -77,7 +80,7 @@ function displayProducts(products) {
 function createProductCard(product) {
     const card = document.createElement('div');
     card.className = 'product-card';
-    card.setAttribute('data-category', product.category.name || 'otros');
+    card.setAttribute('data-category', product.category.name.toLowerCase());
 
     card.innerHTML = `
                 <img src="http://localhost:3000${product.pictureURL}" alt="${product.name}" class="product-image">
@@ -191,16 +194,44 @@ function showAddedToCartAnimation() {
     }, 200);
 }
 
+// Cargar dinamicamente las categorias
+async function loadCategoryFilters() {
+    const container = document.getElementById("category-filters");
+
+    try {
+        const response = await fetch("http://localhost:3000/category/getAll");
+        const categorias = await response.json();
+
+        // boton all
+        const allBtn = document.createElement("button");
+        allBtn.className = "filter-btn active";
+        allBtn.textContent = "Todos";
+        allBtn.setAttribute("data-category", "all");
+        container.appendChild(allBtn);
+
+        // botones por category
+        categorias.forEach(cat => {
+            const btn = document.createElement("button");
+            btn.className = "filter-btn";
+            btn.textContent = cat.name.charAt(0).toUpperCase() + cat.name.slice(1);
+            btn.setAttribute("data-category", cat.name.toLowerCase());
+            container.appendChild(btn);
+        });
+
+        setupFilters(); // activamos los listeners
+    } catch (error) {
+        console.error("Error al cargar categorías:", error);
+    }
+}
+
 function setupFilters() {
     const filterButtons = document.querySelectorAll('.filter-btn');
 
     filterButtons.forEach(btn => {
         btn.addEventListener('click', () => {
-            // Actualizar botones activos
             filterButtons.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
 
-            // Filtrar productos
             const category = btn.getAttribute('data-category');
             filterProducts(category);
         });
@@ -208,10 +239,11 @@ function setupFilters() {
 }
 
 function filterProducts(category) {
-    const productCards = document.querySelectorAll('.product-card');
+    const cards = document.querySelectorAll('.product-card');
 
-    productCards.forEach(card => {
-        if (category === 'all' || card.getAttribute('data-category') === category) {
+    cards.forEach(card => {
+        const productCategory = card.getAttribute('data-category');
+        if (category === 'all' || productCategory === category) {
             card.style.display = 'block';
         } else {
             card.style.display = 'none';
