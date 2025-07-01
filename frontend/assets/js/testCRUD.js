@@ -20,6 +20,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnTestUpdateProduct = document.getElementById('btnTestUpdateProduct');
     const btnTestDeleteProduct = document.getElementById('btnTestDeleteProduct');
 
+    //LoadCategory
+    loadCategories();
+
     btnGetAllProducts.addEventListener('click', testGetAllProducts);
     btnGetProduct.addEventListener('click', testGetProduct);
     btnTestCreateProduct.addEventListener('click', testCreateProduct);
@@ -31,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const inputDate = document.getElementById('inputDate');
     const inputTotal = document.getElementById('inputTotal');
     const inputSaleID = document.getElementById('inputSaleID');
-;
+    ;
     const btnGetAllSales = document.getElementById('btnGetAllSales');
     const btnGetSale = document.getElementById('btnGetSale');
     const btnTestCreateSale = document.getElementById('btnTestCreateSale');
@@ -43,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
     btnGetSale.addEventListener('click', testGetSale);
     btnTestUpdateSale.addEventListener('click', testUpdateSale);
     btnTestDeleteSale.addEventListener('click', testDeleteSale);
-    
+
 
 
     //SaleDetails
@@ -157,7 +160,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     //----------------Sales-------------------
-    
+
     function loadSaleValues() {
         const sale = {
             clienteNombre: inputClient.value,
@@ -250,21 +253,65 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+
+    // -------------- Category ---------------
+    async function loadCategories() {
+        const response = await fetch("http://localhost:3000/category/getAll"); // o la ruta que tengas
+        const categorias = await response.json();
+
+        const select = document.getElementById("category");
+        select.innerHTML = "";
+
+        categorias.forEach(cat => {
+            const option = document.createElement("option");
+            option.value = cat._id;            // 👈 ENVÍA EL ID REAL
+            option.textContent = cat.name;
+            select.appendChild(option);
+            console.log("categorias obtenidas: " + cat.name);
+        });
+    }
+
     //--------------- Products-------------------
+
+
     function loadProductValues() {
         const product = {
             name: productName.value,
             price: price.value,
             pictureURL: img.value,
             category: category.value,
-            active: active.value
+            active: active.checked
         };
         return product;
     }
 
+    async function uploadImage() {
+        const formData = new FormData();
+        const pictureInput = document.getElementById('img');
+
+        formData.append('picture', pictureInput.files[0]);
+
+        const response = await fetch('http://localhost:3000/upload', {
+            method: 'POST',
+            body: formData
+        });
+
+        if (!response.ok) throw new Error("Error al subir imagen");
+
+        const data = await response.json(); // contiene pictureURL
+        return data.pictureURL;
+    }
+
+
+
     async function testCreateProduct() {
         try {
+            const pictureURL = await uploadImage();
+
             let product = loadProductValues();
+            product.pictureURL = pictureURL;
+            product.category = document.getElementById('category').value;
+
             const url = 'http://localhost:3000/product/create';
             const response = await fetch(url, {
                 method: 'POST',
@@ -309,7 +356,6 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             let id = productID.value.trim();
             const url = `http://localhost:3000/product/delete/${id}`;
-            
             const response = await fetch(url, {
                 method: 'DELETE',
                 headers: {
@@ -355,6 +401,21 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    document.getElementById("img").addEventListener("change", function (event) {
+        const file = event.target.files[0];
+
+        if (file) {
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                const preview = document.getElementById("preview");
+                preview.src = e.target.result;
+                preview.style.display = "block"; // Muestra la imagen si estaba oculta
+            };
+
+            reader.readAsDataURL(file); // Lee el archivo como una URL base64
+        }
+    });
 
 });
 
