@@ -1,9 +1,10 @@
-const SaleDetails = require('../models/CategoryModel');
+const categoryModel = require('../models/CategoryModel');
 
-const getAll = () => SaleDetails.find();
-const getById = id => SaleDetails.findById(id);
-const create = data => SaleDetails.create(data);
-const update = (id, data) => SaleDetails.findByIdAndUpdate(id, data, { new: true });
-const remove = id => SaleDetails.findByIdAndDelete(id);
+const getAll = () => categoryModel.find();
+const getById = id => categoryModel.findById(id);
+const getCategoryName = name => categoryModel.findOne({name});
+const create = data => categoryModel.create(data);
+const update = (id, data) => categoryModel.findByIdAndUpdate(id, data, { new: true });
+const remove = id => categoryModel.findByIdAndDelete(id);
 
-module.exports = { getAll, getById, create, update, remove };
+module.exports = { getAll, getById, create, update, remove, getCategoryName };
