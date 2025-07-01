@@ -10,7 +10,6 @@ router.get("/getAll", verificationToken, verificationRol(["superAdmin"]), rolCon
 
 router.get("/getByName/:name", verificationToken, rolController.getByName);
 
->>>>>>> 4ba5b89ad8df7ad0a53526f8723c25721dabb4f0
 router.post("/create", rolController.create);
 
 
