@@ -15,6 +15,10 @@ async function createSaleDetails(saleId) {
   return await repo.getAll();
 }
 
+async function getTopProducts() {
+  return await repo.getTopProducts();
+}
+
 
 
 async function getAllSaleDetails() {
@@ -37,4 +41,4 @@ async function getSaleDetailsBySaleId(saleId) {
   return await repo.getBySaleId(saleId);
 }
 
-module.exports = { createSaleDetails, getAllSaleDetails, getSaleDetailsById, deleteById, updateById, getSaleDetailsBySaleId };
+module.exports = { createSaleDetails, getAllSaleDetails, getSaleDetailsById, deleteById, updateById, getSaleDetailsBySaleId, getTopProducts };

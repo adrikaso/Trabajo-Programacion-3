@@ -10,6 +10,8 @@ router.get("/getSaleDetails/:id", saleDetailsController.findSaleDetails);
 
 router.get("/getSaleDetailsBySaleId/:id", saleDetailsController.findSaleDetailsBySaleId);
 
+router.get("/getTopProducts", saleDetailsController.getTopProducts);
+
 router.delete("/delete/:id", saleDetailsController.deleteSaleDetails);
 
 router.put("/update/:id", saleDetailsController.updateSaleDetails);

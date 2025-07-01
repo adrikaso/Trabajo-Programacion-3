@@ -58,7 +58,16 @@ const findSaleDetailsBySaleId = async (req, res) => {
     }
 }
 
-module.exports = { create, deleteSaleDetails, findAll, findSaleDetails, updateSaleDetails, findSaleDetailsBySaleId };
+const getTopProducts = async (req, res) => {
+    try {
+        const topProducts = await services.getTopProducts();
+        res.status(201).json(topProducts);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+}
+
+module.exports = { create, deleteSaleDetails, findAll, findSaleDetails, updateSaleDetails, findSaleDetailsBySaleId, getTopProducts };
 
 
 
