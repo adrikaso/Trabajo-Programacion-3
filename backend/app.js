@@ -14,6 +14,8 @@ const rolRoutes = require("./routes/RolRoutes");
 const userRoutes = require("./routes/UserRoutes");
 const userLogRoutes = require("./routes/UserLogRoutes");
 const authRoutes = require("./routes/authRoutes");
+const uploadRoutes = require("./routes/UploadRoutes");
+const categoryRoutes = require("./routes/CategoryRoutes");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -42,8 +44,10 @@ app.use("/userLog", userLogRoutes)
 
 app.use("/auth", authRoutes)
 
+app.use("/", uploadRoutes)
+app.use("/uploads", express.static("uploads")); 
 
-
+app.use("/category", categoryRoutes)
 
 // Conectás a Mongo y luego levantás el servidor
 conecWithDataBase().then(() => {
