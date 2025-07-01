@@ -45,7 +45,7 @@ async function createTicket(list) {
     const row = document.createElement("div");
     row.classList.add("info-row");
     row.innerHTML = `
-      <span>${details.nombre} (x${item.quantity})</span>
+      <span>${details.name} (x${item.quantity})</span>
       <strong>$${item.subtotal.toLocaleString()}</strong>
     `;
 
