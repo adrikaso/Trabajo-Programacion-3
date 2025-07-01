@@ -188,10 +188,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             const row = document.createElement('tr');
             row.innerHTML = `
                 <td>${product._id}</td>
-                <td>${product.nombre}</td>
-                <td>${product.precio}</td>
-                <td>${product.categoria}</td>
-                <td>${product.activo? 'Activo' : 'Inactivo'}</td>
+                <td>${product.name}</td>
+                <td>${product.price}</td>
+                <td>${product.category.name}</td>
+                <td>${product.active? 'Activo' : 'Inactivo'}</td>
                 <td>
                     <button class="btn btn-secondary" data-product-id="${product._id}">Editar</button>
                 </td>
@@ -312,7 +312,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         topProducts.forEach((product, index) => {
         const div = document.createElement('div');
         div.className = 'top-product';
-        div.innerHTML = `<span>${index + 1}. ${product.nombre}</span> <span>Unidades: ${product.totalVendidas}</span>`;
+        div.innerHTML = `<span>${index + 1}. ${product.name}</span> <span>Unidades: ${product.totalVendidas}</span>`;
         trendSales.appendChild(div);
         });
     }

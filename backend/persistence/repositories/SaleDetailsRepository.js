@@ -33,7 +33,7 @@ const getTopProducts = () => SaleDetails.aggregate([
                             {
                                 $project: {
                                 _id: 0,
-                                nombre: "$producto.nombre",
+                                name: "$producto.name",
                                 totalVendidas: 1
                                 }
                             }
