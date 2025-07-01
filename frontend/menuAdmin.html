@@ -15,7 +15,9 @@
             <div class="logo">
                 <h1>TU SUPLEMENTO</h1>
                 <p>Panel de Administración</p>
+                <button class="btn btn-danger" id="btnCloseSession">Cerrar Sesión</button>
             </div>
+            
             
             <div class="menu-items">
                 <div class="menu-item active" data-section="usuarios">
@@ -148,41 +150,27 @@
             <div class="content-section" id="estadisticas">
                 <div class="cards-grid">
                     <div class="card">
-                        <h3>Ventas del Mes</h3>
-                        <div class="stat-number">$47,832</div>
-                        <p>+23% vs mes anterior</p>
+                        <h3>Ingresos Totales</h3>
+                        <div class="stat-number" id="total-sales"></div>
                     </div>
                     <div class="card">
-                        <h3>Órdenes Totales</h3>
-                        <div class="stat-number">1,247</div>
-                        <p>Este mes</p>
+                        <h3>Cantidad de Pedidos</h3>
+                        <div class="stat-number" id="total-orders"></div>
                     </div>
                     <div class="card">
-                        <h3>Tasa Conversión</h3>
-                        <div class="stat-number">3.2%</div>
-                        <p>+0.8% mejora</p>
-                    </div>
-                    <div class="card">
-                        <h3>Ticket Promedio</h3>
-                        <div class="stat-number">$38.37</div>
-                        <p>Por pedido</p>
+                        <h3>Promedio de Ventas</h3>
+                        <div class="stat-number" id="average-sales"></div>
                     </div>
                 </div>
 
                 <div class="cards-grid">
-                    <div class="card">
+                    <div class="card" id="sales-trends">
                         <h3>📈 Tendencias de Ventas</h3>
                         <p>Productos más vendidos:</p>
-                        <br>
-                        <div>1. Whey Protein - 847 unidades</div>
-                        <div>2. Creatina - 623 unidades</div>
-                        <div>3. BCAA - 445 unidades</div>
-                        <div>4. Pre-entreno - 321 unidades</div>
                     </div>
                     <div class="card">
                         <h3>🎯 Objetivos del Mes</h3>
                         <p>Progreso hacia metas:</p>
-                        <br>
                         <div>Ventas: 78% completado</div>
                         <div>Nuevos clientes: 92% completado</div>
                         <div>Satisfacción: 95% completado</div>
