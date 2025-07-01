@@ -77,16 +77,15 @@ function displayProducts(products) {
 function createProductCard(product) {
     const card = document.createElement('div');
     card.className = 'product-card';
-    card.setAttribute('data-category', product.categoria || 'otros');
+    card.setAttribute('data-category', product.category.name || 'otros');
 
     card.innerHTML = `
-                <img src="${product.imagen}" alt="${product.nombre}" class="product-image">
+                <img src="http://localhost:3000${product.pictureURL}" alt="${product.name}" class="product-image">
                 <div class="product-info">
-                    <h5 class="product-name">${product.nombre}</h5>
-                    <div class="product-price">$${product.precio}</div>
-                    <p class="text-muted small mb-3">${product.descripcion || 'Suplemento deportivo de alta calidad'}</p>
+                    <h5 class="product-name">${product.name}</h5>
+                    <div class="product-price">$${product.price}</div>
                     <button class="btn btn-primary btn-add-cart w-100" 
-                            onclick="addToCart('${product._id}', '${product.nombre}', ${product.precio}, '${product.imagen}')">
+                            onclick="addToCart('${product._id}', '${product.name}', ${product.price}, '${product.pictureURL}')">
                         <i class="fas fa-plus me-2"></i>Agregar al Carrito
                     </button>
                 </div>
