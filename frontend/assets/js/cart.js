@@ -65,7 +65,7 @@ function createCartItemElement(item) {
     div.innerHTML = `
                 <div class="row align-items-center">
                     <div class="col-md-2">
-                        <img src="${item.URLimg}" 
+                        <img src="http://localhost:3000${item.productId.pictureURL}" 
                              alt="${item.productName}" class="item-image">
                     </div>
                     <div class="col-md-4">
