@@ -1,4 +1,7 @@
+let rolList = [];
+
 document.addEventListener('DOMContentLoaded', async () => {
+    rolList = await getAllRoles();
     
     const usersTable = document.getElementById('users-table');
     const tableBody = document.getElementById('users-table-body');
@@ -147,23 +150,56 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     async function showUsers() {
         const users = await getAllUsers();
+        const rolList = await getAllRoles();
+        console.log(rolList);
         totalUsers.textContent = users.length;
         tableBody.innerHTML = '';
         
-        users.forEach(user => {
+        for (const user of users) {
             const row = document.createElement('tr');
+            const rolNames = await getRolNames(user.rol);
+            console.log(rolNames);
+
             row.innerHTML = `
                 <td>${user._id}</td>
                 <td>${user.name}</td>
                 <td>${user.email}</td>
-                <td>${user.rol}</td>
+                <td>${rolNames.join(', ')}</td>
                 <td>${user.date}</td>
                 <td>
                     <button class="btn btn-secondary" data-user-id="${user._id}">Editar</button>
                 </td>
             `;
             tableBody.appendChild(row);
-        });
+        }
+    }
+
+    async function getRolNames(rolIds){
+        let rolNames = [];
+        for (const rolId of rolIds) {
+            if(rolList.find(rol => rol._id === rolId)){
+                rolNames.push(rolList.find(rol => rol._id === rolId).name);
+            }
+        }
+        return rolNames;
+    }
+
+    async function getAllRoles() {
+        try {
+            let token = localStorage.getItem('token');
+            const response = await fetch('http://localhost:3000/rol/getAll', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    "Authorization": `Bearer ${token}`,
+                },
+            });
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error('Error showing roles:', error);
+            throw error;
+        }
     }
 
     async function getAllProducts() {
