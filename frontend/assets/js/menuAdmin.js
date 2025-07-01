@@ -182,6 +182,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         }
         return rolNames;
+        
     }
 
     async function getAllRoles() {
