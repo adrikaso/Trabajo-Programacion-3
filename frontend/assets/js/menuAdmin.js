@@ -20,9 +20,37 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     await showUserLogs();
 
-    const salesTable = document.getElementById('salesTable');
-    
+    const totalSales = document.getElementById('total-sales');
+    const totalOrders = document.getElementById('total-orders');
+    const averageSales = document.getElementById('average-sales');
+    const trendSales = document.getElementById('sales-trends');
 
+    await showStatistics();
+    
+    const btnCloseSession = document.getElementById('btnCloseSession');
+    btnCloseSession.addEventListener('click', logout);
+
+
+    const sectionData = {
+        'Dashboard': {
+            title: 'Dashboard',
+            description: 'Descripción de la sección Dashboard'
+        },
+        'Users': {
+            title: 'Usuarios',
+            description: 'Descripción de la sección Usuarios'
+        },
+        'Products': {
+            title: 'Productos',
+            description: 'Descripción de la sección Productos'
+        },
+        'Sales': {
+            title: 'Ventas',
+            description: 'Descripción de la sección Ventas'
+        },
+        'Statistics': {
+    }
+    };
     
     // Función para cambiar de sección
     function switchSection(sectionName) {
@@ -42,10 +70,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Mostrar la sección seleccionada
         document.getElementById(sectionName).classList.add('active');
         
-        // Actualizar título y descripción
+            // Actualizar título y descripción
         const data = sectionData[sectionName];
-        document.getElementById('section-title').textContent = data.title;
-        document.getElementById('section-description').textContent = data.description;
+
+
     }
     
     // Event listeners para los items del menú
@@ -196,6 +224,96 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <td>${userLog.action}</td>
             `;
             logsTableBody.appendChild(row);
+        });
+    }
+
+    async function logout() {
+        if (localStorage.getItem('userId') != null) {
+            await createUserLog(localStorage.getItem('userId'), "logout");
+            localStorage.removeItem('userId');
+            localStorage.removeItem('token');
+            window.location.href = 'testAdmin.html';
+        }
+    }
+
+    async function createUserLog(userId, action) {
+        try {
+            const response = await fetch('http://localhost:3000/userLog/create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ userId: userId, action: action, date: new Date().toISOString() }),
+            });
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error('Error creating user log:', error);
+            throw error;
+        }
+    }
+
+    async function getTotalSales() {
+        try {
+            const response = await fetch('http://localhost:3000/sale/getTotalSales');
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error('Error al obtener las ventas:', error);
+            return [];
+        }
+    }
+
+    async function getAverageSales() {
+        try {
+            const response = await fetch('http://localhost:3000/sale/getAverageSales');
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error('Error al obtener las ventas:', error);
+            return [];
+        }
+    }
+
+    async function getSumTotalSales() {
+        try {
+            const response = await fetch('http://localhost:3000/sale/getSumTotalSales');
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error('Error al obtener las ventas:', error);
+            return [];
+        }
+    }
+
+    async function getTopProducts() {
+        try {
+            const response = await fetch('http://localhost:3000/saleDetails/getTopProducts');
+            const data = await response.json();
+            console.log(data);
+            return data;
+        } catch (error) {
+            console.error('Error al obtener los productos más vendidos:', error);
+            return [];
+        }
+    }
+
+    async function showStatistics() {
+        const sales = await getTotalSales();
+        totalOrders.textContent = sales;
+
+        const average = await getAverageSales();
+        averageSales.textContent = average[0].average.toFixed(2);
+        
+        const sumTotal = await getSumTotalSales();
+        totalSales.textContent = sumTotal[0].total.toFixed(2);
+
+        const topProducts = await getTopProducts();
+        topProducts.forEach((product, index) => {
+        const div = document.createElement('div');
+        div.className = 'top-product';
+        div.innerHTML = `<span>${index + 1}. ${product.nombre}</span> <span>Unidades: ${product.totalVendidas}</span>`;
+        trendSales.appendChild(div);
         });
     }
 
