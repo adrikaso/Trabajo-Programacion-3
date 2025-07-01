@@ -8,6 +8,12 @@ router.get("/getAll", saleController.findAll);
 
 router.get("/getSale/:id", saleController.findSale);
 
+router.get("/getTotalSales", saleController.getTotalSales);
+
+router.get("/getAverageSales", saleController.getAverageSales);
+
+router.get("/getSumTotalSales", saleController.getSumTotalSales);
+
 router.delete("/delete/:id", saleController.deleteSale);
 
 router.put("/update/:id", saleController.updateSale);

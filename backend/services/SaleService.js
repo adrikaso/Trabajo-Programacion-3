@@ -5,16 +5,28 @@ const saleDetailsService = require('./SaleDetailsService');
 
 
 async function createSale() {
-  const total = (await shopingService.getTotal()).total;
-  const clientName = (await shopingService.getName()).name;
-  const date = new Date();
-  const sale = await repo.create({ clientName, date, total });
-  await saleDetailsService.createSaleDetails(sale.id);
-  return sale;
-}
+	const total = (await shopingService.getTotal()).total;
+	const clientName = (await shopingService.getName()).name;
+	const date = new Date();
+	const sale = await repo.create({ clientName, date, total });
+	await saleDetailsService.createSaleDetails(sale.id);
+	return sale;
+	}
 
 async function getAllSales() {
-  return await repo.getAll();
+	return await repo.getAll();
+}
+
+async function getTotalSales() {
+	return await repo.getTotalSales();
+}
+
+async function getAverageSales() {
+	return await repo.getAverageSales();
+}
+
+async function getSumTotalSales() {
+	return await repo.getSumTotalSales();
 }
 
 async function getSaleById(id) {
@@ -31,4 +43,4 @@ async function updateSaleById(id, saleUpdated) {
 
 
 
-module.exports = { createSale, getAllSales, getSaleById, deleteSaleById, updateSaleById};
+module.exports = { createSale, getAllSales, getSaleById, deleteSaleById, updateSaleById, getTotalSales, getAverageSales, getSumTotalSales };

@@ -28,6 +28,33 @@ const findSale = async (req, res) => {
   }
 }
 
+const getTotalSales = async (req, res) => {
+  try {
+    const total = await services.getTotalSales();
+    res.status(201).json(total);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+}
+
+const getAverageSales = async (req, res) => {
+  try {
+    const average = await services.getAverageSales();
+    res.status(201).json(average);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+}
+
+const getSumTotalSales = async (req, res) => {
+  try {
+    const total = await services.getSumTotalSales();
+    res.status(201).json(total);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+}
+
 const deleteSale = async (req, res) => {
   try {
     const { id } = req.params;
@@ -49,4 +76,4 @@ const updateSale = async (req, res) => {
 }
 
 
-module.exports = { create, findAll, findSale, deleteSale, updateSale };
+module.exports = { create, findAll, findSale, deleteSale, updateSale, getTotalSales, getAverageSales, getSumTotalSales };
