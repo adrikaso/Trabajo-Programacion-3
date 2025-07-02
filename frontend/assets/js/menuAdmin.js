@@ -1,3 +1,4 @@
+
 let rolList = [];
 
 if (!localStorage.getItem('token')) {
@@ -25,6 +26,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     const inactiveProducts = document.getElementById('inactive-products');
 
     showProducts();
+
+    const salesTableBody = document.getElementById('orders-table-body');
+
+    showSales();
 
     const logsTable = document.getElementById('logsTable');
     const logsTableBody = document.getElementById('logs-table-body');
@@ -61,7 +66,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             description: 'Descripción de la sección Ventas'
         },
         'Statistics': {
-    }
+            title: 'Estadísticas',
+            description: 'Descripción de la sección Estadísticas'
+        },
+        'Logs': {
+            title: 'Logs',
+            description: 'Descripción de la sección Logs'
+        }
     };
     
     // Función para cambiar de sección
@@ -404,12 +415,62 @@ document.addEventListener('DOMContentLoaded', async () => {
             console.error('Error al mostrar las estadísticas:', error);
         }
     }
-        
-        
-    
-    
+
+    async function getAllSales() {
+        try {
+            const response = await fetch('http://localhost:3000/sale/getAll', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
+            const data = await response.json();
+            console.log(data);
+            return data;
+        } catch (error) {
+            console.error('Error al obtener las ventas:', error);
+            return [];
+        }
+    }
+
+    async function showSales() {
+        try {
+            const sales = await getAllSales();
+            sales.forEach(sale => {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td>${sale._id}</td><td>${sale.date}</td><td>${sale.clientName}</td><td>${sale.total}</td> 
+                <td><button class="btn btn-primary" data-sale-id="${sale._id}">Ver</button></td>`;
+                salesTableBody.appendChild(row);
+            });
+        } catch (error) {
+            console.error('Error al mostrar las ventas:', error);
+        }
+    }
+
+    async function getSaleDetails(saleId) {
+        try {
+            const response = await fetch(`http://localhost:3000/saleDetails/getSaleDetailsBySaleId/${saleId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
+            const data = await response.json();
+            console.log(data);
+            return data;
+        } catch (error) {
+            console.error('Error al obtener los detalles de la venta:', error);
+            return [];
+        }
+    }
+
+    getSaleDetails("6863dda1f3d7603f332922d7");
 
     
+
+
 
 
 
