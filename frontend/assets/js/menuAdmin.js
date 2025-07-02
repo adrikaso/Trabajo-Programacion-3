@@ -1,4 +1,3 @@
-
 let rolList = [];
 
 if (!localStorage.getItem('token')) {
@@ -47,19 +46,34 @@ document.addEventListener('DOMContentLoaded', async () => {
     const btnCloseSession = document.getElementById('btnCloseSession');
     btnCloseSession.addEventListener('click', logout);
 
-
-    // Create Product
+    
     const productName = document.getElementById('name');
     const productPrice = document.getElementById('price');
     const productCategory = document.getElementById('category');
     const productImg = document.getElementById('img');
     const productActive = document.getElementById('active');
     const btnCreateProduct = document.getElementById('btnCreateProduct');
-    //img
+    const btnUpdateProduct = document.getElementById('btnUpdateProduct');
+    let selectedProductId = null;
+    
+    const productModal = new bootstrap.Modal(document.getElementById('productModal'));
     const preview = document.getElementById('preview');
     const placeholder = document.getElementById('preview-placeholder');
-
+    
     btnCreateProduct.addEventListener('click', createProduct)
+    btnUpdateProduct.addEventListener('click', updateProduct);
+    
+    //Validación si está creando o editando con data-action
+    document.addEventListener('click', function (e) {
+        const button = e.target.closest('button[data-action="create"]');
+        if (button) {
+            resetProductForm();
+            btnCreateProduct.style.display = 'inline-block';
+            btnUpdateProduct.style.display = 'none';
+        }
+    });
+
+    //Vista previa de la imagen
     productImg.addEventListener('change', function () {
         const file = this.files[0];
         if (file) {
@@ -77,9 +91,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             placeholder.style.display = 'block';
         }
     });
-
     loadCategories();
-
 
 
     const sectionData = {
@@ -289,10 +301,24 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <td>${product.price}</td>
                 <td>${product.category.name}</td>
                 <td>${product.active ? 'Activo' : 'Inactivo'}</td>
-                <td>
-                    <button class="btn btn-secondary mr-0" data-product-id="${product._id}">Editar</button>
-                </td>
             `;
+            // Botón Editar
+            const editBtn = document.createElement('button');
+            editBtn.className = 'btn btn-secondary';
+            editBtn.textContent = 'Editar';
+            editBtn.setAttribute('data-bs-toggle', 'modal');
+            editBtn.setAttribute('data-action', 'edit');
+            editBtn.setAttribute('data-bs-target', '#productModal');
+            editBtn.addEventListener('click', () => {
+                resetProductForm();
+                loadProductValuesById(product._id);
+                btnCreateProduct.style.display = 'none';            // Ocultamos botón Crear
+                btnUpdateProduct.style.display = 'inline-block';
+            });
+            const actionsTd = document.createElement('td');
+            actionsTd.appendChild(editBtn);
+            row.appendChild(actionsTd);
+
             productsTableBody.appendChild(row);
         });
     }
@@ -502,11 +528,20 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     getSaleDetails("6863dda1f3d7603f332922d7");
 
+    // -----------------form---------------
     // category
+    async function getAllCategories() {
+        try {
+            const response = await fetch("http://localhost:3000/category/getAll");
+            const categories = await response.json();
+            return categories;
+        } catch (error) {
+            console.error("Error al cargar categorías:", error);
+        }
+    }
 
     async function loadCategories() {
-        const response = await fetch("http://localhost:3000/category/getAll"); // o la ruta que tengas
-        const categorias = await response.json();
+        const categorias = await getAllCategories();
 
         const select = document.getElementById("category");
         select.innerHTML = "";
@@ -521,8 +556,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // Create Product
-
-    function loadProductValues() {
+    function getProductValues() {
         const product = {
             name: productName.value,
             price: productPrice.value,
@@ -550,13 +584,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         return data.pictureURL;
     }
 
-
-
     async function createProduct() {
         try {
             const pictureURL = await uploadImage();
 
-            let product = loadProductValues();
+            let product = getProductValues();
             product.pictureURL = pictureURL;
             product.category = document.getElementById('category').value;
 
@@ -572,17 +604,82 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
 
             const data = await response.json();
+            productModal.hide();
+            showProducts();
             console.log('Producto creado:', data);
         } catch (error) {
             console.error('Error al crear el producto:', error);
         }
     }
-
-    async function testUpdateProduct() {
+    async function getProductById(id) {
         try {
-            const id = productID.value.trim();
-            let product = loadProductValues();
-            const url = `http://localhost:3000/product/update/${id}`;
+            const response = await fetch(`http://localhost:3000/product/getProduct/${id}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
+            const data = await response.json();
+            console.log(data);
+            return data;
+        } catch (error) {
+            console.error('Error al obtener el producto por ID:', error);
+            return null;
+        }
+    }
+
+    function showPreviewImage(url) {
+        preview.src = url;
+        preview.style.display = 'block';
+        placeholder.style.display = 'none';
+    }
+
+    async function loadProductValuesById(id) {
+        try {
+            const product = await getProductById(id);
+            showPreviewImage(`http://localhost:3000${product.pictureURL}`);
+            productName.value = product.name;
+            productPrice.value = product.price;
+            productCategory.value = product.category._id;
+            productActive.checked = product.active;
+
+            selectedProductId = product._id;
+        } catch (error) {
+            console.error('Error al obtener el producto:', error);
+        }
+    }
+
+    function getProductValuesForUpdate() {
+        const product = {
+            name: productName.value,
+            price: productPrice.value,
+            category: productCategory.value,
+            active: productActive.checked
+        };
+
+        //  verificamos si se subió al menos un archivo si no se subió nada lo dejamos tal cual esta
+        const pictureInput = document.getElementById('img');
+        if (pictureInput.files.length > 0) {
+            product.pictureURL = pictureInput.files[0]; 
+        }
+
+        return product;
+    }
+
+    async function updateProduct() {
+        try {
+            // verificamos si se ha seleccionado una nueva imagen
+            const product = getProductValuesForUpdate();
+            // si hay una nueva imagen la subo
+            let pictureURL = product.pictureURL;
+            if (pictureURL instanceof File) {
+                pictureURL = await uploadImage(); // subo la nueva imagen 
+            }
+            // actualizamos el producto con la nueva imagen
+            product.pictureURL = pictureURL;
+
+            const url = `http://localhost:3000/product/update/${selectedProductId}`;
             const response = await fetch(url, {
                 method: 'PUT',
                 headers: {
@@ -593,6 +690,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                 )
             });
 
+            productModal.hide();
+            showProducts();
             const data = await response.json();
             console.log('Producto actualizado:', data);
         } catch (error) {
@@ -600,7 +699,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-
-
+    function resetProductForm() {
+        productName.value = '';
+        productPrice.value = '';
+        productCategory.value = '';
+        productActive.checked = false;
+        productImg.value = '';
+        preview.src = '';
+        preview.style.display = 'none';
+        placeholder.style.display = 'block';
+        console.log("formulario reinicidao")
+    }
 
 });
+
