@@ -3,7 +3,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const emailInput = document.getElementById('email');
     const passwordInput = document.getElementById('password');
     const btnLogin = document.getElementById('btnLogin');
-  
+
+    const btnLoginSuper = document.getElementById('btnLoginSuper');
+    btnLoginSuper.addEventListener('click', () => {
+        emailInput.value = 'admin@example.com';
+        passwordInput.value = 'admin123';
+    })
+
+    const btnLoginAdmin = document.getElementById('btnLoginAdmin');
+    btnLoginAdmin.addEventListener('click', () => {
+        emailInput.value = 'admin3@example.com';
+        passwordInput.value = 'admin123';
+    })
+
     btnLogin.addEventListener('click', validateCredentials);
 
     async function getByEmail(email) {
