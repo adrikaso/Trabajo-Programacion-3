@@ -53,14 +53,15 @@ document.addEventListener('DOMContentLoaded', () => {
             let user = await getByEmail(email);
             localStorage.setItem('userId', user._id);
             localStorage.setItem('token', credentials.token);
-            await createUserLog(user._id, "login");
+            await createUserLog("login");
             window.location.href = 'menuAdmin.html';
         }
 
     }
 
-    async function createUserLog(userId, action) {
+    async function createUserLog(action) {
         try {
+            const userId = localStorage.getItem('userId');
             const response = await fetch('http://localhost:3000/userLog/create', {
                 method: 'POST',
                 headers: {
