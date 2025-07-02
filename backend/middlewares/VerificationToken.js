@@ -14,7 +14,7 @@ function verificationToken(req, res, next) {
         req.user = decoded; // Se guarda el payload (con rol incluido)
         next();
     } catch (err) {
-        return res.status(403).json({ mensaje: "Token inválido" });
+        return res.status(401).json({ mensaje: "Token inválido" });
     }
 }
 
