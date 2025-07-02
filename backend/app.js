@@ -2,7 +2,8 @@ const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
 
-const conecWithDataBase = require("./config/conection"); // ← Importás la función de conexión
+const conecWithDataBase = require("./config/conection"); 
+
 
 const productRoutes = require("./routes/ProductRoutes");
 const saleRoutes = require("./routes/SaleRoutes");
@@ -24,6 +25,9 @@ app.use(cors());
 app.use(express.json());
 
 // Rutas
+
+
+
 app.use("/user",userRoutes);
 
 app.use("/product", productRoutes);
