@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +9,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/menuAdmin.css">
 </head>
+
 <body>
     <div class="admin-container">
         <!-- Sidebar -->
@@ -17,40 +19,43 @@
                 <p>Panel de Administración</p>
                 <button class="btn btn-danger" id="btnCloseSession">Cerrar Sesión</button>
             </div>
-            
-            
+
+
             <div class="menu-items">
                 <div class="menu-item active" data-section="usuarios">
                     <svg class="menu-icon" viewBox="0 0 24 24">
-                        <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                        <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                     </svg>
                     <span class="menu-text">Ver Usuarios</span>
                 </div>
-                
+
                 <div class="menu-item" data-section="productos">
                     <svg class="menu-icon" viewBox="0 0 24 24">
-                        <path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                        <path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                     </svg>
                     <span class="menu-text">Ver Productos</span>
                 </div>
 
                 <div class="menu-item" data-section="ventas">
                     <svg class="menu-icon" viewBox="0 0 24 24">
-                        <path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                        <path
+                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                     </svg>
                     <span class="menu-text">Ver Ventas</span>
                 </div>
-                
+
                 <div class="menu-item" data-section="estadisticas">
                     <svg class="menu-icon" viewBox="0 0 24 24">
-                        <path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                        <path
+                            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                     </svg>
                     <span class="menu-text">Ver Estadísticas</span>
                 </div>
-                
+
                 <div class="menu-item" data-section="registros">
                     <svg class="menu-icon" viewBox="0 0 24 24">
-                        <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        <path
+                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
                     <span class="menu-text">Ver Registros</span>
                 </div>
@@ -117,9 +122,130 @@
                     </div>
                 </div>
 
+                <!-- Modal Formulario de Producto -->
+                <div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="formTitulo">
+                                    <i class="fas fa-box me-2"></i>Agregar producto
+                                </h5>
+                                <button type="button" class="btn-close btn-close-white"
+                                    data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="formProduct">
+                                    <div class="row g-4">
+                                        <!-- Nombre del Producto -->
+                                        <div class="col-md-6">
+                                            <label for="name" class="form-label">
+                                                <i class="fas fa-tag me-1"></i>Nombre del Producto
+                                            </label>
+                                            <input type="text" id="name" class="form-control"
+                                                placeholder="Ej: Whey Protein" required>
+                                        </div>
+
+                                        <!-- Precio -->
+                                        <div class="col-md-6">
+                                            <label for="price" class="form-label">
+                                                <i class="fas fa-dollar-sign me-1"></i>Precio
+                                            </label>
+                                            <input type="number" id="price" class="form-control" placeholder="25000"
+                                                required>
+                                        </div>
+
+                                        <!-- Categoría -->
+                                        <div class="col-md-6">
+                                            <label for="category" class="form-label">
+                                                <i class="fas fa-list me-1"></i>Categoría
+                                            </label>
+                                            <select id="category" class="form-select" required>
+                                                <option value="">Seleccionar categoría</option>
+                                            </select>
+                                        </div>
+
+                                        <!-- Producto ID -->
+                                        <!-- <div class="col-md-6">
+                                            <label for="hijodemilputa" class="form-label">
+                                                <i class="fas fa-hashtag me-1"></i>ID del Producto
+                                            </label>
+                                            <input type="text" id="hijodemilputa" class="form-control"
+                                                placeholder="ID único del producto" required>
+                                        </div> -->
+
+                                        <!-- Estado Activo -->
+                                        <div class="col-md-6">
+                                            <label class="form-label">
+                                                <i class="fas fa-toggle-on me-1"></i>Estado
+                                            </label>
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="active" checked>
+                                                <label class="form-check-label" for="active">
+                                                    Producto Activo
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <!-- Imagen -->
+                                        <div class="col-12">
+                                            <label for="img" class="form-label">
+                                                <i class="fas fa-image me-1"></i>Imagen del Producto
+                                            </label>
+                                            <input type="file" id="img" class="form-control" name="picture"
+                                                accept="image/*" required>
+
+                                            <!-- Preview Container -->
+                                            <div class="preview-container mt-3">
+                                                <img id="preview" src="#" alt="Previsualización" class="preview-image"
+                                                    style="display: none;">
+                                                <div id="preview-placeholder">
+                                                    <i class="fas fa-image fa-3x text-muted mb-2"></i>
+                                                    <p class="text-muted mb-0">Vista previa de la imagen</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Campo oculto para ID de producto (para edición) -->
+                                    <input type="hidden" id="productoId">
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <!-- Botones de prueba/acción -->
+                                <div class="d-flex gap-2 flex-wrap">
+                                    <button type="button" id="btnCreateProduct"
+                                        class="btn btn-warning-custom btn-custom">
+                                        <i class="fas fa-plus me-1"></i>Crear Producto
+                                    </button>
+                                    <!-- <button type="button" id="btnTestUpdateProduct" class="btn btn-custom">
+                                        <i class="fas fa-edit me-1"></i>Test UPDATE
+                                    </button>
+                                    <button type="button" id="btnTestDeleteProduct"
+                                        class="btn btn-danger-custom btn-custom">
+                                        <i class="fas fa-trash me-1"></i>Test DELETE
+                                    </button> -->
+                                </div>
+                                <div class="ms-auto">
+                                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                                        <i class="fas fa-times me-1"></i>Cancelar
+                                    </button>
+                                    <!-- <button type="button" class="btn btn-success-custom btn-custom">
+                                        <i class="fas fa-save me-1"></i>Guardar
+                                    </button> -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="data-table">
-                    <div class="table-header">
+                    <div class="table-header d-flex justify-content-between align-items-center">
                         <h3>Inventario de Productos</h3>
+                        <button type="button" class="btn btn-light-custom " data-bs-toggle="modal"
+                            data-bs-target="#productModal">
+                            <i class="fas fa-plus me-2"></i>Crear Producto
+                        </button>
                     </div>
                     <div class="table-content">
                         <table>
@@ -243,9 +369,10 @@
                 </div>
             </div>
 
-    </div>
+        </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="assets/js/menuAdmin.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="assets/js/menuAdmin.js"></script>
 </body>
+
 </html>

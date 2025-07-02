@@ -7,7 +7,7 @@ if (!localStorage.getItem('token')) {
 
 document.addEventListener('DOMContentLoaded', async () => {
     rolList = await getAllRoles();
-    
+
     const usersTable = document.getElementById('users-table');
     const tableBody = document.getElementById('users-table-body');
     const totalUsers = document.getElementById('total-users');
@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     btnCreateUser.addEventListener('click', () => {
         window.location.href = 'formCreateUser.html';
     });
-    
+
     showUsers();
 
     const productsTable = document.getElementById('productsTable');
@@ -43,9 +43,43 @@ document.addEventListener('DOMContentLoaded', async () => {
     const trendSales = document.getElementById('sales-trends');
 
     await showStatistics();
-    
+
     const btnCloseSession = document.getElementById('btnCloseSession');
     btnCloseSession.addEventListener('click', logout);
+
+
+    // Create Product
+    const productName = document.getElementById('name');
+    const productPrice = document.getElementById('price');
+    const productCategory = document.getElementById('category');
+    const productImg = document.getElementById('img');
+    const productActive = document.getElementById('active');
+    const btnCreateProduct = document.getElementById('btnCreateProduct');
+    //img
+    const preview = document.getElementById('preview');
+    const placeholder = document.getElementById('preview-placeholder');
+
+    btnCreateProduct.addEventListener('click', createProduct)
+    productImg.addEventListener('change', function () {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+                placeholder.style.display = 'none';
+            }
+
+            reader.readAsDataURL(file);
+        } else {
+            preview.style.display = 'none';
+            placeholder.style.display = 'block';
+        }
+    });
+
+    loadCategories();
+
 
 
     const sectionData = {
@@ -74,31 +108,31 @@ document.addEventListener('DOMContentLoaded', async () => {
             description: 'Descripción de la sección Logs'
         }
     };
-    
+
     // Función para cambiar de sección
     function switchSection(sectionName) {
         // Remover clase active de todos los items del menú
         document.querySelectorAll('.menu-item').forEach(item => {
             item.classList.remove('active');
         });
-        
+
         // Agregar clase active al item seleccionado
         document.querySelector(`[data-section="${sectionName}"]`).classList.add('active');
-        
+
         // Ocultar todas las secciones
         document.querySelectorAll('.content-section').forEach(section => {
             section.classList.remove('active');
         });
-        
+
         // Mostrar la sección seleccionada
         document.getElementById(sectionName).classList.add('active');
-        
-            // Actualizar título y descripción
+
+        // Actualizar título y descripción
         const data = sectionData[sectionName];
 
 
     }
-    
+
     // Event listeners para los items del menú
     document.querySelectorAll('.menu-item').forEach(item => {
         item.addEventListener('click', () => {
@@ -106,22 +140,22 @@ document.addEventListener('DOMContentLoaded', async () => {
             switchSection(section);
         });
     });
-    
+
     // Función para los botones de acción
     document.querySelectorAll('.btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
             e.preventDefault();
             const action = btn.textContent;
-            
+
             // Efecto visual
             btn.style.transform = 'scale(0.95)';
             setTimeout(() => {
                 btn.style.transform = '';
             }, 150);
-            
+
             // Simular acción (aquí puedes integrar con tu backend)
             console.log(`Acción: ${action} ejecutada`);
-            
+
             // Mostrar feedback visual
             const originalText = btn.textContent;
             btn.textContent = '✓';
@@ -130,25 +164,25 @@ document.addEventListener('DOMContentLoaded', async () => {
             }, 1000);
         });
     });
-    
-    
+
+
     // Efectos de hover mejorados para las tarjetas
     document.querySelectorAll('.card').forEach(card => {
         card.addEventListener('mouseenter', () => {
             card.style.transform = 'translateY(-8px) rotateX(5deg)';
         });
-        
+
         card.addEventListener('mouseleave', () => {
             card.style.transform = '';
         });
     });
-    
+
     // Animación de carga inicial
     window.addEventListener('load', () => {
         document.querySelectorAll('.card').forEach((card, index) => {
             card.style.opacity = '0';
             card.style.transform = 'translateY(30px)';
-            
+
             setTimeout(() => {
                 card.style.transition = 'all 0.5s ease';
                 card.style.opacity = '1';
@@ -174,11 +208,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             const rolList = await getAllRoles();
             totalUsers.textContent = users.length;
             tableBody.innerHTML = '';
-            
+
             for (const user of users) {
                 const row = document.createElement('tr');
                 const rolNames = await getRolNames(user.rol);
-                
+
                 row.innerHTML = `
                 <td>${user._id}</td>
                 <td>${user.name}</td>
@@ -194,21 +228,21 @@ document.addEventListener('DOMContentLoaded', async () => {
         } catch (error) {
             console.log(error);
         }
-        }
-        
-        async function getRolNames(rolIds){
-            try {
-                let rolNames = [];
-                for (const rolId of rolIds) {
-                    if(rolList.find(rol => rol._id === rolId)){
-                        rolNames.push(rolList.find(rol => rol._id === rolId).name);
-                    }
+    }
+
+    async function getRolNames(rolIds) {
+        try {
+            let rolNames = [];
+            for (const rolId of rolIds) {
+                if (rolList.find(rol => rol._id === rolId)) {
+                    rolNames.push(rolList.find(rol => rol._id === rolId).name);
+                }
             }
             return rolNames;
         } catch (error) {
             console.error('Error al obtener los nombres de los roles:', error);
         }
-            
+
     }
 
     async function getAllRoles() {
@@ -246,7 +280,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         activeProducts.textContent = products.filter(product => product.active).length;
         inactiveProducts.textContent = products.filter(product => !product.active).length;
         productsTableBody.innerHTML = '';
-        
+
         products.forEach(product => {
             const row = document.createElement('tr');
             row.innerHTML = `
@@ -254,9 +288,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <td>${product.name}</td>
                 <td>${product.price}</td>
                 <td>${product.category.name}</td>
-                <td>${product.active? 'Activo' : 'Inactivo'}</td>
+                <td>${product.active ? 'Activo' : 'Inactivo'}</td>
                 <td>
-                    <button class="btn btn-secondary" data-product-id="${product._id}">Editar</button>
+                    <button class="btn btn-secondary mr-0" data-product-id="${product._id}">Editar</button>
                 </td>
             `;
             productsTableBody.appendChild(row);
@@ -278,7 +312,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const userLogs = await getAllUserLogs();
         totalLogs.textContent = userLogs.length;
         logsTableBody.innerHTML = '';
-        
+
         userLogs.forEach(userLog => {
             const row = document.createElement('tr');
             row.innerHTML = `
@@ -337,7 +371,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     async function getAverageSales() {
         try {
-            const response = await fetch('http://localhost:3000/sale/getAverageSales',{
+            const response = await fetch('http://localhost:3000/sale/getAverageSales', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -354,7 +388,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     async function getSumTotalSales() {
         try {
-            const response = await fetch('http://localhost:3000/sale/getSumTotalSales',{
+            const response = await fetch('http://localhost:3000/sale/getSumTotalSales', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -390,10 +424,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         try {
             const sales = await getTotalSales();
             totalOrders.textContent = sales;
-            
+
             const average = await getAverageSales();
             averageSales.textContent = average[0].average.toFixed(2);
-            
+
             const sumTotal = await getSumTotalSales();
             totalSales.textContent = sumTotal[0].total.toFixed(2);
 
@@ -409,9 +443,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             averageSales.textContent = "no autorizado";
             totalSales.textContent = "no autorizado";
             const div = document.createElement('div');
-                div.className = 'top-product';
-                div.innerHTML = `<span class="text-danger">no autorizado</span>`;
-                trendSales.appendChild(div);
+            div.className = 'top-product';
+            div.innerHTML = `<span class="text-danger">no autorizado</span>`;
+            trendSales.appendChild(div);
             console.error('Error al mostrar las estadísticas:', error);
         }
     }
@@ -468,9 +502,103 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     getSaleDetails("6863dda1f3d7603f332922d7");
 
-    
+    // category
+
+    async function loadCategories() {
+        const response = await fetch("http://localhost:3000/category/getAll"); // o la ruta que tengas
+        const categorias = await response.json();
+
+        const select = document.getElementById("category");
+        select.innerHTML = "";
+
+        categorias.forEach(cat => {
+            const option = document.createElement("option");
+            option.value = cat._id;            // 👈 ENVÍA EL ID REAL
+            option.textContent = cat.name;
+            select.appendChild(option);
+            console.log("categorias obtenidas: " + cat.name);
+        });
+    }
+
+    // Create Product
+
+    function loadProductValues() {
+        const product = {
+            name: productName.value,
+            price: productPrice.value,
+            pictureURL: productImg.value,
+            category: productCategory.value,
+            active: productActive.checked
+        };
+        return product;
+    }
+
+    async function uploadImage() {
+        const formData = new FormData();
+        const pictureInput = document.getElementById('img');
+
+        formData.append('picture', pictureInput.files[0]);
+
+        const response = await fetch('http://localhost:3000/upload', {
+            method: 'POST',
+            body: formData
+        });
+
+        if (!response.ok) throw new Error("Error al subir imagen");
+
+        const data = await response.json(); // contiene pictureURL
+        return data.pictureURL;
+    }
 
 
+
+    async function createProduct() {
+        try {
+            const pictureURL = await uploadImage();
+
+            let product = loadProductValues();
+            product.pictureURL = pictureURL;
+            product.category = document.getElementById('category').value;
+
+            const url = 'http://localhost:3000/product/create';
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(
+                    product
+                )
+            });
+
+            const data = await response.json();
+            console.log('Producto creado:', data);
+        } catch (error) {
+            console.error('Error al crear el producto:', error);
+        }
+    }
+
+    async function testUpdateProduct() {
+        try {
+            const id = productID.value.trim();
+            let product = loadProductValues();
+            const url = `http://localhost:3000/product/update/${id}`;
+            const response = await fetch(url, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(
+                    product
+                )
+            });
+
+            const data = await response.json();
+            console.log('Producto actualizado:', data);
+        } catch (error) {
+            console.error('Error al actualizar el producto:', error);
+        }
+    }
 
 
 

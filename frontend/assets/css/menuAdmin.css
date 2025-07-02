@@ -340,3 +340,104 @@ tr:hover {
         padding: 20px;
     }
 }
+
+.modal-content {
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    color: white;
+    border-radius: 20px 20px 0 0;
+    border: none;
+}
+
+.form-control,
+.form-select {
+    border-radius: 10px;
+    border: 2px solid rgba(102, 126, 234, 0.2);
+    padding: 12px;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+.preview-container {
+    border: 2px dashed rgba(102, 126, 234, 0.3);
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    background: rgba(102, 126, 234, 0.05);
+    min-height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.preview-image {
+    max-width: 200px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.btn-light-custom {
+    background: rgba(255, 255, 255, 0.95);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    color: #667eea;
+    padding: 8px 30px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    /* box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2); */
+}
+
+.btn-light-custom:hover {
+    background: rgba(255, 255, 255, 1);
+    transform: translateY(-2px);
+    /* box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3); */
+    color: #5a6fd8;
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+.btn-success-custom {
+    background: linear-gradient(45deg, #4CAF50, #45a049);
+}
+
+.btn-success-custom:hover {
+    box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+}
+
+.btn-warning-custom {
+    background: linear-gradient(45deg, #ff9800, #f57c00);
+}
+
+.btn-warning-custom:hover {
+    box-shadow: 0 5px 15px rgba(255, 152, 0, 0.4);
+}
+
+.btn-danger-custom {
+    background: linear-gradient(45deg, #f44336, #d32f2f);
+}
+
+.btn-danger-custom:hover {
+    box-shadow: 0 5px 15px rgba(244, 67, 54, 0.4);
+}
+
+.form-check-input:checked {
+    background-color: #667eea;
+    border-color: #667eea;
+}
+
+.form-label {
+    color: #495057;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
