@@ -11,6 +11,8 @@ router.post("/create", productController.create);
 
 router.get("/getProduct/:id", productController.findProduct);
 
+router.get("/category/:categoryId", productController.getByCategory);
+
 router.delete("/delete/:id", productController.deleteProduct);
 
 router.get("/getProductDetails/:id", productController.getProductDetails);

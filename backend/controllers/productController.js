@@ -1,3 +1,4 @@
+const { get } = require("mongoose");
 const services = require("../services/ProductService");
 
 const create = async (req, res) => {
@@ -36,6 +37,16 @@ const findProduct = async (req, res) => {
   }
 };
 
+const getByCategory = async (req, res) => {
+  try{
+    const { categoryId } = req.params;
+    const products = await services.getProductsByCategory(categoryId);
+    res.status(201).json(products);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+}
+
 const deleteProduct = async (req, res) => {
   try {
     const { id } = req.params;
@@ -66,4 +77,4 @@ const getProductDetails = async (req, res) => {
   }
 }
 
-module.exports = { create, deleteProduct, findAll, findProduct, deleteProduct, updateProduct, getProductDetails };
+module.exports = { create, deleteProduct, findAll, findProduct, deleteProduct, updateProduct, getProductDetails, getByCategory };

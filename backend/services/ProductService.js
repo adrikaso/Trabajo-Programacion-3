@@ -1,3 +1,4 @@
+const { get } = require('mongoose');
 const repo = require('../persistence/repositories/ProductRepository');
 
 async function createProduct(data) {
@@ -12,6 +13,10 @@ async function getProductById(id) {
   return await repo.getById(id);
 }
 
+async function getProductsByCategory(categoryId) {
+  return await repo.getByCategory(categoryId);
+}
+
 async function deleteById(id){
     return await repo.remove(id);
 }
@@ -24,4 +29,4 @@ async function getProductDetails(id) {
     return await repo.getProductDetails(id);
 }
 
-module.exports = { createProduct, getAllProducts, getProductById, deleteById, updateById, getProductDetails };
+module.exports = { createProduct, getAllProducts, getProductById, deleteById, updateById, getProductDetails, getProductsByCategory };

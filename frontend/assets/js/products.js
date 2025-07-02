@@ -15,12 +15,20 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Cargar productos del carrito desde el backend
     await loadCartItems();
 
-    // Configurar filtros
-    setupFilters();
-
     // Cargar categorias
     loadCategoryFilters();
 });
+
+async function getAllProducts() {
+    try {
+        const response = await fetch('http://localhost:3000/product/getAll');
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error al obtener los productos:', error);
+        return [];
+    }
+}
 
 async function loadProducts() {
     const loadingSpinner = document.getElementById('loadingSpinner');
@@ -29,8 +37,7 @@ async function loadProducts() {
     loadingSpinner.style.display = 'block';
 
     try {
-        const response = await fetch('http://localhost:3000/product/getAll');
-        allProducts = await response.json();
+        const allProducts = await getAllProducts();
 
         await new Promise(resolve => setTimeout(resolve, 500));
 
@@ -195,60 +202,65 @@ function showAddedToCartAnimation() {
 }
 
 // Cargar dinamicamente las categorias
-async function loadCategoryFilters() {
-    const container = document.getElementById("category-filters");
-
+async function getAllCategories(){
     try {
         const response = await fetch("http://localhost:3000/category/getAll");
-        const categorias = await response.json();
-
-        // boton all
-        const allBtn = document.createElement("button");
-        allBtn.className = "filter-btn active";
-        allBtn.textContent = "Todos";
-        allBtn.setAttribute("data-category", "all");
-        container.appendChild(allBtn);
-
-        // botones por category
-        categorias.forEach(cat => {
-            const btn = document.createElement("button");
-            btn.className = "filter-btn";
-            btn.textContent = cat.name.charAt(0).toUpperCase() + cat.name.slice(1);
-            btn.setAttribute("data-category", cat.name.toLowerCase());
-            container.appendChild(btn);
-        });
-
-        setupFilters(); // activamos los listeners
+        const categories = await response.json();
+        return categories;
     } catch (error) {
         console.error("Error al cargar categorías:", error);
     }
 }
 
-function setupFilters() {
-    const filterButtons = document.querySelectorAll('.filter-btn');
-
-    filterButtons.forEach(btn => {
-        btn.addEventListener('click', () => {
-            filterButtons.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-
-            const category = btn.getAttribute('data-category');
-            filterProducts(category);
-        });
-    });
+async function getProductsByCategory(categoryId){
+    try {
+        const response = await fetch(`http://localhost:3000/product/category/${categoryId}`);
+        const products = await response.json();
+        return products;
+    } catch (error) {
+        console.error("Error al cargar productos por categoría:", error);
+    }
 }
 
-function filterProducts(category) {
-    const cards = document.querySelectorAll('.product-card');
+async function loadCategoryFilters() {
+    const container = document.getElementById("category-filters");
 
-    cards.forEach(card => {
-        const productCategory = card.getAttribute('data-category');
-        if (category === 'all' || productCategory === category) {
-            card.style.display = 'block';
-        } else {
-            card.style.display = 'none';
-        }
-    });
+    try {
+        const categorias = await getAllCategories();
+
+        // boton todos
+        const allBtn = document.createElement("button");
+        allBtn.className = "filter-btn active";
+        allBtn.textContent = "Todos";
+        allBtn.addEventListener("click", async () => {
+            setActiveButton(allBtn);
+            const products = await getAllProducts();
+            displayProducts(products);
+        });
+        container.appendChild(allBtn);
+
+        // bbotones dinamicos por categoría
+        categorias.forEach(cat => {
+            const btn = document.createElement("button");
+            btn.className = "filter-btn";
+            btn.textContent = cat.name.charAt(0).toUpperCase() + cat.name.slice(1);
+            btn.addEventListener("click", async () => {
+                setActiveButton(btn);
+                const productos = await getProductsByCategory(cat._id);
+                displayProducts(productos); 
+            });
+            container.appendChild(btn);
+        });
+
+    } catch (error) {
+        console.error("Error al cargar categorías:", error);
+    }
+}
+
+function setActiveButton(activeBtn) {
+    const buttons = document.querySelectorAll(".filter-btn");
+    buttons.forEach(btn => btn.classList.remove("active"));
+    activeBtn.classList.add("active");
 }
 
 function goToCart() {
