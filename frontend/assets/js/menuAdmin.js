@@ -1,11 +1,20 @@
 let rolList = [];
 
+if (!localStorage.getItem('token')) {
+    window.location.href = 'login.html';
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
     rolList = await getAllRoles();
     
     const usersTable = document.getElementById('users-table');
     const tableBody = document.getElementById('users-table-body');
     const totalUsers = document.getElementById('total-users');
+    const btnCreateUser = document.getElementById('btnCreateUser');
+
+    btnCreateUser.addEventListener('click', () => {
+        window.location.href = 'formCreateUser.html';
+    });
     
     showUsers();
 
@@ -149,40 +158,46 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     async function showUsers() {
-        const users = await getAllUsers();
-        const rolList = await getAllRoles();
-        console.log(rolList);
-        totalUsers.textContent = users.length;
-        tableBody.innerHTML = '';
-        
-        for (const user of users) {
-            const row = document.createElement('tr');
-            const rolNames = await getRolNames(user.rol);
-            console.log(rolNames);
-
-            row.innerHTML = `
+        try {
+            const users = await getAllUsers();
+            const rolList = await getAllRoles();
+            totalUsers.textContent = users.length;
+            tableBody.innerHTML = '';
+            
+            for (const user of users) {
+                const row = document.createElement('tr');
+                const rolNames = await getRolNames(user.rol);
+                
+                row.innerHTML = `
                 <td>${user._id}</td>
                 <td>${user.name}</td>
                 <td>${user.email}</td>
                 <td>${rolNames.join(', ')}</td>
                 <td>${user.date}</td>
                 <td>
-                    <button class="btn btn-secondary" data-user-id="${user._id}">Editar</button>
+                <button class="btn btn-secondary" data-user-id="${user._id}">Editar</button>
                 </td>
-            `;
-            tableBody.appendChild(row);
-        }
-    }
-
-    async function getRolNames(rolIds){
-        let rolNames = [];
-        for (const rolId of rolIds) {
-            if(rolList.find(rol => rol._id === rolId)){
-                rolNames.push(rolList.find(rol => rol._id === rolId).name);
+                `;
+                tableBody.appendChild(row);
             }
+        } catch (error) {
+            console.log(error);
         }
-        return rolNames;
+        }
         
+        async function getRolNames(rolIds){
+            try {
+                let rolNames = [];
+                for (const rolId of rolIds) {
+                    if(rolList.find(rol => rol._id === rolId)){
+                        rolNames.push(rolList.find(rol => rol._id === rolId).name);
+                    }
+            }
+            return rolNames;
+        } catch (error) {
+            console.error('Error al obtener los nombres de los roles:', error);
+        }
+            
     }
 
     async function getAllRoles() {
@@ -217,8 +232,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     async function showProducts() {
         const products = await getAllProducts();
         totalProducts.textContent = products.length;
-        activeProducts.textContent = products.filter(product => product.activo).length;
-        inactiveProducts.textContent = products.filter(product => !product.activo).length;
+        activeProducts.textContent = products.filter(product => product.active).length;
+        inactiveProducts.textContent = products.filter(product => !product.active).length;
         productsTableBody.innerHTML = '';
         
         products.forEach(product => {
@@ -266,19 +281,21 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     async function logout() {
         if (localStorage.getItem('userId') != null) {
-            await createUserLog(localStorage.getItem('userId'), "logout");
+            await createUserLog("logout");
             localStorage.removeItem('userId');
             localStorage.removeItem('token');
-            window.location.href = 'testAdmin.html';
+            window.location.href = 'login.html';
         }
     }
 
-    async function createUserLog(userId, action) {
+    async function createUserLog(action) {
         try {
+            const userId = localStorage.getItem('userId');
             const response = await fetch('http://localhost:3000/userLog/create', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 },
                 body: JSON.stringify({ userId: userId, action: action, date: new Date().toISOString() }),
             });
@@ -292,7 +309,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     async function getTotalSales() {
         try {
-            const response = await fetch('http://localhost:3000/sale/getTotalSales');
+            const response = await fetch('http://localhost:3000/sale/getTotalSales', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
             const data = await response.json();
             return data;
         } catch (error) {
@@ -303,7 +326,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     async function getAverageSales() {
         try {
-            const response = await fetch('http://localhost:3000/sale/getAverageSales');
+            const response = await fetch('http://localhost:3000/sale/getAverageSales',{
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
             const data = await response.json();
             return data;
         } catch (error) {
@@ -314,7 +343,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     async function getSumTotalSales() {
         try {
-            const response = await fetch('http://localhost:3000/sale/getSumTotalSales');
+            const response = await fetch('http://localhost:3000/sale/getSumTotalSales',{
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
             const data = await response.json();
             return data;
         } catch (error) {
@@ -325,9 +360,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     async function getTopProducts() {
         try {
-            const response = await fetch('http://localhost:3000/saleDetails/getTopProducts');
+            const response = await fetch('http://localhost:3000/saleDetails/getTopProducts', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
             const data = await response.json();
-            console.log(data);
             return data;
         } catch (error) {
             console.error('Error al obtener los productos más vendidos:', error);
@@ -336,25 +376,36 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     async function showStatistics() {
-        const sales = await getTotalSales();
-        totalOrders.textContent = sales;
+        try {
+            const sales = await getTotalSales();
+            totalOrders.textContent = sales;
+            
+            const average = await getAverageSales();
+            averageSales.textContent = average[0].average.toFixed(2);
+            
+            const sumTotal = await getSumTotalSales();
+            totalSales.textContent = sumTotal[0].total.toFixed(2);
 
-        const average = await getAverageSales();
-        averageSales.textContent = average[0].average.toFixed(2);
-        
-        const sumTotal = await getSumTotalSales();
-        totalSales.textContent = sumTotal[0].total.toFixed(2);
-
-        const topProducts = await getTopProducts();
-        topProducts.forEach((product, index) => {
-        const div = document.createElement('div');
-        div.className = 'top-product';
-        div.innerHTML = `<span>${index + 1}. ${product.name}</span> <span>Unidades: ${product.totalVendidas}</span>`;
-        trendSales.appendChild(div);
-        });
+            const topProducts = await getTopProducts();
+            topProducts.forEach((product, index) => {
+                const div = document.createElement('div');
+                div.className = 'top-product';
+                div.innerHTML = `<span>${index + 1}. ${product.name}</span> <span>Unidades: ${product.totalVendidas}</span>`;
+                trendSales.appendChild(div);
+            });
+        } catch (error) {
+            totalOrders.textContent = "no autorizado";
+            averageSales.textContent = "no autorizado";
+            totalSales.textContent = "no autorizado";
+            const div = document.createElement('div');
+                div.className = 'top-product';
+                div.innerHTML = `<span class="text-danger">no autorizado</span>`;
+                trendSales.appendChild(div);
+            console.error('Error al mostrar las estadísticas:', error);
+        }
     }
-
-    
+        
+        
     
     
 
