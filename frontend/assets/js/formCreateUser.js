@@ -1,3 +1,7 @@
+if (!localStorage.getItem('token')) {
+    window.location.href = 'login.html';
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
     const btnCreateUser = document.getElementById('btnCreateUser');
     btnCreateUser.addEventListener('click', newUser);
@@ -52,6 +56,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         };
         console.log(userData);
         await createUser(userData);
+        await createUserLog('create User ' + userData.name);
         clearForm();
     }
 
@@ -130,5 +135,24 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('passwordCreate').value = '';
         document.getElementById('roleCheckboxContainer').innerHTML = '';
         renderRols();
+    }
+
+    
+    async function createUserLog(action) {
+        try {
+            const userId = localStorage.getItem('userId');
+            const response = await fetch('http://localhost:3000/userLog/create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ userId: userId, action: action, date: new Date().toISOString() }),
+            });
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error('Error creating user log:', error);
+            throw error;
+        }
     }
 });
