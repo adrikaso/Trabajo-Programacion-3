@@ -17,13 +17,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     let userToUpdate = null;
+
     const inputName = document.getElementById('user-name');
     const inputEmail = document.getElementById('user-emailCreate');
     const inputPassword = document.getElementById('user-passwordCreate');
     const btnFormReset = document.getElementById('btnFormReset');
     const btnUpdateUser = document.getElementById('btnUpdateUser');
 
-    btnUpdateUser.addEventListener('click',updateUser);
+    btnUpdateUser.addEventListener('click',getUserValues);
     btnFormReset.addEventListener('click',clearForm);
 
     showUsers();
@@ -255,21 +256,36 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     //--form edit user--
 
-    async function updateUser(){
-        try {
-            const response = await fetch(`http://localhost:3000/user/update/${userToUpdate._id}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(userToUpdate),
-            })
-            const data = await response.json();
-            console.log(data);
-        } catch (error) {
-            console.log(error);
-        }
+    async function getUserValues(){
+        userToUpdate.name = inputName.value;
+        userToUpdate.email = inputEmail.value;
+        userToUpdate.password = inputPassword.value;
+        let roles = [];
+        const rolNames = await  getRolNames(userToUpdate.rol);
+        document.querySelectorAll('input[name="roles"]:checked').forEach(checkbox => {
+            if (checkbox.checked) {
+                console.log(checkbox.value);
+                rolNames.find(rol => rol === checkbox.value) ? '' : roles.push(checkbox.value);
+            }
+        })
+        console.log(roles);
     }
+
+    // async function updateUser(){
+    //     try {
+    //         const response = await fetch(`http://localhost:3000/user/update/${userToUpdate._id}`, {
+    //             method: 'PUT',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //             },
+    //             body: JSON.stringify(userToUpdate),
+    //         })
+    //         const data = await response.json();
+    //         console.log(data);
+    //     } catch (error) {
+    //         console.log(error);
+    //     }
+    // }
 
     document.querySelectorAll('#btnEditUser').forEach(btn => {
         btn.addEventListener('click', async () => {
@@ -322,7 +338,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 div.classList.add('form-check');
 
                 div.innerHTML = `
-                <input class="form-check-input" type="checkbox" name="roles" value="${role.name}" id="rol-${role.name}">
+                <input class="form-check-input-user" type="checkbox" name="roles" value="${role.name}" id="rol-${role.name}">
                 <label class="form-check-label" for="rol-${role.name}">
                     ${role.name.charAt(0).toUpperCase() + role.name.slice(1)}
                 </label>
