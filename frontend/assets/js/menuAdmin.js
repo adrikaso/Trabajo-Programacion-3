@@ -24,8 +24,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     const btnFormReset = document.getElementById('btnFormReset');
     const btnUpdateUser = document.getElementById('btnUpdateUser');
 
-    btnUpdateUser.addEventListener('click',getUserValues);
-    btnFormReset.addEventListener('click',clearForm);
+    btnUpdateUser.addEventListener('click', updateUser);
+    btnFormReset.addEventListener('click', clearForm);
 
     showUsers();
 
@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const btnCloseSession = document.getElementById('btnCloseSession');
     btnCloseSession.addEventListener('click', logout);
 
-    
+
     const productName = document.getElementById('name');
     const productPrice = document.getElementById('price');
     const productCategory = document.getElementById('category');
@@ -66,14 +66,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     const btnCreateProduct = document.getElementById('btnCreateProduct');
     const btnUpdateProduct = document.getElementById('btnUpdateProduct');
     let selectedProductId = null;
-    
+
     const productModal = new bootstrap.Modal(document.getElementById('productModal'));
     const preview = document.getElementById('preview');
     const placeholder = document.getElementById('preview-placeholder');
-    
+
     btnCreateProduct.addEventListener('click', createProduct)
     btnUpdateProduct.addEventListener('click', updateProduct);
-    
+
     //Validación si está creando o editando con data-action
     document.addEventListener('click', function (e) {
         const button = e.target.closest('button[data-action="create"]');
@@ -253,39 +253,46 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    
+
     //--form edit user--
 
-    async function getUserValues(){
-        userToUpdate.name = inputName.value;
-        userToUpdate.email = inputEmail.value;
-        userToUpdate.password = inputPassword.value;
+    async function getUserValues() {
         let roles = [];
-        const rolNames = await  getRolNames(userToUpdate.rol);
+
         document.querySelectorAll('input[name="roles"]:checked').forEach(checkbox => {
-            if (checkbox.checked) {
-                console.log(checkbox.value);
-                rolNames.find(rol => rol === checkbox.value) ? '' : roles.push(checkbox.value);
+            const roleName = checkbox.value;
+            const role = rolList.find(r => r.name === roleName); 
+            if (role) {
+                roles.push(role._id); 
             }
-        })
+        });
+
         console.log(roles);
+        return {
+            name: inputName.value,
+            email: inputEmail.value,
+            password: inputPassword.value,
+            rol: roles
+        }
     }
 
-    // async function updateUser(){
-    //     try {
-    //         const response = await fetch(`http://localhost:3000/user/update/${userToUpdate._id}`, {
-    //             method: 'PUT',
-    //             headers: {
-    //                 'Content-Type': 'application/json',
-    //             },
-    //             body: JSON.stringify(userToUpdate),
-    //         })
-    //         const data = await response.json();
-    //         console.log(data);
-    //     } catch (error) {
-    //         console.log(error);
-    //     }
-    // }
+    async function updateUser() {
+        try {
+            const values = await getUserValues();
+
+            const response = await fetch(`http://localhost:3000/user/update/${userToUpdate._id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(values),
+            })
+            const data = await response.json();
+            console.log(data);
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
     document.querySelectorAll('#btnEditUser').forEach(btn => {
         btn.addEventListener('click', async () => {
@@ -293,7 +300,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const userId = btn.getAttribute('data-user-id');
             await loadUserValuesById(userId);
         });
-    }); 
+    });
 
 
     function clearForm() {
@@ -310,12 +317,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             inputName.value = user.name;
             inputEmail.value = user.email;
             await renderRols();
-            const rolNames= await getRolNames(user.rol);
+            const rolNames = await getRolNames(user.rol);
             rolNames.forEach(rol => {
                 const checkbox = document.getElementById(`rol-${rol}`);
                 checkbox.checked = true;
             })
-            userToUpdate ={
+            userToUpdate = {
                 _id: user._id,
                 name: user.name,
                 email: user.email,
@@ -350,7 +357,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             console.error('Error al renderizar roles:', error);
         }
     }
-    
+
     async function getUserById(userId) {
         try {
             const response = await fetch(`http://localhost:3000/user/getById/${userId}`);
@@ -783,7 +790,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         //  verificamos si se subió al menos un archivo si no se subió nada lo dejamos tal cual esta
         const pictureInput = document.getElementById('img');
         if (pictureInput.files.length > 0) {
-            product.pictureURL = pictureInput.files[0]; 
+            product.pictureURL = pictureInput.files[0];
         }
 
         return product;
