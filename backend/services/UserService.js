@@ -12,8 +12,8 @@ async function getAllUsers() {
     return await repo.getAll();
 }
 
-async function getUserById(id) {
-    return await repo.getById(id);
+async function getUserById(id, data) {
+    return await repo.update(id, data);
 }
 
 async function getUserByEmail(email) {
