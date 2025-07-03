@@ -937,15 +937,16 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
 
             productModal.hide();
-            showUserLogs();
+            
             showProducts();
             const data = await response.json();
 
             const changes = getProductChanges(originalProductData, product);
             if (changes.length > 0) {
-                const logMessage = `Modificó ${product.name} - cambios: ${changes.join(', ')}`;
+                const logMessage = `Modificó ${product.name} - cambios: ${changes.join(' - ')}`;
                 await createUserLog(logMessage);
             }
+            showUserLogs();
             console.log('Producto actualizado:', data);
         } catch (error) {
             console.error('Error al actualizar el producto:', error);
