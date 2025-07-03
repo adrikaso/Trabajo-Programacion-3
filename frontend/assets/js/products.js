@@ -30,6 +30,18 @@ async function getAllProducts() {
     }
 }
 
+async function getProductsActive() {
+    try {
+        const response = await fetch('http://localhost:3000/product/getProductsActive');
+        const data = await response.json();
+        console.log(data);
+        return data;
+    } catch (error) {
+        console.error('Error al obtener los productos activos:', error);
+        return [];
+    }
+}
+
 async function loadProducts() {
     const loadingSpinner = document.getElementById('loadingSpinner');
     const productGrid = document.getElementById('productGrid');
@@ -37,7 +49,7 @@ async function loadProducts() {
     loadingSpinner.style.display = 'block';
 
     try {
-        const allProducts = await getAllProducts();
+        const allProducts = await getProductsActive();
 
         await new Promise(resolve => setTimeout(resolve, 500));
 
@@ -234,7 +246,7 @@ async function loadCategoryFilters() {
         allBtn.textContent = "Todos";
         allBtn.addEventListener("click", async () => {
             setActiveButton(allBtn);
-            const products = await getAllProducts();
+            const products = await getProductsActive();
             displayProducts(products);
         });
         container.appendChild(allBtn);
