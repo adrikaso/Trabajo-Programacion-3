@@ -1,4 +1,4 @@
-const { get } = require("mongoose");
+
 const services = require("../services/ProductService");
 
 const create = async (req, res) => {
@@ -77,4 +77,13 @@ const getProductDetails = async (req, res) => {
   }
 }
 
-module.exports = { create, deleteProduct, findAll, findProduct, deleteProduct, updateProduct, getProductDetails, getByCategory };
+const getProductsActive = async (req, res) => {
+  try {
+    const products = await services.getProductsActive();
+    res.status(201).json(products);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+}
+
+module.exports = { create, deleteProduct, findAll, findProduct, deleteProduct, updateProduct, getProductDetails, getByCategory, getProductsActive };
