@@ -40,6 +40,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const salesTableBody = document.getElementById('orders-table-body');
 
+    const saleDetailsModal = new bootstrap.Modal(document.getElementById('saleDetailsModal'));
     showSales();
 
     const logsTable = document.getElementById('logsTable');
@@ -308,8 +309,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('userModal').addEventListener('hidden.bs.modal', () => {
         document.getElementById('formUser').reset();
     });
-
-
 
     function clearForm() {
         userToUpdate = null;
@@ -623,7 +622,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 },
             });
             const data = await response.json();
-            console.log(data);
             return data;
         } catch (error) {
             console.error('Error al obtener las ventas:', error);
@@ -637,13 +635,22 @@ document.addEventListener('DOMContentLoaded', async () => {
             sales.forEach(sale => {
                 const row = document.createElement('tr');
                 row.innerHTML = `<td>${sale._id}</td><td>${sale.date}</td><td>${sale.clientName}</td><td>${sale.total}</td> 
-                <td><button class="btn btn-primary" data-sale-id="${sale._id}">Ver</button></td>`;
+                <td><button class="btn btn-primary" id="btnSale" data-sale-id="${sale._id}">Ver</button></td>`;
                 salesTableBody.appendChild(row);
             });
+            document.querySelectorAll('#btnSale').forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    const saleId = btn.getAttribute('data-sale-id');
+                    await viewSaleDetails(saleId);
+                })
+            })
         } catch (error) {
             console.error('Error al mostrar las ventas:', error);
         }
     }
+
+    //----------------ver venta completa-----------------------
+    
 
     async function getSaleDetails(saleId) {
         try {
@@ -655,7 +662,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 },
             });
             const data = await response.json();
-            console.log(data);
             return data;
         } catch (error) {
             console.error('Error al obtener los detalles de la venta:', error);
@@ -663,7 +669,106 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    getSaleDetails("6863dda1f3d7603f332922d7");
+    async function viewSaleDetails(saleId) {
+        try {
+            // Mostrar loading
+            document.getElementById('saleDetailsContent').innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Cargando detalles de la venta...</p>
+                </div>
+            `;
+            
+            // Mostrar modal
+            saleDetailsModal.show();
+            
+            // Obtener detalles
+            const saleDetails = await getSaleDetails(saleId);
+            
+            if (saleDetails && saleDetails.length > 0) {
+                renderSaleDetails(saleDetails, saleId);
+            } else {
+                document.getElementById('saleDetailsContent').innerHTML = `
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        No se encontraron detalles para esta venta.
+                    </div>
+                `;
+            }
+        } catch (error) {
+            console.error('Error al obtener los detalles de la venta:', error);
+            document.getElementById('saleDetailsContent').innerHTML = `
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    Error al cargar los detalles de la venta.
+                </div>
+            `;
+        }
+    }
+
+    function renderSaleDetails(saleDetails, saleId) {
+        console.log(saleDetails);
+        const total = saleDetails.reduce((sum, detail) => sum + detail.subtotal, 0);
+        const totalItems = saleDetails.reduce((sum, detail) => sum + detail.quantity, 0);
+        
+        const content = `
+            <div class="sale-summary">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-hashtag me-2"></i>ID de Venta: ${saleId}</h6>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <h6><i class="fas fa-box me-2"></i>Total de Artículos: ${totalItems}</h6>
+                    </div>
+                </div>
+            </div>
+
+            <h6 class="mb-3"><i class="fas fa-list me-2"></i>Productos de la Venta:</h6>
+            
+            <div class="details-container">
+                ${saleDetails.map(detail => `
+                    <div class="detail-row">
+                        <div class="row align-items-center">
+                            <div class="col-md-6">
+                                <div class="product-name">${detail.productId.name || 'Producto ID: ' + detail.productId._id}</div>
+                                <small class="text-muted">ID: ${detail.productId._id}</small>
+                            </div>
+                            <div class="col-md-2 text-center">
+                                <span class="quantity-badge">Cant: ${detail.quantity}</span>
+                            </div>
+                            <div class="col-md-2 text-center">
+                                <small class="text-muted">Precio Unit.</small><br>
+                                $${formatCurrency(detail.subtotal / detail.quantity)}
+                            </div>
+                            <div class="col-md-2 text-end">
+                                <div class="subtotal">$${formatCurrency(detail.subtotal)}</div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+
+            <div class="total-section">
+                <div class="row">
+                    <div class="col-md-8">
+                        <h6 class="mb-0">Total de la Venta:</h6>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <div class="total-amount">$${formatCurrency(total)}</div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.getElementById('saleDetailsContent').innerHTML = content;
+    }
+
+    function formatCurrency(amount) {
+        // Formatear número a moneda con 2 decimales
+        return parseFloat(amount).toFixed(2);
+    }
+
+
 
     // -----------------form---------------
     // category
@@ -847,6 +952,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         placeholder.style.display = 'block';
         console.log("formulario reinicidao")
     }
+
+
 
 });
 
