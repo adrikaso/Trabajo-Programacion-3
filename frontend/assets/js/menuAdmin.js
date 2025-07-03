@@ -261,9 +261,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         document.querySelectorAll('input[name="roles"]:checked').forEach(checkbox => {
             const roleName = checkbox.value;
-            const role = rolList.find(r => r.name === roleName); // rolList es el array global
+            const role = rolList.find(r => r.name === roleName); 
             if (role) {
-                roles.push(role._id); // ahora sí, estás enviando el ObjectId
+                roles.push(role._id); 
             }
         });
 
