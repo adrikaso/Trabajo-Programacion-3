@@ -1,5 +1,5 @@
 let rolList = [];
-
+let originalProductData = null;
 if (!localStorage.getItem('token')) {
     window.location.href = 'login.html';
 }
@@ -292,6 +292,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             const data = await response.json();
             userModal.hide();
             console.log(data);
+            showUsers();
+            await createUserLog("Ha actualizado el usuario " + userToUpdate.name);
         } catch (error) {
             console.log(error);
         }
@@ -848,6 +850,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const data = await response.json();
             productModal.hide();
             showProducts();
+            await createUserLog('Ha creado el producto ' + product.name);
             console.log('Producto creado:', data);
         } catch (error) {
             console.error('Error al crear el producto:', error);
@@ -880,6 +883,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     async function loadProductValuesById(id) {
         try {
             const product = await getProductById(id);
+            originalProductData = product;
             showPreviewImage(`http://localhost:3000${product.pictureURL}`);
             productName.value = product.name;
             productPrice.value = product.price;
@@ -933,12 +937,46 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
 
             productModal.hide();
+            showUserLogs();
             showProducts();
             const data = await response.json();
+
+            const changes = getProductChanges(originalProductData, product);
+            if (changes.length > 0) {
+                const logMessage = `Modificó ${product.name} - cambios: ${changes.join(', ')}`;
+                await createUserLog(logMessage);
+            }
             console.log('Producto actualizado:', data);
         } catch (error) {
             console.error('Error al actualizar el producto:', error);
         }
+    }
+
+    function getProductChanges(oldProduct, newProduct) {
+        const changes = [];
+
+        if (oldProduct.name !== newProduct.name) {
+            changes.push(`nombre: ${oldProduct.name} → ${newProduct.name}`);
+        }
+
+        if (oldProduct.price !== parseFloat(newProduct.price)) {
+            changes.push(`precio: ${oldProduct.price} → ${newProduct.price}`);
+        }
+
+        const oldCatId = typeof oldProduct.category === 'object' ? oldProduct.category._id : oldProduct.category;
+        if (oldCatId !== newProduct.category) {
+            changes.push(`categoría cambiada`);
+        }
+
+        if (oldProduct.active !== newProduct.active) {
+            changes.push(`activo: ${oldProduct.active ? 'Sí' : 'No'} → ${newProduct.active ? 'Sí' : 'No'}`);
+        }
+
+        if (newProduct.pictureURL && typeof newProduct.pictureURL === 'string' && oldProduct.pictureURL !== newProduct.pictureURL) {
+            changes.push(`imagen cambiada`);
+        }
+
+        return changes;
     }
 
     function resetProductForm() {

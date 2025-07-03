@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         };
         console.log(userData);
         await createUser(userData);
-        await createUserLog('create User ' + userData.name);
+        await createUserLog('Ha creado el usuario ' + userData.name);
         clearForm();
     }
 
