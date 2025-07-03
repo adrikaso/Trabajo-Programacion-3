@@ -16,6 +16,16 @@ document.addEventListener('DOMContentLoaded', async () => {
         window.location.href = 'formCreateUser.html';
     });
 
+    let userToUpdate = null;
+    const inputName = document.getElementById('user-name');
+    const inputEmail = document.getElementById('user-emailCreate');
+    const inputPassword = document.getElementById('user-passwordCreate');
+    const btnFormReset = document.getElementById('btnFormReset');
+    const btnUpdateUser = document.getElementById('btnUpdateUser');
+
+    btnUpdateUser.addEventListener('click',updateUser);
+    btnFormReset.addEventListener('click',clearForm);
+
     showUsers();
 
     const productsTable = document.getElementById('productsTable');
@@ -154,28 +164,28 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     // Función para los botones de acción
-    document.querySelectorAll('.btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.preventDefault();
-            const action = btn.textContent;
+    // document.querySelectorAll('.btn').forEach(btn => {
+    //     btn.addEventListener('click', (e) => {
+    //         e.preventDefault();
+    //         const action = btn.textContent;
 
-            // Efecto visual
-            btn.style.transform = 'scale(0.95)';
-            setTimeout(() => {
-                btn.style.transform = '';
-            }, 150);
+    //         // Efecto visual
+    //         btn.style.transform = 'scale(0.95)';
+    //         setTimeout(() => {
+    //             btn.style.transform = '';
+    //         }, 150);
 
-            // Simular acción (aquí puedes integrar con tu backend)
-            console.log(`Acción: ${action} ejecutada`);
+    //         // Simular acción (aquí puedes integrar con tu backend)
+    //         console.log(`Acción: ${action} ejecutada`);
 
-            // Mostrar feedback visual
-            const originalText = btn.textContent;
-            btn.textContent = '✓';
-            setTimeout(() => {
-                btn.textContent = originalText;
-            }, 1000);
-        });
-    });
+    //         // Mostrar feedback visual
+    //         const originalText = btn.textContent;
+    //         btn.textContent = '✓';
+    //         setTimeout(() => {
+    //             btn.textContent = originalText;
+    //         }, 1000);
+    //     });
+    // });
 
 
     // Efectos de hover mejorados para las tarjetas
@@ -232,13 +242,107 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <td>${rolNames.join(', ')}</td>
                 <td>${user.date}</td>
                 <td>
-                <button class="btn btn-secondary" data-user-id="${user._id}">Editar</button>
+                <button class="btn btn-secondary" id="btnEditUser" data-user-id="${user._id}">Editar</button>
                 </td>
                 `;
                 tableBody.appendChild(row);
             }
         } catch (error) {
             console.log(error);
+        }
+    }
+
+    
+    //--form edit user--
+
+    async function updateUser(){
+        try {
+            const response = await fetch(`http://localhost:3000/user/update/${userToUpdate._id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(userToUpdate),
+            })
+            const data = await response.json();
+            console.log(data);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    document.querySelectorAll('#btnEditUser').forEach(btn => {
+        btn.addEventListener('click', async () => {
+            console.log('Botón Editar presionado');
+            const userId = btn.getAttribute('data-user-id');
+            await loadUserValuesById(userId);
+        });
+    }); 
+
+
+    function clearForm() {
+        userToUpdate = null;
+        inputName.value = '';
+        inputEmail.value = '';
+        inputPassword.value = '';
+        document.getElementById('roleCheckboxContainer').innerHTML = '';
+    }
+
+    async function loadUserValuesById(userId) {
+        try {
+            const user = await getUserById(userId);
+            inputName.value = user.name;
+            inputEmail.value = user.email;
+            await renderRols();
+            const rolNames= await getRolNames(user.rol);
+            rolNames.forEach(rol => {
+                const checkbox = document.getElementById(`rol-${rol}`);
+                checkbox.checked = true;
+            })
+            userToUpdate ={
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                password: user.password,
+                rol: user.rol
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    async function renderRols() {
+        try {
+            const roles = await getAllRoles();
+            const container = document.getElementById('roleCheckboxContainer');
+            container.innerHTML = ""; // Limpia contenido anterior
+
+            roles.forEach(role => {
+                const div = document.createElement('div');
+                div.classList.add('form-check');
+
+                div.innerHTML = `
+                <input class="form-check-input" type="checkbox" name="roles" value="${role.name}" id="rol-${role.name}">
+                <label class="form-check-label" for="rol-${role.name}">
+                    ${role.name.charAt(0).toUpperCase() + role.name.slice(1)}
+                </label>
+            `;
+
+                container.appendChild(div);
+            });
+        } catch (error) {
+            console.error('Error al renderizar roles:', error);
+        }
+    }
+    
+    async function getUserById(userId) {
+        try {
+            const response = await fetch(`http://localhost:3000/user/getById/${userId}`);
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error('Error al obtener el usuario por ID:', error);
+            return null;
         }
     }
 
@@ -274,6 +378,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             throw error;
         }
     }
+
+    //-------------------------------------------------------------------
 
     async function getAllProducts() {
         try {
