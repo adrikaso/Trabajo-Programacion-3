@@ -13,6 +13,8 @@ router.get("/getProduct/:id", productController.findProduct);
 
 router.get("/category/:categoryId", productController.getByCategory);
 
+router.get("/getProductsActive", productController.getProductsActive);
+
 router.delete("/delete/:id", productController.deleteProduct);
 
 router.get("/getProductDetails/:id", productController.getProductDetails);

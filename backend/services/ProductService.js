@@ -13,6 +13,10 @@ async function getProductById(id) {
   return await repo.getById(id);
 }
 
+async function getProductsActive() {
+    return await repo.getProductsActive();
+}
+
 async function getProductsByCategory(categoryId) {
   return await repo.getByCategory(categoryId);
 }
@@ -29,4 +33,4 @@ async function getProductDetails(id) {
     return await repo.getProductDetails(id);
 }
 
-module.exports = { createProduct, getAllProducts, getProductById, deleteById, updateById, getProductDetails, getProductsByCategory };
+module.exports = { createProduct, getAllProducts, getProductById, deleteById, updateById, getProductDetails, getProductsByCategory, getProductsActive };
