@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const inputPassword = document.getElementById('user-passwordCreate');
     const btnFormReset = document.getElementById('btnFormReset');
     const btnUpdateUser = document.getElementById('btnUpdateUser');
+    const userModal = new bootstrap.Modal(document.getElementById('userModal'));
 
     btnUpdateUser.addEventListener('click', updateUser);
     btnFormReset.addEventListener('click', clearForm);
@@ -243,7 +244,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <td>${rolNames.join(', ')}</td>
                 <td>${user.date}</td>
                 <td>
-                <button class="btn btn-secondary" id="btnEditUser" data-user-id="${user._id}">Editar</button>
+                <button class="btn btn-secondary" id="btnEditUser" data-bs-toggle="modal" data-bs-target="#userModal" data-user-id="${user._id}">Editar</button>
                 </td>
                 `;
                 tableBody.appendChild(row);
@@ -261,9 +262,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         document.querySelectorAll('input[name="roles"]:checked').forEach(checkbox => {
             const roleName = checkbox.value;
-            const role = rolList.find(r => r.name === roleName); 
+            const role = rolList.find(r => r.name === roleName);
             if (role) {
-                roles.push(role._id); 
+                roles.push(role._id);
             }
         });
 
@@ -288,6 +289,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 body: JSON.stringify(values),
             })
             const data = await response.json();
+            userModal.hide();
             console.log(data);
         } catch (error) {
             console.log(error);
@@ -296,11 +298,17 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     document.querySelectorAll('#btnEditUser').forEach(btn => {
         btn.addEventListener('click', async () => {
+            userModal.show();
             console.log('Botón Editar presionado');
             const userId = btn.getAttribute('data-user-id');
             await loadUserValuesById(userId);
+
         });
     });
+    document.getElementById('userModal').addEventListener('hidden.bs.modal', () => {
+        document.getElementById('formUser').reset();
+    });
+
 
 
     function clearForm() {
