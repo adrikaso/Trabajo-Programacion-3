@@ -54,7 +54,7 @@ function displayCartItems() {
         cartItemsContainer.appendChild(cartItemElement);
     });
 
-    updateItemCount();
+    //updateItemCount();
 }
 
 function createCartItemElement(item) {
@@ -176,10 +176,10 @@ async function updateTotal() {
     }
 }
 
-function updateItemCount() {
-    const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-    document.getElementById('itemCount').textContent = `${totalItems} items`;
-}
+// function updateItemCount() {
+//     const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+//     document.getElementById('itemCount').textContent = `${totalItems} items`;
+// }
 
 
 // METODOS CRUD
