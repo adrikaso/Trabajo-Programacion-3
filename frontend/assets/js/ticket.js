@@ -40,7 +40,7 @@ async function createTicket(list) {
   const detailsContainer = document.getElementById("purchaseDetails");
 
   for (const item of list) {
-    const details = await getProductDetails(item.productId);
+    const details = item.productId;
 
     const row = document.createElement("div");
     row.classList.add("info-row");
