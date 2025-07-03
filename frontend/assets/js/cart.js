@@ -145,7 +145,7 @@ async function updateQuantity(itemId, newQuantity) {
 }
 
 async function removeItem(itemId) {
-    if (confirm('¿Estás seguro de que quieres eliminar este producto?')) {
+    //if (confirm('¿Estás seguro de que quieres eliminar este producto?')) {
         try {
             await fetch(`http://localhost:3000/itemCart/delete/${itemId}`, {
                 method: 'DELETE',
@@ -163,7 +163,7 @@ async function removeItem(itemId) {
         } catch (error) {
             console.error('Error al eliminar item:', error);
         }
-    }
+    //}
 }
 
 async function updateTotal() {
@@ -254,8 +254,8 @@ async function finalizePurchase() {
         return;
     }
 
-    const confirmPurchase = confirm('¿Confirmas tu compra?');
-    if (!confirmPurchase) return;
+    // const confirmPurchase = confirm('¿Confirmas tu compra?');
+    // if (!confirmPurchase) return;
 
     try {
         // Mostrar loading
@@ -289,8 +289,8 @@ async function finalizePurchase() {
 }
 
 async function cancelPurchase() {
-    const confirmCancel = confirm('¿Estás seguro de que quieres cancelar tu pedido? Se perderán todos los productos del carrito.');
-    if (!confirmCancel) return;
+    // const confirmCancel = confirm('¿Estás seguro de que quieres cancelar tu pedido? Se perderán todos los productos del carrito.');
+    // if (!confirmCancel) return;
 
     try {
         deleteCart();
