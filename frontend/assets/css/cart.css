@@ -1,5 +1,5 @@
 body {
-    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     min-height: 100vh;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
@@ -11,6 +11,9 @@ body {
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
+.logo{
+    color: #667eea;
+}
 .cart-container {
     background: rgba(255, 255, 255, 0.95);
     border-radius: 25px;
@@ -166,14 +169,15 @@ body {
 
 .back-btn {
     position: fixed;
-    top: 20px;
+    top: 50px;
     left: 20px;
-    background: linear-gradient(45deg, #3498db, #2980b9);
+    background: linear-gradient(45deg, #27ae60, #2ecc71);
     border: none;
     border-radius: 50px;
     padding: 15px 25px;
-    color: white;
+    color: #fff;    
     font-weight: 600;
+    text-transform: uppercase;
     box-shadow: 0 10px 30px rgba(52, 152, 219, 0.3);
     z-index: 1000;
     transition: all 0.3s ease;

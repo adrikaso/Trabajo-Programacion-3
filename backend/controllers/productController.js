@@ -47,6 +47,15 @@ const getByCategory = async (req, res) => {
   }
 }
 
+const getProductsActive = async (req, res) => {
+  try {
+    const products = await services.getProductsActive();
+    res.status(201).json(products);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+}
+
 const deleteProduct = async (req, res) => {
   try {
     const { id } = req.params;
@@ -77,13 +86,6 @@ const getProductDetails = async (req, res) => {
   }
 }
 
-const getProductsActive = async (req, res) => {
-  try {
-    const products = await services.getProductsActive();
-    res.status(201).json(products);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-}
+
 
 module.exports = { create, deleteProduct, findAll, findProduct, deleteProduct, updateProduct, getProductDetails, getByCategory, getProductsActive };
