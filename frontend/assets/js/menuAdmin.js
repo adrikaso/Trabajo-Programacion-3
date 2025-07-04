@@ -243,6 +243,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <td>${user.name}</td>
                 <td>${user.email}</td>
                 <td>${rolNames.join(', ')}</td>
+                <td>${user.active? 'Activo' : 'Inactivo'}</td>
                 <td>${user.date}</td>
                 <td>
                 <button class="btn btn-secondary" id="btnEditUser" data-bs-toggle="modal" data-bs-target="#userModal" data-user-id="${user._id}">Editar</button>
