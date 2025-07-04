@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    "Authorization": `Bearer ${localStorage.getItem('token')}`,
                 },
                 body: JSON.stringify(userData),
             });
@@ -51,8 +52,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             date: new Date().toISOString(),
             rol: rolList,
-            products: [],
-            sales: []
+            active: true
         };
         console.log(userData);
         await createUser(userData);
