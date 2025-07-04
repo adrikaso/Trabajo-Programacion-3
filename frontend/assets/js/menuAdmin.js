@@ -24,6 +24,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const btnFormReset = document.getElementById('btnFormReset');
     const btnUpdateUser = document.getElementById('btnUpdateUser');
     const userModal = new bootstrap.Modal(document.getElementById('userModal'));
+    const userActive = document.getElementById('userActive');
 
     btnUpdateUser.addEventListener('click', updateUser);
     btnFormReset.addEventListener('click', clearForm);
@@ -237,18 +238,34 @@ document.addEventListener('DOMContentLoaded', async () => {
             for (const user of users) {
                 const row = document.createElement('tr');
                 const rolNames = await getRolNames(user.rol);
+                const parseDate = new Date(user.date);
+                parseDate.setHours(parseDate.getHours())
 
                 row.innerHTML = `
                 <td>${user._id}</td>
                 <td>${user.name}</td>
                 <td>${user.email}</td>
                 <td>${rolNames.join(', ')}</td>
-                <td>${user.active? 'Activo' : 'Inactivo'}</td>
-                <td>${user.date}</td>
-                <td>
-                <button class="btn btn-secondary" id="btnEditUser" data-bs-toggle="modal" data-bs-target="#userModal" data-user-id="${user._id}">Editar</button>
-                </td>
+                <td>${user.active ? 'Activo' : 'Inactivo'}</td>
+                <td>${parseDate.toLocaleString('es-AR')}</td>
                 `;
+                const editBtn = document.createElement('button');
+                editBtn.className = 'btn btn-secondary btnEditUser';
+                editBtn.textContent = 'Editar';
+                editBtn.setAttribute('data-user-id', user._id);
+                editBtn.setAttribute('data-bs-toggle', 'modal');
+                editBtn.setAttribute('data-bs-target', '#userModal');
+
+                editBtn.addEventListener('click', async () => {
+                    clearForm();
+                    userModal.show();
+                    await loadUserValuesById(user._id);
+                });
+
+                const actionsTd = document.createElement('td');
+                actionsTd.appendChild(editBtn);
+                row.appendChild(actionsTd);
+
                 tableBody.appendChild(row);
             }
         } catch (error) {
@@ -275,6 +292,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             name: inputName.value,
             email: inputEmail.value,
             password: inputPassword.value,
+            active: userActive.checked,
             rol: roles
         }
     }
@@ -300,15 +318,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    document.querySelectorAll('#btnEditUser').forEach(btn => {
-        btn.addEventListener('click', async () => {
-            userModal.show();
-            console.log('Botón Editar presionado');
-            const userId = btn.getAttribute('data-user-id');
-            await loadUserValuesById(userId);
+    // document.querySelectorAll('#btnEditUser').forEach(btn => {
+    //     btn.addEventListener('click', async () => {
+    //         userModal.show();
+    //         console.log('Botón Editar presionado');
+    //         const userId = btn.getAttribute('data-user-id');
+    //         await loadUserValuesById(userId);
 
-        });
-    });
+    //     });
+    // });
     document.getElementById('userModal').addEventListener('hidden.bs.modal', () => {
         document.getElementById('formUser').reset();
     });
@@ -318,6 +336,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         inputName.value = '';
         inputEmail.value = '';
         inputPassword.value = '';
+        userActive.checked = false;
         document.getElementById('roleCheckboxContainer').innerHTML = '';
     }
 
@@ -326,6 +345,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const user = await getUserById(userId);
             inputName.value = user.name;
             inputEmail.value = user.email;
+            userActive.checked = user.active;
             await renderRols();
             const rolNames = await getRolNames(user.rol);
             rolNames.forEach(rol => {
@@ -337,6 +357,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 name: user.name,
                 email: user.email,
                 password: user.password,
+                active: user.active,
                 rol: user.rol
             }
         } catch (error) {
@@ -479,9 +500,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         logsTableBody.innerHTML = '';
 
         userLogs.forEach(userLog => {
+            const parseDate = new Date(userLog.date);
+            parseDate.setHours(parseDate.getHours())
+
             const row = document.createElement('tr');
             row.innerHTML = `
-                <td>${userLog.date}</td>
+                <td>${parseDate.toLocaleString('es-AR')}</td>
                 <td>${userLog.userId.email}</td>
                 <td>${userLog.action}</td>
             `;
@@ -637,7 +661,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             const sales = await getAllSales();
             sales.forEach(sale => {
                 const row = document.createElement('tr');
-                row.innerHTML = `<td>${sale._id}</td><td>${sale.date}</td><td>${sale.clientName}</td><td>${sale.total}</td> 
+                const parseDate = new Date(sale.date);
+                parseDate.setHours(parseDate.getHours())
+                row.innerHTML = `<td>${sale._id}</td><td>${parseDate.toLocaleString('es-AR')}</td><td>${sale.clientName}</td><td>${sale.total}</td> 
                 <td><button class="btn btn-primary" id="btnSale" data-sale-id="${sale._id}">Ver</button></td>`;
                 salesTableBody.appendChild(row);
             });
@@ -653,7 +679,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     //----------------ver venta completa-----------------------
-    
+
 
     async function getSaleDetails(saleId) {
         try {
@@ -681,13 +707,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <p>Cargando detalles de la venta...</p>
                 </div>
             `;
-            
+
             // Mostrar modal
             saleDetailsModal.show();
-            
+
             // Obtener detalles
             const saleDetails = await getSaleDetails(saleId);
-            
+
             if (saleDetails && saleDetails.length > 0) {
                 renderSaleDetails(saleDetails, saleId);
             } else {
@@ -713,7 +739,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.log(saleDetails);
         const total = saleDetails.reduce((sum, detail) => sum + detail.subtotal, 0);
         const totalItems = saleDetails.reduce((sum, detail) => sum + detail.quantity, 0);
-        
+
         const content = `
             <div class="sale-summary">
                 <div class="row">
@@ -762,7 +788,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 </div>
             </div>
         `;
-        
+
         document.getElementById('saleDetailsContent').innerHTML = content;
     }
 
@@ -938,13 +964,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
 
             productModal.hide();
-            
+
             showProducts();
             const data = await response.json();
 
             const changes = getProductChanges(originalProductData, product);
             if (changes.length > 0) {
-                const logMessage = `Modificó ${product.name} - cambios: ${changes.join(' - ')}`;
+                const logMessage = `Modificó ${product.name} - cambios: ${changes.join(' \n \n ')}`;
                 await createUserLog(logMessage);
             }
             showUserLogs();
@@ -954,6 +980,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
+    // compara la data original con la data actual
     function getProductChanges(oldProduct, newProduct) {
         const changes = [];
 
