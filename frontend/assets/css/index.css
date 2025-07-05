@@ -107,3 +107,169 @@ body {
     color: #667eea;
     margin-bottom: 1rem;
 }
+
+/* Estilos del teclado virtual */
+.virtual-keyboard {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%) translateY(100%);
+    width: 95%;
+    max-width: 800px;
+    background: rgba(255, 255, 255, 0.95); 
+    backdrop-filter: blur(15px);
+    border-radius: 25px 25px 0 0;
+    padding: 30px;
+    box-shadow: 0 -20px 40px rgba(0, 0, 0, 0.15); 
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    z-index: 1000;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.virtual-keyboard.show {
+    transform: translateX(-50%) translateY(0);
+}
+
+.keyboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid rgba(102, 126, 234, 0.2);
+}
+
+.keyboard-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #667eea;
+    margin: 0;
+}
+
+.keyboard-close {
+    background: rgba(102, 126, 234, 0.1);
+    border: 1px solid rgba(102, 126, 234, 0.2);
+    font-size: 1.2rem;
+    color: #667eea;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.keyboard-close:hover {
+    background: rgba(102, 126, 234, 0.2);
+    transform: scale(1.05);
+}
+
+.keyboard-row {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 15px;
+    gap: 8px;
+}
+
+.keyboard-key {
+    min-width: 50px;
+    height: 50px;
+    border: 2px solid #e9ecef;
+    background: linear-gradient(145deg, #ffffff, #f8f9fa);
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #495057;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+}
+
+.keyboard-key:hover {
+    background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+    border-color: #667eea;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+}
+
+.keyboard-key:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+}
+
+.keyboard-key.special {
+    background: linear-gradient(145deg, #667eea, #764ba2);
+    color: white;
+    border-color: #667eea;
+}
+
+.keyboard-key.special:hover {
+    background: linear-gradient(145deg, #764ba2, #667eea);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.keyboard-key.space {
+    min-width: 200px;
+}
+
+.keyboard-key.backspace {
+    min-width: 80px;
+}
+
+.keyboard-key.caps {
+    min-width: 70px;
+}
+
+.keyboard-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.keyboard-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .virtual-keyboard {
+        width: 100%;
+        padding: 20px;
+        border-radius: 20px 20px 0 0;
+    }
+
+    .keyboard-key {
+        min-width: 40px;
+        height: 45px;
+        font-size: 1rem;
+    }
+
+    .keyboard-key.space {
+        min-width: 150px;
+    }
+}
+
+.keyboard-key.finish {
+    min-width: 150px;
+    background: linear-gradient(145deg, #28a745, #20c997);
+    font-size: 1.2rem;
+    font-weight: 700;
+    border: none;
+}
+
+.keyboard-key.finish:hover {
+    background: linear-gradient(145deg, #20c997, #28a745);
+    box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+}
+
+.keyboard-key .fas {
+    pointer-events: none;
+}

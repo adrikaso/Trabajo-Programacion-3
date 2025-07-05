@@ -23,7 +23,7 @@
         <i class="fas fa-bolt floating-icon" style="top: 30%; right: 5%; font-size: 2.5rem; animation-delay: 5s;"></i>
     </div>
 
-    <div class="container-fluid d-flex align-items-center justify-content-center min-vh-100 py-5">
+    <div class="container-fluid d-flex align-items-center justify-content-center vh-100 py-5 ">
         <div class="row w-100 justify-content-center">
             <div class="col-lg-6 col-md-8">
                 <div class="welcome-card p-5">
@@ -80,6 +80,73 @@
             </div>
         </div>
     </div>
+    <!-- overlay del teclado -->
+    <div class="keyboard-overlay" id="keyboardOverlay"></div>
+
+    <!-- teclado Virtual -->
+    <div class="virtual-keyboard" id="virtualKeyboard">
+        <div class="keyboard-header">
+            <h3 class="keyboard-title">
+                <i class="fas fa-keyboard me-2"></i>Ingresa tu nombre
+            </h3>
+            <button class="keyboard-close" id="closeKeyboard">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div class="keyboard-row">
+            <div class="keyboard-key" data-key="Q">Q</div>
+            <div class="keyboard-key" data-key="W">W</div>
+            <div class="keyboard-key" data-key="E">E</div>
+            <div class="keyboard-key" data-key="R">R</div>
+            <div class="keyboard-key" data-key="T">T</div>
+            <div class="keyboard-key" data-key="Y">Y</div>
+            <div class="keyboard-key" data-key="U">U</div>
+            <div class="keyboard-key" data-key="I">I</div>
+            <div class="keyboard-key" data-key="O">O</div>
+            <div class="keyboard-key" data-key="P">P</div>
+        </div>
+
+        <div class="keyboard-row">
+            <div class="keyboard-key" data-key="A">A</div>
+            <div class="keyboard-key" data-key="S">S</div>
+            <div class="keyboard-key" data-key="D">D</div>
+            <div class="keyboard-key" data-key="F">F</div>
+            <div class="keyboard-key" data-key="G">G</div>
+            <div class="keyboard-key" data-key="H">H</div>
+            <div class="keyboard-key" data-key="J">J</div>
+            <div class="keyboard-key" data-key="K">K</div>
+            <div class="keyboard-key" data-key="L">L</div>
+            <div class="keyboard-key" data-key="Ñ">Ñ</div>
+        </div>
+
+        <div class="keyboard-row">
+            <div class="keyboard-key caps special" data-key="CAPS">
+                <i class="fas fa-arrow-up"></i>
+            </div>
+            <div class="keyboard-key" data-key="Z">Z</div>
+            <div class="keyboard-key" data-key="X">X</div>
+            <div class="keyboard-key" data-key="C">C</div>
+            <div class="keyboard-key" data-key="V">V</div>
+            <div class="keyboard-key" data-key="B">B</div>
+            <div class="keyboard-key" data-key="N">N</div>
+            <div class="keyboard-key" data-key="M">M</div>
+            <div class="keyboard-key backspace special" data-key="BACKSPACE">
+                <i class="fas fa-backspace"></i>
+            </div>
+        </div>
+
+        <div class="keyboard-row">
+            <div class="keyboard-key space special" data-key="SPACE">ESPACIO</div>
+
+            <div class="keyboard-row">
+                <div class="keyboard-key finish special" id="finishKeyboard">
+                    <i class="fas fa-check me-2"></i>LISTO
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="assets/js/index.js"></script>
 </body>
 
