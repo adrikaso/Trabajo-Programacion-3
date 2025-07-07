@@ -5,6 +5,72 @@ if (!localStorage.getItem('token')) {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
+
+    createThemeToggleButton();
+    
+
+    function toggleTheme() {
+    const body = document.body;
+    const currentTheme = body.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    
+    body.setAttribute('data-theme', newTheme);
+    
+    // Guardar preferencia en localStorage
+    localStorage.setItem('theme', newTheme);
+    
+    // Actualizar el icono del botón
+    updateThemeIcon(newTheme);
+}
+
+// Función para actualizar el icono del botón
+function updateThemeIcon(theme) {
+    const themeToggle = document.querySelector('.theme-toggle');
+    if (themeToggle) {
+        themeToggle.innerHTML = theme === 'dark' ? '☀️' : '🌙';
+        themeToggle.title = theme === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro';
+    }
+}
+
+// Función para inicializar el tema
+function initializeTheme() {
+    const body = document.body;
+    
+    // Obtener tema guardado o usar preferencia del sistema
+    const savedTheme = localStorage.getItem('theme');
+    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
+    let theme = savedTheme || (systemPrefersDark ? 'dark' : 'light');
+    
+    // Aplicar tema
+    body.setAttribute('data-theme', theme);
+    
+    // Actualizar icono
+    updateThemeIcon(theme);
+}
+
+// Función para crear el botón de cambio de tema
+function createThemeToggleButton() {
+    const themeToggle = document.createElement('button');
+    themeToggle.className = 'theme-toggle';
+    themeToggle.onclick = toggleTheme;
+    
+    // Añadir el botón al body
+    document.body.appendChild(themeToggle);
+    
+    // Inicializar el tema
+    initializeTheme();
+}
+
+// Escuchar cambios en la preferencia del sistema
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+    if (!localStorage.getItem('theme')) {
+        const theme = e.matches ? 'dark' : 'light';
+        document.body.setAttribute('data-theme', theme);
+        updateThemeIcon(theme);
+    }
+});
+
     rolList = await getAllRoles();
 
     const usersTable = document.getElementById('users-table');
@@ -108,32 +174,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     loadCategories();
 
 
-    const sectionData = {
-        'Dashboard': {
-            title: 'Dashboard',
-            description: 'Descripción de la sección Dashboard'
-        },
-        'Users': {
-            title: 'Usuarios',
-            description: 'Descripción de la sección Usuarios'
-        },
-        'Products': {
-            title: 'Productos',
-            description: 'Descripción de la sección Productos'
-        },
-        'Sales': {
-            title: 'Ventas',
-            description: 'Descripción de la sección Ventas'
-        },
-        'Statistics': {
-            title: 'Estadísticas',
-            description: 'Descripción de la sección Estadísticas'
-        },
-        'Logs': {
-            title: 'Logs',
-            description: 'Descripción de la sección Logs'
-        }
-    };
+
 
     // Función para cambiar de sección
     function switchSection(sectionName) {
@@ -153,8 +194,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Mostrar la sección seleccionada
         document.getElementById(sectionName).classList.add('active');
 
-        // Actualizar título y descripción
-        const data = sectionData[sectionName];
 
 
     }
