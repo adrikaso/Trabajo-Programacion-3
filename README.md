@@ -50,7 +50,7 @@
 
 ## 🌗 Modo oscuro / claro
 
-Toda la aplicación soporta cambio de tema visual mediante un **modo claro y oscuro**, gestionado con **variables CSS** para un control eficiente y limpio del diseño.
+El menu de administrador soporta cambio de tema visual mediante un **modo claro y oscuro**, gestionado con **variables CSS** para un control eficiente y limpio del diseño.
 
 ---
 
@@ -84,13 +84,11 @@ Toda la aplicación soporta cambio de tema visual mediante un **modo claro y osc
 │   ├── formCreateUser.html
 │   ├── index.html           # Pantalla principal (táctil)
 │   ├── login.html           # Pantalla de login (oculta)
-│   ├── menuAdmin.html
-│   ├── products.html
-│   ├── testCarrito.html
-│   ├── testCRUD.html
-│   └── ticket.html
+│   ├── menuAdmin.html       # Pantalla de Administrador
+│   ├── products.html        # Pantalla de Compra
+│   └── ticket.html          # Pantalla de Ticket
 │
-├── .gitignore
+├── .gitignore              # Archivo para ignorar 
 ```
 
 ---
@@ -130,8 +128,8 @@ Toda la aplicación soporta cambio de tema visual mediante un **modo claro y osc
 
 ## 👥 Autores
 
-- **Daniel Iwach** – [GitHub](https://github.com/danieliwach)
-- **Adrián Lezcano** – [GitHub](https://github.com/adrianlezcano)
+- **Daniel Iwach** – [GitHub](https://github.com/Daniel-iwach)
+- **Adrián Lezcano** – [GitHub](https://github.com/adrikaso)
 
 ---
 
