@@ -71,7 +71,7 @@ function createCartItemElement(item) {
                     <div class="col-md-4">
                         <div class="item-info">
                             <h6>${item.productName}</h6>
-                            <div class="item-price">${item.unitPrice}</div>
+                            <div class="item-price">$${item.unitPrice}</div>
                         </div>
                     </div>
                     <div class="col-md-4">
@@ -87,7 +87,7 @@ function createCartItemElement(item) {
                         </div>
                     </div>
                     <div class="col-md-2 text-end">
-                        <div class="fw-bold mb-2">${(item.unitPrice * item.quantity).toFixed(2)}</div>
+                        <div class="fw-bold mb-2">$${(item.unitPrice * item.quantity).toFixed(2)}</div>
                         <button class="delete-btn" onclick="removeItem('${item._id}')" title="Eliminar">
                             <i class="fas fa-trash"></i>
                         </button>
@@ -170,7 +170,7 @@ async function updateTotal() {
     try {
         const response = await fetch('http://localhost:3000/shopingCart/getTotal');
         const total = await response.json();
-        document.getElementById('totalAmount').textContent = `${total}`;
+        document.getElementById('totalAmount').textContent = `$${total}`;
     } catch (error) {
         console.error('Error al obtener el total:', error);
     }
@@ -183,22 +183,6 @@ async function updateTotal() {
 
 
 // METODOS CRUD
-async function createClient() {
-    try {
-        const url = 'http://localhost:3000/client/create';
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-        const data = await response.json();
-        console.log('Cliente creado:', data);
-    } catch (error) {
-        console.error('Error al crear el cliente:', error);
-    }
-}
-
 async function createSale() {
     try {
         const url = 'http://localhost:3000/sale/create';
@@ -262,9 +246,6 @@ async function finalizePurchase() {
         const btn = document.getElementById('btnFinalizePurchase');
         btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Procesando...';
         btn.disabled = true;
-
-        // Crear cliente
-        await createClient();
 
         // Crear venta
         const saleId = await createSale();
