@@ -206,31 +206,6 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e)
         });
     });
 
-    // Función para los botones de acción
-    // document.querySelectorAll('.btn').forEach(btn => {
-    //     btn.addEventListener('click', (e) => {
-    //         e.preventDefault();
-    //         const action = btn.textContent;
-
-    //         // Efecto visual
-    //         btn.style.transform = 'scale(0.95)';
-    //         setTimeout(() => {
-    //             btn.style.transform = '';
-    //         }, 150);
-
-    //         // Simular acción (aquí puedes integrar con tu backend)
-    //         console.log(`Acción: ${action} ejecutada`);
-
-    //         // Mostrar feedback visual
-    //         const originalText = btn.textContent;
-    //         btn.textContent = '✓';
-    //         setTimeout(() => {
-    //             btn.textContent = originalText;
-    //         }, 1000);
-    //     });
-    // });
-
-
     // Efectos de hover mejorados para las tarjetas
     document.querySelectorAll('.card').forEach(card => {
         card.addEventListener('mouseenter', () => {
@@ -340,10 +315,16 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e)
         try {
             const values = await getUserValues();
 
+            // Si el campo password está vacío no toca el password actual
+            if (!values.password || values.password.trim() === '') {
+                delete values.password;
+            }
+
             const response = await fetch(`http://localhost:3000/user/update/${userToUpdate._id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
+                    "Authorization": `Bearer ${localStorage.getItem('token')}`,
                 },
                 body: JSON.stringify(values),
             })
@@ -356,16 +337,7 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e)
             console.log(error);
         }
     }
-
-    // document.querySelectorAll('#btnEditUser').forEach(btn => {
-    //     btn.addEventListener('click', async () => {
-    //         userModal.show();
-    //         console.log('Botón Editar presionado');
-    //         const userId = btn.getAttribute('data-user-id');
-    //         await loadUserValuesById(userId);
-
-    //     });
-    // });
+    
     document.getElementById('userModal').addEventListener('hidden.bs.modal', () => {
         document.getElementById('formUser').reset();
     });
@@ -524,7 +496,13 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e)
 
     async function getAllUserLogs() {
         try {
-            const response = await fetch('http://localhost:3000/userLog/getAllWithUser');
+            const response = await fetch('http://localhost:3000/userLog/getAllWithUser', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
             const data = await response.json();
             return data;
         } catch (error) {
@@ -534,22 +512,27 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e)
     }
 
     async function showUserLogs() {
-        const userLogs = await getAllUserLogs();
-        totalLogs.textContent = userLogs.length;
-        logsTableBody.innerHTML = '';
+        try {
+            const userLogs = await getAllUserLogs();
+            totalLogs.textContent = userLogs.length;
+            logsTableBody.innerHTML = '';
 
-        userLogs.forEach(userLog => {
-            const parseDate = new Date(userLog.date);
-            parseDate.setHours(parseDate.getHours())
+            userLogs.forEach(userLog => {
+                const parseDate = new Date(userLog.date);
+                parseDate.setHours(parseDate.getHours())
 
-            const row = document.createElement('tr');
-            row.innerHTML = `
+                const row = document.createElement('tr');
+                row.innerHTML = `
                 <td>${parseDate.toLocaleString('es-AR')}</td>
                 <td>${userLog.userId.email}</td>
                 <td>${userLog.action}</td>
             `;
-            logsTableBody.appendChild(row);
-        });
+                logsTableBody.appendChild(row);
+            });
+        } catch (error) {
+            console.error('Error al mostrar los registros de usuarios:', error);
+        }
+
     }
 
     async function logout() {
@@ -906,7 +889,8 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e)
             const response = await fetch(url, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 },
                 body: JSON.stringify(
                     product
@@ -995,7 +979,8 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e)
             const response = await fetch(url, {
                 method: 'PUT',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 },
                 body: JSON.stringify(
                     product

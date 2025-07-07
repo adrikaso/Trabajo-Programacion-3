@@ -23,8 +23,8 @@
     --text-header: #2d3748;
     --text-card: #2d3748;
     --text-table: #4a5568;
-    --text-form: #e0e0e0;
-    --text-placeholder: #9ca3af;
+    --text-form: #2d3748;
+    --text-placeholder: #2d3748;
     --text-btn-secondary: #4a5568;
     --text-btn-light: #667eea;
     --text-logo: #4a5568;
@@ -509,9 +509,10 @@ tr:hover {
 }
 
 .form-control:focus, .form-select:focus {
-    border-color: #667eea;
+    border-color: var(--border-form);
     box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
     background: var(--bg-form-focus);
+    color: var(--text-form);
 }
 
 .form-control::placeholder {
@@ -611,4 +612,7 @@ tr:hover {
 .theme-toggle:hover {
     transform: scale(1.1);
     box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+.top-product{
+    color: var(--text-primary);
 }
