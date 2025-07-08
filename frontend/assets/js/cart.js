@@ -1,15 +1,27 @@
+// Lista global que almacena los ítems del carrito
 let cartItems = [];
 
+/**
+ * Inicializa la página al cargar el DOM:
+ * - Carga los ítems del carrito
+ * - Asocia eventos a los botones principales
+ */
 document.addEventListener('DOMContentLoaded', async () => {
     await loadCartItems();
     setupEventListeners();
 });
 
+/**
+ * Asocia eventos a los botones de finalizar y cancelar compra
+ */
 function setupEventListeners() {
     document.getElementById('btnFinalizePurchase').addEventListener('click', finalizePurchase);
     document.getElementById('btnCancelPurchase').addEventListener('click', cancelPurchase);
 }
 
+/**
+ * Carga los ítems del carrito desde el backend y los muestra en pantalla.
+ */
 async function loadCartItems() {
     const loadingCart = document.getElementById('loadingCart');
     const cartContent = document.getElementById('cartContent');
@@ -40,11 +52,17 @@ async function loadCartItems() {
     }
 }
 
+/**
+ * Muestra el mensaje de carrito vacío
+ */
 function showEmptyCart() {
     document.getElementById('emptyCart').style.display = 'block';
     document.getElementById('totalSection').style.display = 'none';
 }
 
+/**
+ * Dibuja todos los ítems del carrito en el DOM
+ */
 function displayCartItems() {
     const cartItemsContainer = document.getElementById('cartItems');
     cartItemsContainer.innerHTML = '';
@@ -57,6 +75,11 @@ function displayCartItems() {
     //updateItemCount();
 }
 
+/**
+ * Crea el elemento HTML de un ítem del carrito
+ * @param {Object} item - Objeto del ítem (producto + cantidad)
+ * @returns {HTMLElement} - Elemento visual del ítem
+ */
 function createCartItemElement(item) {
     const div = document.createElement('div');
     div.className = 'cart-item';
@@ -98,6 +121,10 @@ function createCartItemElement(item) {
     return div;
 }
 
+/**
+ * Incrementa la cantidad de un ítem del carrito
+ * @param {string} itemId - ID del ítem
+ */
 async function incrementQuantity(itemId) {
     try {
         await fetch(`http://localhost:3000/itemCart/incrementQuantity/${itemId}`, {
@@ -111,6 +138,10 @@ async function incrementQuantity(itemId) {
     }
 }
 
+/**
+ * Decrementa la cantidad de un ítem, si es mayor a 1
+ * @param {string} itemId - ID del ítem
+ */
 async function decrementQuantity(itemId) {
     const item = cartItems.find(i => i._id === itemId);
     if (item && item.quantity > 1) {
@@ -128,6 +159,11 @@ async function decrementQuantity(itemId) {
     }
 }
 
+/**
+ * Actualiza la cantidad de un ítem del carrito.
+ * @param {string} itemId - ID del ítem a actualizar
+ * @param {number} newQuantity - Nueva cantidad a asignar
+ */
 async function updateQuantity(itemId, newQuantity) {
     if (newQuantity < 1) return;
 
@@ -144,6 +180,10 @@ async function updateQuantity(itemId, newQuantity) {
     }
 }
 
+/**
+ * Elimina un ítem del carrito por su ID
+ * @param {string} itemId 
+ */
 async function removeItem(itemId) {
     //if (confirm('¿Estás seguro de que quieres eliminar este producto?')) {
         try {
@@ -166,6 +206,9 @@ async function removeItem(itemId) {
     //}
 }
 
+/**
+ * Actualiza el total mostrado del carrito
+ */
 async function updateTotal() {
     try {
         const response = await fetch('http://localhost:3000/shopingCart/getTotal');
@@ -176,13 +219,12 @@ async function updateTotal() {
     }
 }
 
-// function updateItemCount() {
-//     const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-//     document.getElementById('itemCount').textContent = `${totalItems} items`;
-// }
-
-
 // METODOS CRUD
+
+/**
+ * Crea una nueva venta
+ * @returns {Promise<string>} - ID de la venta creada
+ */
 async function createSale() {
     try {
         const url = 'http://localhost:3000/sale/create';
@@ -200,6 +242,9 @@ async function createSale() {
     }
 }
 
+/**
+ * Elimina el carrito completo del backend
+ */
 async function deleteCart() {
     try {
         const url = 'http://localhost:3000/shopingCart/delete';
@@ -216,6 +261,9 @@ async function deleteCart() {
     }
 }
 
+/**
+ * Elimina todos los ítems del carrito
+ */
 async function deleteAllItemCart() {
     try {
         const url = 'http://localhost:3000/itemCart/deleteAll';
@@ -232,15 +280,17 @@ async function deleteAllItemCart() {
     }
 }
 
+/**
+ * Finaliza la compra:
+ * - Crea la venta
+ * - Elimina carrito e ítems
+ * - Redirige al ticket
+ */
 async function finalizePurchase() {
     if (cartItems.length === 0) {
         alert('Tu carrito está vacío');
         return;
     }
-
-    // const confirmPurchase = confirm('¿Confirmas tu compra?');
-    // if (!confirmPurchase) return;
-
     try {
         // Mostrar loading
         const btn = document.getElementById('btnFinalizePurchase');
@@ -269,10 +319,10 @@ async function finalizePurchase() {
     }
 }
 
+/**
+ * Cancela la compra actual y vuelve al inicio
+ */
 async function cancelPurchase() {
-    // const confirmCancel = confirm('¿Estás seguro de que quieres cancelar tu pedido? Se perderán todos los productos del carrito.');
-    // if (!confirmCancel) return;
-
     try {
         deleteCart();
 
@@ -286,6 +336,9 @@ async function cancelPurchase() {
     }
 }
 
+/**
+ * Redirige a la página de productos
+ */
 function goBack() {
     window.location.href = 'products.html';
 }
