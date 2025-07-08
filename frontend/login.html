@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,22 +9,32 @@
     <link rel="stylesheet" href="assets/css/login.css">
     <link rel="icon" href="assets/img/favicon.svg">
 </head>
+
 <body>
+    <button class="theme-toggle btn btn-outline-secondary position-absolute top-0 end-0 m-3">
+        🌙
+    </button>
     <div class="login-container">
         <h2 class="text-center mb-4">Iniciar Sesión</h2>
         <form id="loginForm" action="/login" method="POST">
             <div class="mb-3">
                 <label for="email" class="form-label">Correo electrónico</label>
-                <input type="email" class="form-control" id="email" name="email" placeholder="ejemplo@correo.com" required>
+                <input type="email" class="form-control" id="email" name="email" placeholder="ejemplo@correo.com"
+                    required>
             </div>
             <div class="mb-3">
                 <label for="password" class="form-label">Contraseña</label>
-                <input type="password" class="form-control" id="password" name="password" placeholder="********" required>
+                <input type="password" class="form-control" id="password" name="password" placeholder="********"
+                    required>
             </div>
             <button type="button" class="btn btn-primary w-100" id="btnLogin">Iniciar Sesión</button>
+            <div id="loginError" class="alert alert-danger mt-3 text-center" style="display: none;">
+                Datos incorrectos
+            </div>
         </form>
         <div class="text-center mt-3">
-            <button type="button" class="btn btn-outline-primary" id="btnLoginSuper">Iniciar sesión como superAdmin</button>
+            <button type="button" class="btn btn-outline-primary" id="btnLoginSuper">Iniciar sesión como
+                superAdmin</button>
         </div>
         <div class="text-center mt-3">
             <button type="button" class="btn btn-outline-primary" id="btnLoginAdmin">Iniciar sesión como Admin</button>
@@ -32,4 +43,5 @@
 
     <script src="assets/js/login.js"></script>
 </body>
+
 </html>
