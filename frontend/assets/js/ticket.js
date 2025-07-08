@@ -74,7 +74,7 @@ async function loadTicket() {
 
     // Redirigir al inicio
     setTimeout(() => {
-		window.location.href = "/frontend/index.html";
+		window.location.href = "index.html";
     }, 7000);
 
   } catch (error) {

@@ -420,10 +420,6 @@ function animateButtonSuccess(productId) {
 }
 
 function goToCart() {
-    if (productCart.length === 0) {
-        alert('Tu carrito está vacío. Agrega algunos productos primero.');
-        return;
-    }
     window.location.href = 'cart.html';
 }
 
