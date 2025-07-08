@@ -39,7 +39,6 @@ function getUserById(req, res) {
 function updateUser(req, res) {
     const id = req.params.id;
     const data = req.body;
-    data.password = bcrypt.hashSync(data.password, 10);
     services.updateUserById(id, data).then((result) => {
         res.status(201).json(result);
     }).catch((err) => {

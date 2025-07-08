@@ -21,7 +21,15 @@ async function getUserByEmail(email) {
 }
 
 async function updateUserById(id, userUpdated) {
-    return await repo.update(id, userUpdated);
+    const updatedData = { ...userUpdated };
+
+    if (updatedData.password && updatedData.password.trim() !== '') {
+        updatedData.password = bcrypt.hashSync(updatedData.password, 10);
+    } else {
+        // si el campo está vacio, elimina la propiedad password del objecto, asi no pisa la contraseña existente con un valor vacio
+        delete updatedData.password;
+    }
+    return await repo.update(id, updatedData);
 }
 
 async function deleteUserById(id) {
