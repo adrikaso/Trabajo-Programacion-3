@@ -1,3 +1,70 @@
+/* Variables de colores para tema claro */
+:root {
+    /* Colores de fondo */
+    --bg-gradient-start: #667eea;
+    --bg-gradient-end: #764ba2;
+    --container-bg: rgba(255, 255, 255, 0.95);
+    --container-border: rgba(255, 255, 255, 0.2);
+    --input-bg: #f8fafc;
+    --input-bg-focus: white;
+    --input-border: #e2e8f0;
+    --theme-toggle-bg: rgba(255, 255, 255, 0.2);
+    --theme-toggle-bg-hover: rgba(255, 255, 255, 0.3);
+    --role-hover-bg: rgba(102, 126, 234, 0.05);
+    
+    /* Colores de texto */
+    --text-primary: #2d3748;
+    --text-secondary: #4a5568;
+    --text-muted: #cbd5e0;
+    --text-placeholder: #a0aec0;
+    --text-input: #2d3748;
+    --text-input-focus: #2d3748;
+    --text-checkbox: #718096;
+    
+    /* Colores de acento */
+    --accent-primary: #667eea;
+    --accent-secondary: #764ba2;
+    --success-primary: #48bb78;
+    --success-secondary: #38a169;
+    --success-tertiary: #2f855a;
+    
+    /* Colores de botones */
+    --btn-secondary-bg: #e2e8f0;
+    --btn-secondary-border: #e2e8f0;
+    --btn-secondary-bg-hover: #cbd5e0;
+    --btn-secondary-border-hover: #cbd5e0;
+}
+
+/* Variables de colores para tema oscuro */
+[data-theme="dark"] {
+    /* Colores de fondo */
+    --bg-gradient-start: #1a202c;
+    --bg-gradient-end: #2d3748;
+    --container-bg: rgba(26, 32, 44, 0.95);
+    --container-border: rgba(255, 255, 255, 0.1);
+    --input-bg: #2d3748;
+    --input-bg-focus: #374151;
+    --input-border: #4a5568;
+    --theme-toggle-bg: rgba(45, 55, 72, 0.8);
+    --theme-toggle-bg-hover: rgba(45, 55, 72, 0.9);
+    --role-hover-bg: rgba(102, 126, 234, 0.1);
+    
+    /* Colores de texto */
+    --text-primary: #e2e8f0;
+    --text-secondary: #cbd5e0;
+    --text-muted: #cbd5e0;
+    --text-placeholder: #718096;
+    --text-input: #e2e8f0;
+    --text-input-focus: #f7fafc;
+    --text-checkbox: #cbd5e0;
+    
+    /* Colores de botones */
+    --btn-secondary-bg: #4a5568;
+    --btn-secondary-border: #4a5568;
+    --btn-secondary-bg-hover: #2d3748;
+    --btn-secondary-border-hover: #2d3748;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -6,7 +73,7 @@
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
     min-height: 100vh;
     display: flex;
     align-items: center;
@@ -15,14 +82,14 @@ body {
 }
 
 .login-container {
-    background: rgba(255, 255, 255, 0.95);
+    background: var(--container-bg);
     backdrop-filter: blur(10px);
     border-radius: 24px;
     padding: 40px;
     width: 100%;
     max-width: 480px;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid var(--container-border);
     animation: slideUp 0.6s ease-out;
 }
 
@@ -31,7 +98,6 @@ body {
         opacity: 0;
         transform: translateY(30px);
     }
-
     to {
         opacity: 1;
         transform: translateY(0);
@@ -39,7 +105,7 @@ body {
 }
 
 h2 {
-    color: #2d3748;
+    color: var(--text-primary);
     font-size: 28px;
     font-weight: 700;
     text-align: center;
@@ -55,7 +121,7 @@ h2::after {
     transform: translateX(-50%);
     width: 60px;
     height: 3px;
-    background: linear-gradient(90deg, #667eea, #764ba2);
+    background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
     border-radius: 2px;
 }
 
@@ -65,7 +131,7 @@ h2::after {
 
 .form-label {
     display: block;
-    color: #4a5568;
+    color: var(--text-secondary);
     font-weight: 600;
     margin-bottom: 8px;
     font-size: 14px;
@@ -76,43 +142,44 @@ h2::after {
 .form-control {
     width: 100%;
     padding: 16px 20px;
-    border: 2px solid #e2e8f0;
+    border: 2px solid var(--input-border);
     border-radius: 12px;
     font-size: 16px;
     transition: all 0.3s ease;
-    background: #f8fafc;
-    color: #2d3748;
+    background: var(--input-bg);
+    color: var(--text-input);
 }
 
 .form-control:focus {
     outline: none;
-    border-color: #667eea;
-    background: white;
+    border-color: var(--accent-primary);
+    background: var(--input-bg-focus);
     box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
     transform: translateY(-2px);
+    color: var(--text-input-focus);
 }
 
 .form-control::placeholder {
-    color: #a0aec0;
+    color: var(--text-placeholder);
     font-weight: 400;
 }
 
 /* Estilos para el contenedor de roles */
 #roleCheckboxContainer {
-    background: #f8fafc;
-    border: 2px solid #e2e8f0;
+    background: var(--input-bg);
+    border: 2px solid var(--input-border);
     border-radius: 12px;
     padding: 16px;
     transition: all 0.3s ease;
 }
 
 #roleCheckboxContainer:focus-within {
-    border-color: #667eea;
-    background: white;
+    border-color: var(--accent-primary);
+    background: var(--input-bg-focus);
     box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
-/* Estilos para checkboxes de roles (cuando se carguen dinámicamente) */
+/* Estilos para checkboxes de roles */
 .role-checkbox {
     display: flex;
     align-items: center;
@@ -123,18 +190,18 @@ h2::after {
 }
 
 .role-checkbox:hover {
-    background-color: rgba(102, 126, 234, 0.05);
+    background-color: var(--role-hover-bg);
 }
 
 .role-checkbox input[type="checkbox"] {
     width: 18px;
     height: 18px;
     margin-right: 12px;
-    accent-color: #667eea;
+    accent-color: var(--accent-primary);
 }
 
 .role-checkbox label {
-    color: #4a5568;
+    color: var(--text-secondary);
     font-weight: 500;
     cursor: pointer;
     margin: 0;
@@ -158,7 +225,7 @@ h2::after {
 }
 
 .btn-success {
-    background: linear-gradient(135deg, #48bb78, #38a169);
+    background: linear-gradient(135deg, var(--success-primary), var(--success-secondary));
     color: white;
     box-shadow: 0 4px 15px rgba(72, 187, 120, 0.3);
 }
@@ -166,11 +233,22 @@ h2::after {
 .btn-success:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 25px rgba(72, 187, 120, 0.4);
-    background: linear-gradient(135deg, #38a169, #2f855a);
+    background: linear-gradient(135deg, var(--success-secondary), var(--success-tertiary));
 }
 
 .btn-success:active {
     transform: translateY(0);
+}
+
+.btn-secondary {
+    background: var(--btn-secondary-bg);
+    border-color: var(--btn-secondary-border);
+    color: var(--text-primary);
+}
+
+.btn-secondary:hover {
+    background: var(--btn-secondary-bg-hover);
+    border-color: var(--btn-secondary-border-hover);
 }
 
 /* Efecto de ondas en el botón */
@@ -192,13 +270,54 @@ h2::after {
     height: 300px;
 }
 
+/* Estilos para el botón de cambio de tema */
+.theme-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: none;
+    background: var(--theme-toggle-bg);
+    backdrop-filter: blur(10px);
+    color: var(--text-primary);
+    font-size: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.theme-toggle:hover {
+    transform: scale(1.1);
+    background: var(--theme-toggle-bg-hover);
+}
+
+/* Estilos para checkboxes */
+.form-check-input {
+    background-color: var(--input-bg);
+    border-color: var(--input-border);
+}
+
+.form-check-input:checked {
+    background-color: var(--accent-primary);
+    border-color: var(--accent-primary);
+}
+
+.form-check-label {
+    color: var(--text-checkbox);
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .login-container {
         padding: 24px;
         margin: 10px;
     }
-
+    
     h2 {
         font-size: 24px;
         margin-bottom: 24px;
@@ -230,7 +349,6 @@ h2::after {
     0% {
         transform: translate(-50%, -50%) rotate(0deg);
     }
-
     100% {
         transform: translate(-50%, -50%) rotate(360deg);
     }
@@ -263,7 +381,6 @@ h2::after {
         opacity: 0;
         transform: translateY(20px);
     }
-
     to {
         opacity: 1;
         transform: translateY(0);
@@ -272,5 +389,5 @@ h2::after {
 
 a {
     text-decoration: none;
-    color: #000;
+    color: var(--text-primary);
 }
