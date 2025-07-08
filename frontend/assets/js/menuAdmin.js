@@ -7,69 +7,68 @@ if (!localStorage.getItem('token')) {
 document.addEventListener('DOMContentLoaded', async () => {
 
     createThemeToggleButton();
-    
 
     function toggleTheme() {
-    const body = document.body;
-    const currentTheme = body.getAttribute('data-theme');
-    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    
-    body.setAttribute('data-theme', newTheme);
-    
-    // Guardar preferencia en localStorage
-    localStorage.setItem('theme', newTheme);
-    
-    // Actualizar el icono del botón
-    updateThemeIcon(newTheme);
-}
+        const body = document.body;
+        const currentTheme = body.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
 
-// Función para actualizar el icono del botón
-function updateThemeIcon(theme) {
-    const themeToggle = document.querySelector('.theme-toggle');
-    if (themeToggle) {
-        themeToggle.innerHTML = theme === 'dark' ? '☀️' : '🌙';
-        themeToggle.title = theme === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro';
+        body.setAttribute('data-theme', newTheme);
+
+        // Guardar preferencia en localStorage
+        localStorage.setItem('theme', newTheme);
+
+        // Actualizar el icono del botón
+        updateThemeIcon(newTheme);
     }
-}
 
-// Función para inicializar el tema
-function initializeTheme() {
-    const body = document.body;
-    
-    // Obtener tema guardado o usar preferencia del sistema
-    const savedTheme = localStorage.getItem('theme');
-    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    
-    let theme = savedTheme || (systemPrefersDark ? 'dark' : 'light');
-    
-    // Aplicar tema
-    body.setAttribute('data-theme', theme);
-    
-    // Actualizar icono
-    updateThemeIcon(theme);
-}
+    // Función para actualizar el icono del botón
+    function updateThemeIcon(theme) {
+        const themeToggle = document.querySelector('.theme-toggle');
+        if (themeToggle) {
+            themeToggle.innerHTML = theme === 'dark' ? '☀️' : '🌙';
+            themeToggle.title = theme === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro';
+        }
+    }
 
-// Función para crear el botón de cambio de tema
-function createThemeToggleButton() {
-    const themeToggle = document.createElement('button');
-    themeToggle.className = 'theme-toggle';
-    themeToggle.onclick = toggleTheme;
-    
-    // Añadir el botón al body
-    document.body.appendChild(themeToggle);
-    
-    // Inicializar el tema
-    initializeTheme();
-}
+    // Función para inicializar el tema
+    function initializeTheme() {
+        const body = document.body;
 
-// Escuchar cambios en la preferencia del sistema
-window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-    if (!localStorage.getItem('theme')) {
-        const theme = e.matches ? 'dark' : 'light';
-        document.body.setAttribute('data-theme', theme);
+        // Obtener tema guardado o usar preferencia del sistema
+        const savedTheme = localStorage.getItem('theme');
+        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+        let theme = savedTheme || (systemPrefersDark ? 'dark' : 'light');
+
+        // Aplicar tema
+        body.setAttribute('data-theme', theme);
+
+        // Actualizar icono
         updateThemeIcon(theme);
     }
-});
+
+    // Función para crear el botón de cambio de tema
+    function createThemeToggleButton() {
+        const themeToggle = document.createElement('button');
+        themeToggle.className = 'theme-toggle';
+        themeToggle.onclick = toggleTheme;
+
+        // Añadir el botón al body
+        document.body.appendChild(themeToggle);
+
+        // Inicializar el tema
+        initializeTheme();
+    }
+
+    // Escuchar cambios en la preferencia del sistema
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+        if (!localStorage.getItem('theme')) {
+            const theme = e.matches ? 'dark' : 'light';
+            document.body.setAttribute('data-theme', theme);
+            updateThemeIcon(theme);
+        }
+    });
 
     rolList = await getAllRoles();
 
@@ -231,6 +230,10 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e)
         });
     });
 
+    // ====================
+    // Sección: Gestión de Usuarios
+    // ====================
+    /* Obtiene todos los usuarios del backend */
     async function getAllUsers() {
         try {
             const response = await fetch('http://localhost:3000/user/getAll');
@@ -241,7 +244,7 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e)
             return [];
         }
     }
-
+    /* Muestra todos los usuarios en la tabla del admin */
     async function showUsers() {
         try {
             const users = await getAllUsers();
@@ -289,7 +292,7 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e)
 
 
     //--form edit user--
-
+    /* Obtiene los valores del formulario de edición de usuario */
     async function getUserValues() {
         let roles = [];
 
@@ -310,7 +313,7 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e)
             rol: roles
         }
     }
-
+    /* Actualiza el usuario en el backend */
     async function updateUser() {
         try {
             const values = await getUserValues();
@@ -337,20 +340,20 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e)
             console.log(error);
         }
     }
-    
+    /* Limpiar el formulario al cerrar el modal */
     document.getElementById('userModal').addEventListener('hidden.bs.modal', () => {
         document.getElementById('formUser').reset();
     });
-
+    /* Limpia el formulario y vuelve a renderizar los roles */
     function clearForm() {
         userToUpdate = null;
         inputName.value = '';
         inputEmail.value = '';
         inputPassword.value = '';
-        userActive.checked = false;
+        userActive.checked = true;
         document.getElementById('roleCheckboxContainer').innerHTML = '';
     }
-
+    /* Obtiene los valores del usuario por su ID */
     async function loadUserValuesById(userId) {
         try {
             const user = await getUserById(userId);
@@ -375,7 +378,7 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e)
             console.log(error);
         }
     }
-
+    /* Renderiza los roles en el formulario de edición de usuario */
     async function renderRols() {
         try {
             const roles = await getAllRoles();
@@ -399,7 +402,7 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e)
             console.error('Error al renderizar roles:', error);
         }
     }
-
+    /* Obtiene un usuario por su ID */
     async function getUserById(userId) {
         try {
             const response = await fetch(`http://localhost:3000/user/getById/${userId}`);
@@ -410,7 +413,7 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e)
             return null;
         }
     }
-
+    /* Obtiene los nombres de los roles por sus IDs */
     async function getRolNames(rolIds) {
         try {
             let rolNames = [];
@@ -425,7 +428,7 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e)
         }
 
     }
-
+    /* Obtiene todos los roles */
     async function getAllRoles() {
         try {
             let token = localStorage.getItem('token');
@@ -444,8 +447,11 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e)
         }
     }
 
-    //-------------------------------------------------------------------
+    // ====================
+    // Sección: Gestión de Productos
+    // ====================
 
+    /* Obtiene todos los productos */
     async function getAllProducts() {
         try {
             const response = await fetch('http://localhost:3000/product/getAll');
@@ -456,7 +462,7 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e)
             return [];
         }
     }
-
+    /* Renderiza los productos en la tabla */
     async function showProducts() {
         const products = await getAllProducts();
         totalProducts.textContent = products.length;
@@ -494,9 +500,243 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e)
         });
     }
 
-    async function getAllUserLogs() {
+    // -----------------Formulario de Productos-----------------
+    // Categorias
+    /* Obtiene todas las categorias */
+    async function getAllCategories() {
         try {
-            const response = await fetch('http://localhost:3000/userLog/getAllWithUser', {
+            const response = await fetch("http://localhost:3000/category/getAll");
+            const categories = await response.json();
+            return categories;
+        } catch (error) {
+            console.error("Error al cargar categorías:", error);
+        }
+    }
+    /* Carga las categorias en el select */
+    async function loadCategories() {
+        const categorias = await getAllCategories();
+
+        const select = document.getElementById("category");
+        select.innerHTML = "";
+
+        categorias.forEach(cat => {
+            const option = document.createElement("option");
+            option.value = cat._id;            // 👈 ENVÍA EL ID REAL
+            option.textContent = cat.name;
+            select.appendChild(option);
+            console.log("categorias obtenidas: " + cat.name);
+        });
+    }
+
+    // Crear Producto
+    /* Obtiene los valores del formulario */
+    function getProductValues() {
+        const product = {
+            name: productName.value,
+            price: productPrice.value,
+            pictureURL: productImg.value,
+            category: productCategory.value,
+            active: productActive.checked
+        };
+        return product;
+    }
+
+    /* Sube la imagen al back */
+    async function uploadImage() {
+        const formData = new FormData();
+        const pictureInput = document.getElementById('img');
+
+        formData.append('picture', pictureInput.files[0]);
+
+        const response = await fetch('http://localhost:3000/upload', {
+            method: 'POST',
+            body: formData
+        });
+
+        if (!response.ok) throw new Error("Error al subir imagen");
+
+        const data = await response.json(); // contiene pictureURL
+        return data.pictureURL;
+    }
+    /* Crea el producto */
+    async function createProduct() {
+        try {
+            const pictureURL = await uploadImage();
+
+            let product = getProductValues();
+            product.pictureURL = pictureURL;
+            product.category = document.getElementById('category').value;
+
+            const url = 'http://localhost:3000/product/create';
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+                body: JSON.stringify(
+                    product
+                )
+            });
+
+            const data = await response.json();
+            productModal.hide();
+            showProducts();
+            await createUserLog('Ha creado el producto ' + product.name);
+            console.log('Producto creado:', data);
+        } catch (error) {
+            console.error('Error al crear el producto:', error);
+        }
+    }
+
+    // Actualizar Producto
+    /* Obtiene un producto por su ID */
+    async function getProductById(id) {
+        try {
+            const response = await fetch(`http://localhost:3000/product/getProduct/${id}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+            });
+            const data = await response.json();
+            console.log(data);
+            return data;
+        } catch (error) {
+            console.error('Error al obtener el producto por ID:', error);
+            return null;
+        }
+    }
+    /* Obtiene los valores del formulario */
+    function getProductValuesForUpdate() {
+        const product = {
+            name: productName.value,
+            price: productPrice.value,
+            category: productCategory.value,
+            active: productActive.checked
+        };
+
+        //  verificamos si se subió al menos un archivo si no se subió nada lo dejamos tal cual esta
+        const pictureInput = document.getElementById('img');
+        if (pictureInput.files.length > 0) {
+            product.pictureURL = pictureInput.files[0];
+        }
+
+        return product;
+    }
+    /* Muestra la imagen previa */
+    function showPreviewImage(url) {
+        preview.src = url;
+        preview.style.display = 'block';
+        placeholder.style.display = 'none';
+    }
+    /* Obtiene los valores del producto por su ID */
+    async function loadProductValuesById(id) {
+        try {
+            const product = await getProductById(id);
+            originalProductData = product;
+            showPreviewImage(`http://localhost:3000${product.pictureURL}`);
+            productName.value = product.name;
+            productPrice.value = product.price;
+            productCategory.value = product.category._id;
+            productActive.checked = product.active;
+
+            selectedProductId = product._id;
+        } catch (error) {
+            console.error('Error al obtener el producto:', error);
+        }
+    }
+    /* Actualiza el producto */
+    async function updateProduct() {
+        try {
+            // verificamos si se ha seleccionado una nueva imagen
+            const product = getProductValuesForUpdate();
+            // si hay una nueva imagen la subo
+            let pictureURL = product.pictureURL;
+            if (pictureURL instanceof File) {
+                pictureURL = await uploadImage(); // subo la nueva imagen 
+            }
+            // actualizamos el producto con la nueva imagen
+            product.pictureURL = pictureURL;
+
+            const url = `http://localhost:3000/product/update/${selectedProductId}`;
+            const response = await fetch(url, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                },
+                body: JSON.stringify(
+                    product
+                )
+            });
+
+            productModal.hide();
+
+            showProducts();
+            const data = await response.json();
+
+            const changes = getProductChanges(originalProductData, product);
+            if (changes.length > 0) {
+                const logMessage = `Modificó ${product.name} - cambios: ${changes.join(' | ')}`;
+                await createUserLog(logMessage);
+            }
+            showUserLogs();
+            console.log('Producto actualizado:', data);
+        } catch (error) {
+            console.error('Error al actualizar el producto:', error);
+        }
+    }
+
+    // compara la data del producto original con la data del producto a actualizar, esto lo usamos para los logs
+    function getProductChanges(oldProduct, newProduct) {
+        const changes = [];
+
+        if (oldProduct.name !== newProduct.name) {
+            changes.push(`nombre: ${oldProduct.name} → ${newProduct.name}`);
+        }
+
+        if (oldProduct.price !== parseFloat(newProduct.price)) {
+            changes.push(`precio: ${oldProduct.price} → ${newProduct.price}`);
+        }
+
+        const oldCatId = typeof oldProduct.category === 'object' ? oldProduct.category._id : oldProduct.category;
+        if (oldCatId !== newProduct.category) {
+            changes.push(`categoría cambiada`);
+        }
+
+        if (oldProduct.active !== newProduct.active) {
+            changes.push(`activo: ${oldProduct.active ? 'Sí' : 'No'} → ${newProduct.active ? 'Sí' : 'No'}`);
+        }
+
+        if (newProduct.pictureURL && typeof newProduct.pictureURL === 'string' && oldProduct.pictureURL !== newProduct.pictureURL) {
+            changes.push(`imagen cambiada`);
+        }
+
+        return changes;
+    }
+    /* Reinicia el formulario */
+    function resetProductForm() {
+        productName.value = '';
+        productPrice.value = '';
+        productCategory.value = '';
+        productActive.checked = false;
+        productImg.value = '';
+        preview.src = '';
+        preview.style.display = 'none';
+        placeholder.style.display = 'block';
+        console.log("formulario reinicidao")
+    }
+
+    // ====================
+    // Sección: Gestión de Ventas
+    // ====================
+    //----------------ver venta completa-----------------------
+
+    async function getSaleDetails(saleId) {
+        try {
+            const response = await fetch(`http://localhost:3000/saleDetails/getSaleDetailsBySaleId/${saleId}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -506,62 +746,113 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e)
             const data = await response.json();
             return data;
         } catch (error) {
-            console.error('Error al obtener los registros de usuarios:', error);
+            console.error('Error al obtener los detalles de la venta:', error);
             return [];
         }
     }
 
-    async function showUserLogs() {
+    async function viewSaleDetails(saleId) {
         try {
-            const userLogs = await getAllUserLogs();
-            totalLogs.textContent = userLogs.length;
-            logsTableBody.innerHTML = '';
-
-            userLogs.forEach(userLog => {
-                const parseDate = new Date(userLog.date);
-                parseDate.setHours(parseDate.getHours())
-
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                <td>${parseDate.toLocaleString('es-AR')}</td>
-                <td>${userLog.userId.email}</td>
-                <td>${userLog.action}</td>
+            // Mostrar loading
+            document.getElementById('saleDetailsContent').innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Cargando detalles de la venta...</p>
+                </div>
             `;
-                logsTableBody.appendChild(row);
-            });
+
+            // Mostrar modal
+            saleDetailsModal.show();
+
+            // Obtener detalles
+            const saleDetails = await getSaleDetails(saleId);
+
+            if (saleDetails && saleDetails.length > 0) {
+                renderSaleDetails(saleDetails, saleId);
+            } else {
+                document.getElementById('saleDetailsContent').innerHTML = `
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        No se encontraron detalles para esta venta.
+                    </div>
+                `;
+            }
         } catch (error) {
-            console.error('Error al mostrar los registros de usuarios:', error);
-        }
-
-    }
-
-    async function logout() {
-        if (localStorage.getItem('userId') != null) {
-            await createUserLog("logout");
-            localStorage.removeItem('userId');
-            localStorage.removeItem('token');
-            window.location.href = 'login.html';
+            console.error('Error al obtener los detalles de la venta:', error);
+            document.getElementById('saleDetailsContent').innerHTML = `
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    Error al cargar los detalles de la venta.
+                </div>
+            `;
         }
     }
 
-    async function createUserLog(action) {
-        try {
-            const userId = localStorage.getItem('userId');
-            const response = await fetch('http://localhost:3000/userLog/create', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                },
-                body: JSON.stringify({ userId: userId, action: action, date: new Date().toISOString() }),
-            });
-            const data = await response.json();
-            return data;
-        } catch (error) {
-            console.error('Error creating user log:', error);
-            throw error;
-        }
+    function renderSaleDetails(saleDetails, saleId) {
+        console.log(saleDetails);
+        const total = saleDetails.reduce((sum, detail) => sum + detail.subtotal, 0);
+        const totalItems = saleDetails.reduce((sum, detail) => sum + detail.quantity, 0);
+
+        const content = `
+            <div class="sale-summary">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-hashtag me-2"></i>ID de Venta: ${saleId}</h6>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <h6><i class="fas fa-box me-2"></i>Total de Artículos: ${totalItems}</h6>
+                    </div>
+                </div>
+            </div>
+
+            <h6 class="mb-3"><i class="fas fa-list me-2"></i>Productos de la Venta:</h6>
+            
+            <div class="details-container">
+                ${saleDetails.map(detail => `
+                    <div class="detail-row">
+                        <div class="row align-items-center">
+                            <div class="col-md-6">
+                                <div class="product-name">${detail.productId.name || 'Producto ID: ' + detail.productId._id}</div>
+                                <small class="text-muted">ID: ${detail.productId._id}</small>
+                            </div>
+                            <div class="col-md-2 text-center">
+                                <span class="quantity-badge">Cant: ${detail.quantity}</span>
+                            </div>
+                            <div class="col-md-2 text-center">
+                                <small class="text-muted">Precio Unit.</small><br>
+                                $${formatCurrency(detail.subtotal / detail.quantity)}
+                            </div>
+                            <div class="col-md-2 text-end">
+                                <div class="subtotal">$${formatCurrency(detail.subtotal)}</div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+
+            <div class="total-section">
+                <div class="row">
+                    <div class="col-md-8">
+                        <h6 class="mb-0">Total de la Venta:</h6>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <div class="total-amount">$${formatCurrency(total)}</div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        document.getElementById('saleDetailsContent').innerHTML = content;
     }
+
+    function formatCurrency(amount) {
+        // Formatear número a moneda con 2 decimales
+        return parseFloat(amount).toFixed(2);
+    }
+
+    // ====================
+    // Sección: Gestión de Estadisticas
+    // ====================
 
     async function getTotalSales() {
         try {
@@ -700,12 +991,13 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e)
         }
     }
 
-    //----------------ver venta completa-----------------------
+    // ====================
+    // Sección: Gestión de User Logs
+    // ====================
 
-
-    async function getSaleDetails(saleId) {
+    async function getAllUserLogs() {
         try {
-            const response = await fetch(`http://localhost:3000/saleDetails/getSaleDetailsBySaleId/${saleId}`, {
+            const response = await fetch('http://localhost:3000/userLog/getAllWithUser', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -715,336 +1007,63 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e)
             const data = await response.json();
             return data;
         } catch (error) {
-            console.error('Error al obtener los detalles de la venta:', error);
+            console.error('Error al obtener los registros de usuarios:', error);
             return [];
         }
     }
 
-    async function viewSaleDetails(saleId) {
+    async function showUserLogs() {
         try {
-            // Mostrar loading
-            document.getElementById('saleDetailsContent').innerHTML = `
-                <div class="loading">
-                    <div class="spinner"></div>
-                    <p>Cargando detalles de la venta...</p>
-                </div>
+            const userLogs = await getAllUserLogs();
+            totalLogs.textContent = userLogs.length;
+            logsTableBody.innerHTML = '';
+
+            userLogs.forEach(userLog => {
+                const parseDate = new Date(userLog.date);
+                parseDate.setHours(parseDate.getHours())
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                <td>${parseDate.toLocaleString('es-AR')}</td>
+                <td>${userLog.userId.email}</td>
+                <td>${userLog.action}</td>
             `;
-
-            // Mostrar modal
-            saleDetailsModal.show();
-
-            // Obtener detalles
-            const saleDetails = await getSaleDetails(saleId);
-
-            if (saleDetails && saleDetails.length > 0) {
-                renderSaleDetails(saleDetails, saleId);
-            } else {
-                document.getElementById('saleDetailsContent').innerHTML = `
-                    <div class="alert alert-warning">
-                        <i class="fas fa-exclamation-triangle me-2"></i>
-                        No se encontraron detalles para esta venta.
-                    </div>
-                `;
-            }
+                
+                logsTableBody.appendChild(row);
+            });
         } catch (error) {
-            console.error('Error al obtener los detalles de la venta:', error);
-            document.getElementById('saleDetailsContent').innerHTML = `
-                <div class="alert alert-danger">
-                    <i class="fas fa-exclamation-circle me-2"></i>
-                    Error al cargar los detalles de la venta.
-                </div>
-            `;
+            console.error('Error al mostrar los registros de usuarios:', error);
+        }
+
+    }
+
+    async function logout() {
+        if (localStorage.getItem('userId') != null) {
+            await createUserLog("logout");
+            localStorage.removeItem('userId');
+            localStorage.removeItem('token');
+            window.location.href = 'login.html';
         }
     }
 
-    function renderSaleDetails(saleDetails, saleId) {
-        console.log(saleDetails);
-        const total = saleDetails.reduce((sum, detail) => sum + detail.subtotal, 0);
-        const totalItems = saleDetails.reduce((sum, detail) => sum + detail.quantity, 0);
-
-        const content = `
-            <div class="sale-summary">
-                <div class="row">
-                    <div class="col-md-6">
-                        <h6><i class="fas fa-hashtag me-2"></i>ID de Venta: ${saleId}</h6>
-                    </div>
-                    <div class="col-md-6 text-end">
-                        <h6><i class="fas fa-box me-2"></i>Total de Artículos: ${totalItems}</h6>
-                    </div>
-                </div>
-            </div>
-
-            <h6 class="mb-3"><i class="fas fa-list me-2"></i>Productos de la Venta:</h6>
-            
-            <div class="details-container">
-                ${saleDetails.map(detail => `
-                    <div class="detail-row">
-                        <div class="row align-items-center">
-                            <div class="col-md-6">
-                                <div class="product-name">${detail.productId.name || 'Producto ID: ' + detail.productId._id}</div>
-                                <small class="text-muted">ID: ${detail.productId._id}</small>
-                            </div>
-                            <div class="col-md-2 text-center">
-                                <span class="quantity-badge">Cant: ${detail.quantity}</span>
-                            </div>
-                            <div class="col-md-2 text-center">
-                                <small class="text-muted">Precio Unit.</small><br>
-                                $${formatCurrency(detail.subtotal / detail.quantity)}
-                            </div>
-                            <div class="col-md-2 text-end">
-                                <div class="subtotal">$${formatCurrency(detail.subtotal)}</div>
-                            </div>
-                        </div>
-                    </div>
-                `).join('')}
-            </div>
-
-            <div class="total-section">
-                <div class="row">
-                    <div class="col-md-8">
-                        <h6 class="mb-0">Total de la Venta:</h6>
-                    </div>
-                    <div class="col-md-4 text-end">
-                        <div class="total-amount">$${formatCurrency(total)}</div>
-                    </div>
-                </div>
-            </div>
-        `;
-
-        document.getElementById('saleDetailsContent').innerHTML = content;
-    }
-
-    function formatCurrency(amount) {
-        // Formatear número a moneda con 2 decimales
-        return parseFloat(amount).toFixed(2);
-    }
-
-
-
-    // -----------------form---------------
-    // category
-    async function getAllCategories() {
+    async function createUserLog(action) {
         try {
-            const response = await fetch("http://localhost:3000/category/getAll");
-            const categories = await response.json();
-            return categories;
-        } catch (error) {
-            console.error("Error al cargar categorías:", error);
-        }
-    }
-
-    async function loadCategories() {
-        const categorias = await getAllCategories();
-
-        const select = document.getElementById("category");
-        select.innerHTML = "";
-
-        categorias.forEach(cat => {
-            const option = document.createElement("option");
-            option.value = cat._id;            // 👈 ENVÍA EL ID REAL
-            option.textContent = cat.name;
-            select.appendChild(option);
-            console.log("categorias obtenidas: " + cat.name);
-        });
-    }
-
-    // Create Product
-    function getProductValues() {
-        const product = {
-            name: productName.value,
-            price: productPrice.value,
-            pictureURL: productImg.value,
-            category: productCategory.value,
-            active: productActive.checked
-        };
-        return product;
-    }
-
-    async function uploadImage() {
-        const formData = new FormData();
-        const pictureInput = document.getElementById('img');
-
-        formData.append('picture', pictureInput.files[0]);
-
-        const response = await fetch('http://localhost:3000/upload', {
-            method: 'POST',
-            body: formData
-        });
-
-        if (!response.ok) throw new Error("Error al subir imagen");
-
-        const data = await response.json(); // contiene pictureURL
-        return data.pictureURL;
-    }
-
-    async function createProduct() {
-        try {
-            const pictureURL = await uploadImage();
-
-            let product = getProductValues();
-            product.pictureURL = pictureURL;
-            product.category = document.getElementById('category').value;
-
-            const url = 'http://localhost:3000/product/create';
-            const response = await fetch(url, {
+            const userId = localStorage.getItem('userId');
+            const response = await fetch('http://localhost:3000/userLog/create', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 },
-                body: JSON.stringify(
-                    product
-                )
-            });
-
-            const data = await response.json();
-            productModal.hide();
-            showProducts();
-            await createUserLog('Ha creado el producto ' + product.name);
-            console.log('Producto creado:', data);
-        } catch (error) {
-            console.error('Error al crear el producto:', error);
-        }
-    }
-    async function getProductById(id) {
-        try {
-            const response = await fetch(`http://localhost:3000/product/getProduct/${id}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                },
+                body: JSON.stringify({ userId: userId, action: action, date: new Date().toISOString() }),
             });
             const data = await response.json();
-            console.log(data);
             return data;
         } catch (error) {
-            console.error('Error al obtener el producto por ID:', error);
-            return null;
+            console.error('Error creating user log:', error);
+            throw error;
         }
     }
-
-    function showPreviewImage(url) {
-        preview.src = url;
-        preview.style.display = 'block';
-        placeholder.style.display = 'none';
-    }
-
-    async function loadProductValuesById(id) {
-        try {
-            const product = await getProductById(id);
-            originalProductData = product;
-            showPreviewImage(`http://localhost:3000${product.pictureURL}`);
-            productName.value = product.name;
-            productPrice.value = product.price;
-            productCategory.value = product.category._id;
-            productActive.checked = product.active;
-
-            selectedProductId = product._id;
-        } catch (error) {
-            console.error('Error al obtener el producto:', error);
-        }
-    }
-
-    function getProductValuesForUpdate() {
-        const product = {
-            name: productName.value,
-            price: productPrice.value,
-            category: productCategory.value,
-            active: productActive.checked
-        };
-
-        //  verificamos si se subió al menos un archivo si no se subió nada lo dejamos tal cual esta
-        const pictureInput = document.getElementById('img');
-        if (pictureInput.files.length > 0) {
-            product.pictureURL = pictureInput.files[0];
-        }
-
-        return product;
-    }
-
-    async function updateProduct() {
-        try {
-            // verificamos si se ha seleccionado una nueva imagen
-            const product = getProductValuesForUpdate();
-            // si hay una nueva imagen la subo
-            let pictureURL = product.pictureURL;
-            if (pictureURL instanceof File) {
-                pictureURL = await uploadImage(); // subo la nueva imagen 
-            }
-            // actualizamos el producto con la nueva imagen
-            product.pictureURL = pictureURL;
-
-            const url = `http://localhost:3000/product/update/${selectedProductId}`;
-            const response = await fetch(url, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                },
-                body: JSON.stringify(
-                    product
-                )
-            });
-
-            productModal.hide();
-
-            showProducts();
-            const data = await response.json();
-
-            const changes = getProductChanges(originalProductData, product);
-            if (changes.length > 0) {
-                const logMessage = `Modificó ${product.name} - cambios: ${changes.join(' \n \n ')}`;
-                await createUserLog(logMessage);
-            }
-            showUserLogs();
-            console.log('Producto actualizado:', data);
-        } catch (error) {
-            console.error('Error al actualizar el producto:', error);
-        }
-    }
-
-    // compara la data original con la data actual
-    function getProductChanges(oldProduct, newProduct) {
-        const changes = [];
-
-        if (oldProduct.name !== newProduct.name) {
-            changes.push(`nombre: ${oldProduct.name} → ${newProduct.name}`);
-        }
-
-        if (oldProduct.price !== parseFloat(newProduct.price)) {
-            changes.push(`precio: ${oldProduct.price} → ${newProduct.price}`);
-        }
-
-        const oldCatId = typeof oldProduct.category === 'object' ? oldProduct.category._id : oldProduct.category;
-        if (oldCatId !== newProduct.category) {
-            changes.push(`categoría cambiada`);
-        }
-
-        if (oldProduct.active !== newProduct.active) {
-            changes.push(`activo: ${oldProduct.active ? 'Sí' : 'No'} → ${newProduct.active ? 'Sí' : 'No'}`);
-        }
-
-        if (newProduct.pictureURL && typeof newProduct.pictureURL === 'string' && oldProduct.pictureURL !== newProduct.pictureURL) {
-            changes.push(`imagen cambiada`);
-        }
-
-        return changes;
-    }
-
-    function resetProductForm() {
-        productName.value = '';
-        productPrice.value = '';
-        productCategory.value = '';
-        productActive.checked = false;
-        productImg.value = '';
-        preview.src = '';
-        preview.style.display = 'none';
-        placeholder.style.display = 'block';
-        console.log("formulario reinicidao")
-    }
-
-
 
 });
 

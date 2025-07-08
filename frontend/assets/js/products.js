@@ -1,8 +1,9 @@
+/* Variables globales */
 let productCart = [];
 let allProducts = [];
 
 document.addEventListener('DOMContentLoaded', async () => {
-    // Mostrar mensaje de bienvenida
+    // Mostrar mensaje de bienvenida con su respectivo nombre
     const clientName = localStorage.getItem('clientName') || 'Cliente';
     document.getElementById('welcomeMessage').innerHTML =
         `<i class="fas fa-user me-2"></i>Bienvenido/a, ${clientName}`;
@@ -17,6 +18,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     loadCategoryFilters();
 });
 
+/* ----------------getters---------------- */
+
+/* Obtiene todos los productos desde el backend */
 async function getAllProducts() {
     try {
         const response = await fetch('http://localhost:3000/product/getAll');
@@ -27,7 +31,7 @@ async function getAllProducts() {
         return [];
     }
 }
-
+/* Obtiene solo los productos activos (disponibles) */
 async function getProductsActive() {
     try {
         const response = await fetch('http://localhost:3000/product/getProductsActive');
@@ -40,18 +44,31 @@ async function getProductsActive() {
     }
 }
 
-
-function displayProducts(products) {
-    const productGrid = document.getElementById('productGrid');
-    productGrid.innerHTML = '';
-
-    products.forEach(product => {
-        const productCard = createProductCard(product);
-        productGrid.appendChild(productCard);
-    });
-    initializeProductButtons();
+/* Obtiene todas las categorias */
+async function getAllCategories() {
+    try {
+        const response = await fetch("http://localhost:3000/category/getAll");
+        const categories = await response.json();
+        return categories;
+    } catch (error) {
+        console.error("Error al cargar categorías:", error);
+    }
 }
 
+/* Obtiene los productos por categoría */
+async function getProductsByCategory(categoryId) {
+    try {
+        const response = await fetch(`http://localhost:3000/product/category/${categoryId}`);
+        const products = await response.json();
+        return products;
+    } catch (error) {
+        console.error("Error al cargar productos por categoría:", error);
+    }
+}
+
+/* ----------------Funciones de carga y renderizado---------------- */ 
+
+/* Carga los productos activos y los muestra */
 async function loadProducts() {
     const loadingSpinner = document.getElementById('loadingSpinner');
     loadingSpinner.style.display = 'block';
@@ -74,25 +91,19 @@ async function loadProducts() {
     }
 }
 
-async function loadCartItems() {
-    try {
-        const response = await fetch('http://localhost:3000/itemCart/getAll');
-        const items = await response.json();
+/* Muestra los productos en el DOM */
+function displayProducts(products) {
+    const productGrid = document.getElementById('productGrid');
+    productGrid.innerHTML = '';
 
-        productCart = items.map(item => ({
-            id: item._id,
-            productId: item.productId,
-            productName: item.productName,
-            unitPrice: item.unitPrice,
-            quantity: item.quantity
-        }));
-        initializeProductButtons();
-    } catch (error) {
-        console.error('Error al cargar los items del carrito:', error);
-    }
+    products.forEach(product => {
+        const productCard = createProductCard(product);
+        productGrid.appendChild(productCard);
+    });
+    initializeProductButtons();
 }
 
-
+/* Crea una tarjeta visual de producto para el DOM */ 
 function createProductCard(product) {
     const card = document.createElement('div');
     card.className = 'product-card';
@@ -129,127 +140,65 @@ function createProductCard(product) {
     return card;
 }
 
-async function removeFromCart(productId) {
+/* Carga los productos actuales del carrito desde el backend */
+async function loadCartItems() {
     try {
-        const itemInCart = productCart.find(
-            item => {
-                const itemProductId = typeof item.productId === 'object' ? item.productId._id : item.productId;
-                return itemProductId === productId;
-            }
-        );
+        const response = await fetch('http://localhost:3000/itemCart/getAll');
+        const items = await response.json();
 
-        if (itemInCart) {
-            await fetch(`http://localhost:3000/itemCart/delete/${itemInCart.id}`, {
-                method: 'DELETE',
-                headers: { 'Content-Type': 'application/json' }
-            });
-
-            // Remover del array local
-            productCart = productCart.filter(item => item.id !== itemInCart.id);
-            
-            // Ocultar botón de eliminar
-            hideQuantityControls(productId);
-
-            await loadCartItems();
-        }
+        productCart = items.map(item => ({
+            id: item._id,
+            productId: item.productId,
+            productName: item.productName,
+            unitPrice: item.unitPrice,
+            quantity: item.quantity
+        }));
+        initializeProductButtons();
     } catch (error) {
-        console.error('Error al eliminar del carrito:', error);
+        console.error('Error al cargar los items del carrito:', error);
     }
 }
 
-function initializeProductButtons() {
-    productCart.forEach(item => {
-        const itemProductId = typeof item.productId === 'object' ? item.productId._id : item.productId;
-        showQuantityControls(itemProductId);
-        updateQuantityDisplay(itemProductId, item.quantity);
-    });
-}
+// Cargar las categorias y sus respectivos botones para filtrar
+async function loadCategoryFilters() {
+    const container = document.getElementById("category-filters");
 
-function showQuantityControls(productId) {
-    const addButton = document.querySelector(`button[onclick*="addToCart('${productId}'"]`);
-    if (addButton) {
-        const productCard = addButton.closest('.product-card');
-        const quantityControls = productCard.querySelector('.quantity-controls-product');
-        const removeButton = productCard.querySelector('.btn-remove-cart');
-        
-        if (quantityControls && removeButton) {
-            addButton.style.display = 'none';
-            quantityControls.style.display = 'flex';
-            removeButton.style.display = 'inline-block';
-        }
-    }
-}
+    try {
+        const categorias = await getAllCategories();
 
-function hideQuantityControls(productId) {
-    const addButton = document.querySelector(`button[onclick*="addToCart('${productId}'"]`);
-    if (addButton) {
-        const productCard = addButton.closest('.product-card');
-        const quantityControls = productCard.querySelector('.quantity-controls-product');
-        const removeButton = productCard.querySelector('.btn-remove-cart');
-        
-        if (quantityControls && removeButton) {
-            addButton.style.display = 'inline-block';
-            quantityControls.style.display = 'none';
-            removeButton.style.display = 'none';
-        }
-    }
-}
-function updateQuantityDisplay(productId, quantity) {
-    const quantityDisplay = document.getElementById(`quantity-${productId}`);
-    if (quantityDisplay) {
-        quantityDisplay.textContent = quantity;
-    }
-}
-
-async function incrementQuantityProduct(productId) {
-    const itemInCart = productCart.find(item => {
-        const itemProductId = typeof item.productId === 'object' ? item.productId._id : item.productId;
-        return itemProductId === productId;
-    });
-
-    if (itemInCart) {
-        try {
-            const updatedItem = await incrementQuantity(itemInCart.id);
-            // Actualizar la cantidad en el array local
-            const cartIndex = productCart.findIndex(item => item.id === itemInCart.id);
-            if (cartIndex !== -1) {
-                productCart[cartIndex].quantity = updatedItem.quantity;
-            }
-            updateQuantityDisplay(productId, updatedItem.quantity);
-        } catch (error) {
-            console.error('Error al incrementar cantidad:', error);
-        }
-    }
-}
-
-async function decrementQuantityProduct(productId) {
-    const itemInCart = productCart.find(item => {
-        const itemProductId = typeof item.productId === 'object' ? item.productId._id : item.productId;
-        return itemProductId === productId;
-    });
-
-    if (itemInCart && itemInCart.quantity > 1) {
-        try {
-            const newQuantity = itemInCart.quantity - 1;
-
-            await fetch(`http://localhost:3000/itemCart/updateQuantity/${itemInCart.id}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ quantity: newQuantity})
-            });
+        // boton todos
+        const allBtn = document.createElement("button");
+        allBtn.className = "filter-btn active";
+        allBtn.textContent = "Todos";
+        allBtn.addEventListener("click", async () => {
+            setActiveButton(allBtn);
+            const products = await getProductsActive();
+            displayProducts(products);
             
-            // Actualizar la cantidad en el array local
-            const cartIndex = productCart.findIndex(item => item.id === itemInCart.id);
-            if (cartIndex !== -1) {
-                productCart[cartIndex].quantity = newQuantity;
-            }
-            updateQuantityDisplay(productId, newQuantity);
-        } catch (error) {
-            console.error('Error al decrementar cantidad:', error);
-        }
+        });
+        container.appendChild(allBtn);
+
+        // bbotones dinamicos por categoría
+        categorias.forEach(cat => {
+            const btn = document.createElement("button");
+            btn.className = "filter-btn";
+            btn.textContent = cat.name.charAt(0).toUpperCase() + cat.name.slice(1);
+            btn.addEventListener("click", async () => {
+                setActiveButton(btn);
+                const productos = await getProductsByCategory(cat._id);
+                displayProducts(productos);
+            });
+            container.appendChild(btn);
+        });
+        initializeProductButtons();
+    } catch (error) {
+        console.error("Error al cargar categorías:", error);
     }
 }
 
+/* -----------------Funciones de logica del carrito---------------- */
+
+/* Agrega un producto al carrito */
 async function addToCart(productId, productName, unitPrice, URLimg) {
     let item;
     let productValues = {
@@ -287,38 +236,91 @@ async function addToCart(productId, productName, unitPrice, URLimg) {
     }
     showQuantityControls(productId);
     updateQuantityDisplay(productId, item.quantity);
-    //await updateTotalSpan();
-    animateButtonSuccess(productId);
+    
     return item;
 }
 
-async function incrementQuantity(itemId) {
+/* Elimina un producto del carrito y lo actualiza visualmente */
+async function removeFromCart(productId) {
     try {
-        const url = `http://localhost:3000/itemCart/incrementQuantity/${itemId}`;
-        const response = await fetch(url, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
+        const itemInCart = productCart.find(
+            item => {
+                const itemProductId = typeof item.productId === 'object' ? item.productId._id : item.productId;
+                return itemProductId === productId;
             }
-        });
-        const data = await response.json();
-        // resetInputs();
-        return data;
+        );
+
+        if (itemInCart) {
+            await fetch(`http://localhost:3000/itemCart/delete/${itemInCart.id}`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            // Remover del array local
+            productCart = productCart.filter(item => item.id !== itemInCart.id);
+            
+            // Ocultar botón de eliminar
+            hideQuantityControls(productId);
+
+            await loadCartItems();
+        }
     } catch (error) {
-        console.error('Error al actualizar el item:', error);
+        console.error('Error al eliminar del carrito:', error);
     }
 }
 
-function updateItemDOM(item) {
-    const itemElement = document.getElementById(`item-${item._id}`);
-    if (itemElement) {
-        const input = itemElement.querySelector('input');
-        if (input) {
-            input.value = item.quantity;
+/* 
+ * Estas dos funciones incrementan y decrementan la cantidad de productos del carrito 
+ */
+async function incrementQuantityProduct(productId) {
+    const itemInCart = productCart.find(item => {
+        const itemProductId = typeof item.productId === 'object' ? item.productId._id : item.productId;
+        return itemProductId === productId;
+    });
+
+    if (itemInCart) {
+        try {
+            const updatedItem = await incrementQuantity(itemInCart.id);
+            // Actualizar la cantidad en el array local
+            const cartIndex = productCart.findIndex(item => item.id === itemInCart.id);
+            if (cartIndex !== -1) {
+                productCart[cartIndex].quantity = updatedItem.quantity;
+            }
+            updateQuantityDisplay(productId, updatedItem.quantity);
+        } catch (error) {
+            console.error('Error al incrementar cantidad:', error);
+        }
+    }
+}
+async function decrementQuantityProduct(productId) {
+    const itemInCart = productCart.find(item => {
+        const itemProductId = typeof item.productId === 'object' ? item.productId._id : item.productId;
+        return itemProductId === productId;
+    });
+
+    if (itemInCart && itemInCart.quantity > 1) {
+        try {
+            const newQuantity = itemInCart.quantity - 1;
+
+            await fetch(`http://localhost:3000/itemCart/updateQuantity/${itemInCart.id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ quantity: newQuantity})
+            });
+            
+            // Actualizar la cantidad en el array local
+            const cartIndex = productCart.findIndex(item => item.id === itemInCart.id);
+            if (cartIndex !== -1) {
+                productCart[cartIndex].quantity = newQuantity;
+            }
+            updateQuantityDisplay(productId, newQuantity);
+        } catch (error) {
+            console.error('Error al decrementar cantidad:', error);
         }
     }
 }
 
+/* Crea un nuevo item en el carrito en el backend */
 async function createItem(itemValue) {
     try {
         const url = 'http://localhost:3000/itemCart/create';
@@ -338,61 +340,114 @@ async function createItem(itemValue) {
     }
 }
 
-// Cargar dinamicamente las categorias
-async function getAllCategories() {
+/* Llama al backend para incrementar la cantidad de un item */
+async function incrementQuantity(itemId) {
     try {
-        const response = await fetch("http://localhost:3000/category/getAll");
-        const categories = await response.json();
-        return categories;
+        const url = `http://localhost:3000/itemCart/incrementQuantity/${itemId}`;
+        const response = await fetch(url, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        const data = await response.json();
+        // resetInputs();
+        return data;
     } catch (error) {
-        console.error("Error al cargar categorías:", error);
+        console.error('Error al actualizar el item:', error);
     }
 }
 
-async function getProductsByCategory(categoryId) {
+/**
+ * Elimina el carrito completo del backend
+ */
+async function deleteCart() {
     try {
-        const response = await fetch(`http://localhost:3000/product/category/${categoryId}`);
-        const products = await response.json();
-        return products;
+        const url = 'http://localhost:3000/shopingCart/delete';
+        const response = await fetch(url, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        const data = await response.json();
+        console.log('Carrito vaciado:', data);
     } catch (error) {
-        console.error("Error al cargar productos por categoría:", error);
+        console.error('Error al vaciar el carrito:', error);
     }
 }
 
-async function loadCategoryFilters() {
-    const container = document.getElementById("category-filters");
-
+/**
+ * Elimina todos los ítems del carrito
+ */
+async function deleteAllItemCart() {
     try {
-        const categorias = await getAllCategories();
-
-        // boton todos
-        const allBtn = document.createElement("button");
-        allBtn.className = "filter-btn active";
-        allBtn.textContent = "Todos";
-        allBtn.addEventListener("click", async () => {
-            setActiveButton(allBtn);
-            const products = await getProductsActive();
-            displayProducts(products);
-            
+        const url = 'http://localhost:3000/itemCart/deleteAll';
+        const response = await fetch(url, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
         });
-        container.appendChild(allBtn);
-
-        // bbotones dinamicos por categoría
-        categorias.forEach(cat => {
-            const btn = document.createElement("button");
-            btn.className = "filter-btn";
-            btn.textContent = cat.name.charAt(0).toUpperCase() + cat.name.slice(1);
-            btn.addEventListener("click", async () => {
-                setActiveButton(btn);
-                const productos = await getProductsByCategory(cat._id);
-                displayProducts(productos);
-            });
-            container.appendChild(btn);
-        });
-        initializeProductButtons();
+        const data = await response.json();
+        console.log('Items eliminados:', data);
     } catch (error) {
-        console.error("Error al cargar categorías:", error);
+        console.error('Error al eliminar los items:', error);
     }
+}
+
+/*---------------------- Funciones auxiliares o de UI ---------------------- */
+
+/* Muestra los controles de cantidad en productos que ya están en el carrito */ 
+function showQuantityControls(productId) {
+    const addButton = document.querySelector(`button[onclick*="addToCart('${productId}'"]`);
+    if (addButton) {
+        const productCard = addButton.closest('.product-card');
+        const quantityControls = productCard.querySelector('.quantity-controls-product');
+        const removeButton = productCard.querySelector('.btn-remove-cart');
+        
+        if (quantityControls && removeButton) {
+            addButton.style.display = 'none';
+            quantityControls.style.display = 'flex';
+            removeButton.style.display = 'inline-block';
+        }
+    }
+}
+function hideQuantityControls(productId) {
+    const addButton = document.querySelector(`button[onclick*="addToCart('${productId}'"]`);
+    if (addButton) {
+        const productCard = addButton.closest('.product-card');
+        const quantityControls = productCard.querySelector('.quantity-controls-product');
+        const removeButton = productCard.querySelector('.btn-remove-cart');
+        
+        if (quantityControls && removeButton) {
+            addButton.style.display = 'inline-block';
+            quantityControls.style.display = 'none';
+            removeButton.style.display = 'none';
+        }
+    }
+}
+function updateQuantityDisplay(productId, quantity) {
+    const quantityDisplay = document.getElementById(`quantity-${productId}`);
+    if (quantityDisplay) {
+        quantityDisplay.textContent = quantity;
+    }
+}
+function updateItemDOM(item) {
+    const itemElement = document.getElementById(`item-${item._id}`);
+    if (itemElement) {
+        const input = itemElement.querySelector('input');
+        if (input) {
+            input.value = item.quantity;
+        }
+    }
+}
+function initializeProductButtons() {
+    productCart.forEach(item => {
+        const itemProductId = typeof item.productId === 'object' ? item.productId._id : item.productId;
+        showQuantityControls(itemProductId);
+        updateQuantityDisplay(itemProductId, item.quantity);
+    });
 }
 
 function setActiveButton(activeBtn) {
@@ -401,29 +456,13 @@ function setActiveButton(activeBtn) {
     activeBtn.classList.add("active");
 }
 
-function animateButtonSuccess(productId) {
-    const button = document.querySelector(`button[onclick*="${productId}"]`);
-    if (button) {
-        const originalText = button.innerHTML;
-        button.innerHTML = '<i class="fas fa-check me-2"></i>¡Agregado!';
-        button.style.background = 'linear-gradient(135deg, #6c63ff, #8b7cf6)';
-        button.style.border = 'none';
-        button.disabled = true;
-
-        setTimeout(() => {
-            button.innerHTML = originalText;
-            button.style.background = '';
-            button.style.border = '';
-            button.disabled = false;
-        }, 700);
-    }
-}
-
+/* -------- funciones de navegacion -------- */
 function goToCart() {
     window.location.href = 'cart.html';
 }
 
 function goHome() {
+    deleteAllItemCart();
+    deleteCart();
     window.location.href = 'index.html';
-
 }
