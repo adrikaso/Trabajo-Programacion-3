@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const path = require('path');
 require("dotenv").config();
 
 const conecWithDataBase = require("./config/conection"); 
@@ -10,11 +11,10 @@ const saleRoutes = require("./routes/SaleRoutes");
 const saleDetailsRoutes = require("./routes/SaleDetailsRoutes");
 const itemCartRoutes = require("./routes/ItemCartRoutes");
 const shopingCartRoutes = require("./routes/ShopingCartRoutes");
-const clientRoutes = require("./routes/ClientRoutes");
 const rolRoutes = require("./routes/RolRoutes");
 const userRoutes = require("./routes/UserRoutes");
 const userLogRoutes = require("./routes/UserLogRoutes");
-const authRoutes = require("./routes/authRoutes");
+const authRoutes = require("./routes/AuthRoutes");
 const uploadRoutes = require("./routes/UploadRoutes");
 const categoryRoutes = require("./routes/CategoryRoutes");
 
@@ -26,7 +26,7 @@ app.use(express.json());
 
 // Rutas
 
-
+app.use(express.static(path.join(__dirname, '../frontend')));
 
 app.use("/user",userRoutes);
 
@@ -39,8 +39,6 @@ app.use("/saleDetails", saleDetailsRoutes);
 app.use("/itemCart", itemCartRoutes);
 
 app.use("/shopingCart", shopingCartRoutes)
-
-app.use("/client", clientRoutes)
 
 app.use("/rol", rolRoutes)
 
@@ -59,14 +57,3 @@ conecWithDataBase().then(() => {
     console.log(`Servidor corriendo en http://localhost:${PORT}`);
   });
 });
-
-// const productService = require("../backend/services/ProductService");
-
-// console.log("Iniciando");
-
-// const main = async () => {
-//   const productos = await productService.getAllProducts();
-//   console.log("Productos:", productos);
-// };
-
-// main();
