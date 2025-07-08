@@ -1,6 +1,6 @@
 const Sale = require('../models/SaleModel');
 
-const getAll = () => Sale.find();
+const getAll = () => Sale.find().sort({ date: -1 });
 const getById = id => Sale.findById(id);
 const getTotalSales = () => Sale.countDocuments();
 const getSumTotalSales = () => Sale.aggregate([{$group: {_id: null, total: {$sum: "$total"}}}]);
