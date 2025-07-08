@@ -4,67 +4,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Ticket de compra</title>
+    <title>Ticket - TU SUPLEMENTO</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/ticket.css">
+    <link rel="icon" href="assets/img/favicon.svg">
 </head>
 
-<body class="bg-light text-dark">
+<body>
+    <div class="confetti" id="confetti"></div>
 
-    <div class="container py-5">
-        <div class="text-center mb-4">
-            <h1 class="fw-bold">Gracias por tu compra 🧾</h1>
-            <p id="fecha" class="text-muted"></p>
+    <div class="container py-4">
+        <div class="success-animation">
+            <div class="success-icon">
+                <i class="fas fa-check"></i>
+            </div>
+            <h2 class="text-white mb-0">¡Compra Exitosa!</h2>
+            <p class="text-white opacity-75">Tu pedido ha sido procesado correctamente</p>
         </div>
 
-        <div id="ticketPDF">
-            <div class="card shadow-sm p-4">
-                <div class="text-center mb-3">
-                    <img src="assets/img/logo.png" alt="Logo" style="max-width: 150px;">
+        <div class="ticket-container" id="ticket">
+            <div class="ticket-header">
+                <h1 class="mb-0">
+                    <i class="fas fa-dumbbell me-3"></i>TU SUPLEMENTO
+                </h1>
+                <p class="mb-0 opacity-75">Autoservicio de Suplementos Deportivos</p>
+                <div class="ticket-number" id="ticketNumber">
+                    #TKT-000001
                 </div>
-                <h4 class="mb-3">Resumen de la venta</h4>
-                <p><strong>Número de pedido:</strong> <span id="ventaId"></span></p>
-                <p><strong>Cliente:</strong> <span id="clienteNombre">-</span></p>
+            </div>
 
-                <table class="table table-bordered mt-4">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Producto</th>
-                            <th>Cantidad</th>
-                            <th>Subtotal</th>
-                        </tr>
-                    </thead>
-                    <tbody id="detalleTicket"></tbody>
-                </table>
-
-                <div class="text-end fs-5 fw-bold mt-3">
-                    Total: <span id="totalFinal">$0</span>
+            <div class="ticket-body">
+                <!-- Información del cliente -->
+                <div class="ticket-section">
+                    <div class="section-title">
+                        <i class="fas fa-user text-primary"></i>
+                        Información del Cliente
+                    </div>
+                    <div class="info-row">
+                        <span>Cliente:</span>
+                        <strong id="clientName">-</strong>
+                    </div>
+                    <div class="info-row">
+                        <span>Fecha:</span>
+                        <strong id="purchaseDate">-</strong>
+                    </div>
+                    <div class="info-row">
+                        <span>Hora:</span>
+                        <strong id="purchaseTime">-</strong>
+                    </div>
                 </div>
-                <p class="text-center">¡Gracias por su compra!</p>
+
+                <!-- Detalles de la compra -->
+                <div class="ticket-section">
+                    <div class="section-title">
+                        <i class="fas fa-shopping-bag text-success"></i>
+                        Detalles de la Compra
+                    </div>
+                    <div id="purchaseDetails">
+                        <!-- Los detalles se cargarán aquí dinámicamente -->
+                    </div>
+                </div>
+
+                <!-- Total -->
+                <div class="total-section">
+                    <h4 class="mb-2">Total Pagado</h4>
+                    <div class="total-amount" id="totalPaid">$0.00</div>
+                </div>
+
+                <!-- Mensaje de agradecimiento -->
+                <div class="thank-you-message">
+                    <h5 class="text-success mb-2">
+                        <i class="fas fa-heart me-2"></i>¡Gracias por tu compra!
+                    </h5>
+                    <p class="mb-0 opacity-75">
+                        Esperamos que disfrutes de tus suplementos deportivos.
+                    </p>
+                </div>
             </div>
         </div>
-        <div class="text-center mt-4">
-            <button class="btn btn-outline-secondary" onclick="descargarPDF()">Descargar ticket en PDF</button>
-        </div>
 
-        <div class="text-center mt-3">
-            <button id="btnVolver" class="btn btn-primary">Volver al inicio</button>
+        <div class="text-center mt-4">
+            <button id="downloadPdfBtn" class="btn btn-danger px-4 py-2 rounded-pill shadow-sm">
+                <i class="fas fa-file-pdf me-2 text-white"></i> Imprimir Ticket
+            </button>
         </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-
-    <!-- <p class="mt-4">¿Querés contarnos cómo fue tu experiencia?</p>
-    <a href="encuesta.html" class="btn btn-outline-primary  btn__encuesta" >Responder encuesta</a> -->
-
-
-
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/ticket.js"></script>
-    <!-- Esto genera el PDF -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
 </body>
 
 </html>

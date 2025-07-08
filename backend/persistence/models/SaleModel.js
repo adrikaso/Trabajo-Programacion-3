@@ -1,9 +1,9 @@
 const mongoose = require("mongoose");
 
-const ventaSchema = new mongoose.Schema({
-  clienteNombre: { type: String, default: "" },
-  fecha: { type: Date, default: Date.now },
+const saleSchema = new mongoose.Schema({
+  clientName: { type: String, default: "" },
+  date: { type: Date, default: Date.now },
   total: { type: Number, required: true }
 });
 
-module.exports = mongoose.model("Venta", ventaSchema);
+module.exports = mongoose.model("Sale", saleSchema);

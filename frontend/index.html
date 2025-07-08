@@ -2,35 +2,152 @@
 <html lang="es">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tu Suplementos</title>
-  <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/normalize.css">
-  <link rel="stylesheet" href="assets/css/introduccion.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TU SUPLEMENTO - Autoservicio</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/index.css">
+    <link rel="icon" href="assets/img/favicon.svg">
 </head>
 
 <body>
-  <main class="main">
-    <p class="subtitulo">Te espera una nueva experiencia</p>
-    <h1>ORDER HERE</h1>
-    <div class="footer">
-      <div class="footer-left">
-        <img src="assets/img/logon.png" alt="logo">
-      </div>
-
-      <div class="footer-center">
-        <p>TOCAR PARA COMENZAR</p>
-      </div>
-
-      <div class="footer-right">
-        <!-- Podés dejarlo vacío o meter algo en el futuro -->
-      </div>
+    <div class="floating-icons">
+        <i class="fas fa-dumbbell floating-icon" style="top: 10%; left: 10%; font-size: 3rem; animation-delay: 0s;"></i>
+        <i class="fas fa-pills floating-icon" style="top: 20%; right: 15%; font-size: 2rem; animation-delay: 1s;"></i>
+        <i class="fas fa-heartbeat floating-icon"
+            style="bottom: 30%; left: 20%; font-size: 2.5rem; animation-delay: 2s;"></i>
+        <i class="fas fa-trophy floating-icon"
+            style="bottom: 15%; right: 10%; font-size: 3rem; animation-delay: 3s;"></i>
+        <i class="fas fa-fire floating-icon" style="top: 50%; left: 5%; font-size: 2rem; animation-delay: 4s;"></i>
+        <i class="fas fa-bolt floating-icon" style="top: 30%; right: 5%; font-size: 2.5rem; animation-delay: 5s;"></i>
     </div>
 
-  </main>
+    <div class="container-fluid d-flex align-items-center justify-content-center min-vh-100 py-5 ">
+        <div class="row w-100 justify-content-center">
+            <div class="col-lg-6 col-md-8">
+                <div class="welcome-card p-5">
+                    <div class="text-center mb-5">
+                        <div class="brand-logo mb-3">
+                            <i class="fas fa-dumbbell"></i>
+                        </div>
+                        <h1 class="display-4 fw-bold text-primary mb-3">TU SUPLEMENTO</h1>
+                        <p class="lead text-muted">Autoservicio de Suplementos Deportivos</p>
+                        <div class="d-flex justify-content-center mb-4">
+                            <div class="bg-primary rounded-pill px-3 py-1">
+                                <small class="text-white fw-semibold">
+                                    <i class="fas fa-clock me-2"></i>24/7 Disponible
+                                </small>
+                            </div>
+                        </div>
+                    </div>
 
-  <script src="assets/js/introduccion.js"></script>
+                    <div class="mb-4">
+                        <label for="inputClientName" class="form-label fs-5 fw-semibold text-dark mb-3">
+                            <i class="fas fa-user me-2 text-primary"></i>Ingresa tu nombre para comenzar
+                        </label>
+                        <input type="text" class="form-control form-control-lg" id="inputClientName"
+                            placeholder="Tu nombre completo..." required>
+                    </div>
+
+                    <div class="text-center mb-4">
+                        <button id="btnCrearCarrito" class="btn btn-primary btn-start btn-lg">
+                            <i class="fas fa-shopping-cart me-2"></i>Iniciar Compra
+                        </button>
+                    </div>
+
+                    <div class="features row text-black justify-content-center">
+                        <div class="col-md-4">
+                            <div class="feature-item">
+                                <div class="feature-icon">
+                                    <i class="fas fa-shield-alt"></i>
+                                </div>
+                                <h6 class="fw-bold">Seguro</h6>
+                                <small>Productos verificados</small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="feature-item">
+                                <div class="feature-icon">
+                                    <i class="fas fa-medal"></i>
+                                </div>
+                                <h6 class="fw-bold">Calidad</h6>
+                                <small>Marcas premium</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- overlay del teclado -->
+    <div class="keyboard-overlay" id="keyboardOverlay"></div>
+
+    <!-- teclado Virtual -->
+    <div class="virtual-keyboard" id="virtualKeyboard">
+        <div class="keyboard-header">
+            <h3 class="keyboard-title">
+                <i class="fas fa-keyboard me-2"></i>Ingresa tu nombre
+            </h3>
+            <button class="keyboard-close" id="closeKeyboard">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div class="keyboard-row">
+            <div class="keyboard-key" data-key="Q">Q</div>
+            <div class="keyboard-key" data-key="W">W</div>
+            <div class="keyboard-key" data-key="E">E</div>
+            <div class="keyboard-key" data-key="R">R</div>
+            <div class="keyboard-key" data-key="T">T</div>
+            <div class="keyboard-key" data-key="Y">Y</div>
+            <div class="keyboard-key" data-key="U">U</div>
+            <div class="keyboard-key" data-key="I">I</div>
+            <div class="keyboard-key" data-key="O">O</div>
+            <div class="keyboard-key" data-key="P">P</div>
+        </div>
+
+        <div class="keyboard-row">
+            <div class="keyboard-key" data-key="A">A</div>
+            <div class="keyboard-key" data-key="S">S</div>
+            <div class="keyboard-key" data-key="D">D</div>
+            <div class="keyboard-key" data-key="F">F</div>
+            <div class="keyboard-key" data-key="G">G</div>
+            <div class="keyboard-key" data-key="H">H</div>
+            <div class="keyboard-key" data-key="J">J</div>
+            <div class="keyboard-key" data-key="K">K</div>
+            <div class="keyboard-key" data-key="L">L</div>
+            <div class="keyboard-key" data-key="Ñ">Ñ</div>
+        </div>
+
+        <div class="keyboard-row">
+            <div class="keyboard-key caps special" data-key="CAPS">
+                <i class="fas fa-arrow-up"></i>
+            </div>
+            <div class="keyboard-key" data-key="Z">Z</div>
+            <div class="keyboard-key" data-key="X">X</div>
+            <div class="keyboard-key" data-key="C">C</div>
+            <div class="keyboard-key" data-key="V">V</div>
+            <div class="keyboard-key" data-key="B">B</div>
+            <div class="keyboard-key" data-key="N">N</div>
+            <div class="keyboard-key" data-key="M">M</div>
+            <div class="keyboard-key backspace special" data-key="BACKSPACE">
+                <i class="fas fa-backspace"></i>
+            </div>
+        </div>
+
+        <div class="keyboard-row">
+            <div class="keyboard-key space special" data-key="SPACE">ESPACIO</div>
+
+            <div class="keyboard-row">
+                <div class="keyboard-key finish special" id="finishKeyboard">
+                    <i class="fas fa-check me-2"></i>LISTO
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/js/index.js"></script>
 </body>
 
 </html>

@@ -1,57 +1,106 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const ticket = JSON.parse(localStorage.getItem("ticketVenta"));
-
-    if (!ticket) {
-        document.body.innerHTML = "<p class='text-center mt-5'>No hay información del ticket.</p>";
-        return;
-    }
-
-    document.getElementById("ventaId").textContent = ticket.ventaId || "Sin ID";
-
-    document.getElementById("fecha").textContent = ticket.fecha || new Date().toLocaleString();
-
-    document.getElementById("clienteNombre").textContent = ticket.clienteNombre || "-";
-
-    const detalle = document.getElementById("detalleTicket");
-    let total = 0;
-
-    ticket.carrito.forEach(item => {
-        const subtotal = item.precio * item.cantidad;
-        total += subtotal;
-
-        const fila = document.createElement("tr");
-        fila.innerHTML = `
-      <td>${item.nombre}</td>
-      <td>${item.cantidad}</td>
-      <td>$${subtotal.toLocaleString("es-AR")}</td>
-    `;
-        detalle.appendChild(fila);
-    });
-
-    document.getElementById("totalFinal").textContent = `$${total.toLocaleString("es-AR")}`;
-
-
-    document.getElementById("btnVolver").addEventListener("click", () => {
-        sessionStorage.clear();
-        localStorage.removeItem("carrito");
-        localStorage.removeItem("ticketVenta");
-        window.location.href = "nombre.html";
-    });
-});
-
-function descargarPDF() {
-  const ticket = document.getElementById("ticketPDF");
-
-  const opciones = {
-    margin: 0,
-    filename: `ticket-${Date.now()}.pdf`,
-    image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: { scale: 2, useCORS: true }, // está bien dentro de opciones
-    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-    pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
-  };
-
-  html2pdf().set(opciones).from(ticket).save();
+async function getSaleById(id) {
+  try {
+    const response = await fetch(`http://localhost:3000/sale/getSale/${id}`);
+    return await response.json();
+  } catch (error) {
+    console.error(error);
+    alert("Error al obtener la venta");
+  }
 }
 
+async function getSaleDetailsById(id) {
+  try {
+    const response = await fetch(`http://localhost:3000/SaleDetails/getSaleDetailsBySaleId/${id}`);
+    return await response.json();
+  } catch (error) {
+    console.error(error);
+    alert("Error al obtener detalles de venta");
+  }
+}
 
+async function getProductDetails(id) {
+  try {
+    const response = await fetch(`http://localhost:3000/product/getProductDetails/${id}`);
+    return await response.json();
+  } catch (error) {
+    console.error(error);
+    alert("Error al obtener detalles del producto");
+  }
+}
+
+function setClientInfo(sale) {
+  document.getElementById("clientName").textContent = sale.clientName || "Cliente Anónimo";
+
+  const saleDate = new Date(sale.date);
+  document.getElementById("purchaseDate").textContent = saleDate.toLocaleDateString();
+  document.getElementById("purchaseTime").textContent = saleDate.toLocaleTimeString();
+}
+
+async function createTicket(list) {
+  const detailsContainer = document.getElementById("purchaseDetails");
+
+  for (const item of list) {
+    const details = item.productId;
+
+    const row = document.createElement("div");
+    row.classList.add("info-row");
+    row.innerHTML = `
+      <span>${details.name} (x${item.quantity})</span>
+      <strong>$${item.subtotal.toLocaleString()}</strong>
+    `;
+
+    detailsContainer.appendChild(row);
+  }
+}
+
+async function loadTicket() {
+  const params = new URLSearchParams(window.location.search);
+  const saleId = params.get("saleId");
+
+  if (!saleId) {
+    alert("ID de venta no especificado");
+    return;
+  }
+
+  try {
+    const sale = await getSaleById(saleId);
+    const saleDetails = await getSaleDetailsById(saleId);
+
+    setClientInfo(sale);
+    await createTicket(saleDetails);
+
+    // Mostrar el total de la venta directamente
+    document.getElementById("totalPaid").textContent = `$${sale.total.toLocaleString()}`;
+
+    // Redirigir al inicio
+    setTimeout(() => {
+		window.location.href = "index.html";
+    }, 7000);
+
+  } catch (error) {
+    console.error(error);
+    alert("Hubo un error al generar el ticket.");
+  }
+}
+
+window.addEventListener("DOMContentLoaded", loadTicket);
+
+document.getElementById("downloadPdfBtn").addEventListener("click", async () => {
+  const { jsPDF } = window.jspdf;
+
+  const ticketElement = document.getElementById("ticket");
+
+  // Capturar el ticket como imagen
+  const canvas = await html2canvas(ticketElement, { scale: 2 });
+  const imgData = canvas.toDataURL("image/png");
+
+  // Crear PDF
+  const pdf = new jsPDF({
+    orientation: "portrait",
+    unit: "px",
+    format: [canvas.width, canvas.height]
+  });
+
+  pdf.addImage(imgData, "PNG", 0, 0, canvas.width, canvas.height);
+  pdf.save(`ticket_${new Date().getTime()}.pdf`);
+});
